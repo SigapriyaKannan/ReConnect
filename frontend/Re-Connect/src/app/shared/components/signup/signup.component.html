@@ -2,6 +2,14 @@
 	<div class="row h-100 d-flex align-items-center">
 		<div class="col-6 col-offset-3">
 			<p-card header="Sign Up" subheader="Create an account here">
+				<div class="row">
+					<div class="col pl-4">
+						@for(role of roles; track role.roleId) {
+						<p-radioButton name="role" [id]="role.role" [value]="role.roleId" [(ngModel)]="selectedRole"></p-radioButton>
+						<label for="{{ role.role }}" class="ml-1 mr-3">{{ role.role }}</label>
+						}
+					</div>
+				</div>
 				<p-stepper [linear]="true" [activeStep]="activeStep">
 					<p-stepperPanel>
 						<ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
@@ -47,8 +55,9 @@
 									</div>
 								</div>
 							</form>
-							<div class="d-flex pt-4 justify-content-center">
+							<div class="d-flex flex-column align-items-center pt-4 justify-content-center">
 								<p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="onCheckForm(userCredentialsForm, index)" />
+								<p class="mt-2">Already have an account? <a href="javascript:void(0)" [routerLink]="['/login']">Login</a></p>
 							</div>
 						</ng-template>
 					</p-stepperPanel>

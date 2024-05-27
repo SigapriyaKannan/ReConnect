@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { CardModule } from "primeng/card";
 import { ButtonModule } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
@@ -8,6 +9,7 @@ import { DividerModule } from "primeng/divider";
 import { StepperModule } from "primeng/stepper";
 import { DropdownModule } from "primeng/dropdown";
 import { MultiSelectModule } from "primeng/multiselect";
+import { RadioButtonModule } from "primeng/radiobutton";
 
 import { SignUpService } from './signup.service';
 import { Company, CompanyService } from '../../services/company.service';
@@ -16,12 +18,13 @@ import { Skill, SkillsService } from '../../services/skills.service';
 import { Country, CountryService } from '../../services/country.service';
 import { City, CityService } from '../../services/city.service';
 import { MessageService } from 'primeng/api';
+import { ROLES } from '../constants/roles';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'rc-signup',
   standalone: true,
-  imports: [CardModule, ButtonModule, InputTextModule, PasswordModule, DividerModule, ReactiveFormsModule, StepperModule, DropdownModule, MultiSelectModule],
-  // providers: [MessageService],
+  imports: [CommonModule, FormsModule, RouterLink, CardModule, ButtonModule, InputTextModule, PasswordModule, DividerModule, ReactiveFormsModule, StepperModule, DropdownModule, MultiSelectModule, RadioButtonModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
@@ -30,6 +33,8 @@ export class SignupComponent {
   userDetailsForm: FormGroup;
   loading: boolean = false;
   activeStep: number = 0;
+  roles = [{ roleId: 0, role: "Referrer" }, { roleId: 1, role: "Referent" }];
+  selectedRole = 0;
   listOfCompanies: Company[] = [
     {
       "companyId": 1,
