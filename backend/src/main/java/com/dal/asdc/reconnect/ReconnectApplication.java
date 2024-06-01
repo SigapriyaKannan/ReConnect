@@ -9,7 +9,6 @@ public class ReconnectApplication
 
 	public static void main(String[] args)
 	{
-		System.out.println("Manish");
 		SpringApplication.run(ReconnectApplication.class, args);
 
 	}

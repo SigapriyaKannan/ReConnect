@@ -35,7 +35,7 @@ public class UserDetails
 
     @ManyToOne
     @JoinColumn(name = "CurrentCompany")
-    private Comapany comapany;
+    private Company company;
 
     @ManyToOne
     @JoinColumn(name = "UserID", nullable = false)
