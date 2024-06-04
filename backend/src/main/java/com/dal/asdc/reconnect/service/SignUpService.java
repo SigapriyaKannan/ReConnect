@@ -1,10 +1,13 @@
 package com.dal.asdc.reconnect.service;
+import com.dal.asdc.reconnect.DTO.LoginUserDto;
 import com.dal.asdc.reconnect.DTO.SignUpRequest;
 import com.dal.asdc.reconnect.DTO.SignUpRequestFinal;
-import com.dal.asdc.reconnect.DTO.SignUpResponse;
+import com.dal.asdc.reconnect.DTO.SignUpFirstPhaseResponse;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -39,6 +42,12 @@ public class SignUpService
     @Autowired
     SkillsRepository skillsRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
 
     private static final String PASSWORD_PATTERN =
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
@@ -54,31 +63,31 @@ public class SignUpService
      * @param signUpRequest This will Check the initial SignUp request if it valid or not.
      * @return If the all validations pass then it will return true.
      */
-    public SignUpResponse validateFirstPhase(SignUpRequest signUpRequest)
+    public SignUpFirstPhaseResponse validateFirstPhase(SignUpRequest signUpRequest)
     {
-        SignUpResponse signUpResponse = new SignUpResponse();
+        SignUpFirstPhaseResponse signUpFirstPhaseResponse = new SignUpFirstPhaseResponse();
 
         if(!checkIfUserAlreadyPresent(signUpRequest.getUserEmail()))
         {
-            signUpResponse.setEmailAlreadyPresent(true);
+            signUpFirstPhaseResponse.setEmailAlreadyPresent(true);
         }
 
         if(!validatePassword(signUpRequest.getPassword()))
         {
-            signUpResponse.setPasswordError(true);
+            signUpFirstPhaseResponse.setPasswordError(true);
         }
 
         if(!matchPasswordWithConfirmPassword(signUpRequest.getPassword(), signUpRequest.getReenteredPassword()))
         {
-            signUpResponse.setRepeatPasswordError(true);
+            signUpFirstPhaseResponse.setRepeatPasswordError(true);
         }
 
         if(!validateEmail(signUpRequest.getUserEmail()))
         {
-            signUpResponse.setEmailAlreadyPresent(true);
+            signUpFirstPhaseResponse.setEmailAlreadyPresent(true);
         }
 
-        return signUpResponse;
+        return signUpFirstPhaseResponse;
     }
 
     /**
@@ -94,7 +103,7 @@ public class SignUpService
      */
     private boolean checkIfUserAlreadyPresent(String email)
     {
-        Optional<Users> user= usersRepository.findByUserEmail(email);
+        Optional<Users> user= Optional.ofNullable(usersRepository.findByUserEmail(email));
         return user.isEmpty();
     }
 
@@ -174,7 +183,7 @@ public class SignUpService
      */
     private boolean addSkills(SignUpRequestFinal signUpRequestFinal)
     {
-        Optional<Users> users = usersRepository.findByUserEmail(signUpRequestFinal.getUserEmail());
+        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(signUpRequestFinal.getUserEmail()));
         if(users.isEmpty())
         {
             return false;
@@ -200,7 +209,7 @@ public class SignUpService
     private boolean addDetails(SignUpRequestFinal signUpRequestFinal)
     {
 
-        Optional<Users> users = usersRepository.findByUserEmail(signUpRequestFinal.getUserEmail());
+        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(signUpRequestFinal.getUserEmail()));
         Optional<Company> comapany = companyRepository.findById(signUpRequestFinal.getCompany());
         Optional<City> city = cityRepository.findById(signUpRequestFinal.getCity());
         Optional<Country> country = countryRepository.findById(signUpRequestFinal.getCountry());
@@ -239,10 +248,28 @@ public class SignUpService
 
         Users user = new Users();
         user.setUserEmail(signUpRequestFinal.getUserEmail());
-        user.setPassword(signUpRequestFinal.getPassword());
+        user.setPassword(passwordEncoder.encode(signUpRequestFinal.getPassword()));
         user.setUserType(userType.get());
         usersRepository.save(user);
 
         return true;
+    }
+
+
+    public Optional<Users> authenticate(LoginUserDto input)
+    {
+
+        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(input.getUserEmail()));
+
+        if(users.isEmpty())
+        {
+            return Optional.empty();
+        }
+
+        if(passwordEncoder.matches(input.getPassword(), users.get().getPassword()))
+        {
+            return users;
+        }
+        return Optional.empty();
     }
 }
