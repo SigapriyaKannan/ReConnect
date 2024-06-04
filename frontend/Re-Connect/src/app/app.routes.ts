@@ -13,7 +13,7 @@ export const routes: Routes = [
     },
     {
         path: "",
-        redirectTo: "login",
+        redirectTo: "sign-up",
         pathMatch: "full"
     },
     {
