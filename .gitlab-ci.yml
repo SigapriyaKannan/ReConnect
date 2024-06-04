@@ -13,8 +13,8 @@ before_script:
 build_frontend:
   stage: build
   image: "node:10"
-  working_dir: /frontend/Re-Connect
   before_script:
+    - cd /frontend/Re-Connect
     - npm install
   script:
     - npm run build
