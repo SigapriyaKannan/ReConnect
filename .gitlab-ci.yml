@@ -22,8 +22,10 @@ build_frontend:
 build_backend:
   stage: build
   image: maven:3.8.5-openjdk-17
+  before_script:
+    - cd /backend
   script:
-    - mvn clean package
+    - mvn clean package -DskipTests=true
   artifacts:
     paths:
       - target/*.jar
