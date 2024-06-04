@@ -28,7 +28,7 @@ build_backend:
     - mvn clean package -DskipTests=true
   artifacts:
     paths:
-      - target/reconnect-0.0.1-SNAPSHOT.jar
+      - ./target/reconnect-0.0.1-SNAPSHOT.jar
 
 # Test stage
 test:
