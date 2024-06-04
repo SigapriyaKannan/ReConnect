@@ -50,4 +50,4 @@ deploy:
   script:
     - java -jar ./target/reconnect-0.0.1-SNAPSHOT.jar --spring.profiles.active=$SPRING_PROFILES_ACTIVE
   only:
-    - master
+    - dev
