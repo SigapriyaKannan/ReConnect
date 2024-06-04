@@ -74,7 +74,7 @@
             <column name="Password" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="UserType" type="INT">
+            <column name="TypeID" type="INT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -82,8 +82,8 @@
 
     <!-- Add Foreign Key Constraint for Users Table -->
     <changeSet id="5.1" author="sigapriya">
-        <addForeignKeyConstraint baseTableName="Users" baseColumnNames="UserType"
-                                 constraintName="fk_users_usertype" referencedTableName="UserType" referencedColumnNames="TypeID"/>
+        <addForeignKeyConstraint baseTableName="Users" baseColumnNames="TypeID"
+                                 constraintName="fk_users_typeid" referencedTableName="UserType" referencedColumnNames="TypeID"/>
     </changeSet>
 
     <!-- User Details Table -->
