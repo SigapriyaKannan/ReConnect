@@ -1,4 +1,4 @@
-package com.dal.asdc.reconnect.DTO;
+package com.dal.asdc.reconnect.DTO.RefreshToken;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

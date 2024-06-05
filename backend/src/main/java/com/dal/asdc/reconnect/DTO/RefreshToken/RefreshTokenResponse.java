@@ -1,4 +1,4 @@
-package com.dal.asdc.reconnect.DTO;
+package com.dal.asdc.reconnect.DTO.RefreshToken;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JwtResponse {
+public class RefreshTokenResponse {
 
     private String accessToken;
     private String token;

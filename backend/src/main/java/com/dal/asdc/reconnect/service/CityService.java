@@ -11,6 +11,13 @@ public class CityService {
     @Autowired
     private CityRepository cityRepository;
 
+
+    /**
+     * Retrieves the cities associated with a given country ID.
+     * @param countryId the ID of the country for which cities are to be retrieved.
+     * @return a CityResponseBody object containing the list of cities for the specified country.
+     */
+
     public CityResponseBody getCitiesByCountryId(int countryId) {
 
         CityResponseBody cityResponseBody = new CityResponseBody();

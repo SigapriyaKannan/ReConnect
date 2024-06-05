@@ -1,4 +1,4 @@
-package com.dal.asdc.reconnect.DTO;
+package com.dal.asdc.reconnect.DTO.LoginDTO;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

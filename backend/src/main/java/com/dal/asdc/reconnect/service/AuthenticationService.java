@@ -1,5 +1,8 @@
 package com.dal.asdc.reconnect.service;
-import com.dal.asdc.reconnect.DTO.*;
+import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
+import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
+import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
+import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,7 @@ import java.util.regex.Pattern;
 
 @Component
 @Service
-public class SignUpService
+public class AuthenticationService
 {
     @Autowired
     UserTypeRepository userTypeRepository;
@@ -60,9 +63,9 @@ public class SignUpService
      * @param signUpFirstPhaseRequest This will Check the initial SignUp request if it valid or not.
      * @return If the all validations pass then it will return true.
      */
-    public SignUpFirstPhaseResponse validateFirstPhase(SignUpFirstPhaseRequest signUpFirstPhaseRequest)
+    public SignUpFirstPhaseBody validateFirstPhase(SignUpFirstPhaseRequest signUpFirstPhaseRequest)
     {
-        SignUpFirstPhaseResponse signUpFirstPhaseResponse = new SignUpFirstPhaseResponse();
+//        SignUpFirstPhaseResponse signUpFirstPhaseResponse = new SignUpFirstPhaseResponse();
 
         SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
 
@@ -86,19 +89,10 @@ public class SignUpService
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
 
-        if(signUpFirstPhaseBody.areAllValuesNull())
-        {
-            signUpFirstPhaseResponse.setStatus(200);
-            signUpFirstPhaseResponse.setMessage("Validation Successful");
-        }else
-        {
-            signUpFirstPhaseResponse.setStatus(404);
-            signUpFirstPhaseResponse.setMessage("Validation Successful");
-        }
 
-        signUpFirstPhaseResponse.setBody(signUpFirstPhaseBody);
+        return signUpFirstPhaseBody;
 
-        return signUpFirstPhaseResponse;
+
     }
 
     /**
@@ -267,6 +261,11 @@ public class SignUpService
     }
 
 
+    /**
+     * Authenticates a user based on the provided login request.
+     * @param input the LoginRequest object containing the user's email and password.
+     * @return an Optional containing the authenticated user if the credentials are valid, or an empty Optional if not.
+     */
     public Optional<Users> authenticate(LoginRequest input)
     {
 

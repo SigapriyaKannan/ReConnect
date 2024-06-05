@@ -1,4 +1,4 @@
-package com.dal.asdc.reconnect.DTO;
+package com.dal.asdc.reconnect.DTO.SignUp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

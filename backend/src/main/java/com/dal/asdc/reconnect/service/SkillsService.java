@@ -11,7 +11,10 @@ public class SkillsService {
     @Autowired
     SkillsRepository skillsRepository;
 
-
+    /**
+     * Retrieves the list of all skills.
+     * @return a SkillsResponseBody object containing the list of all skills.
+     */
     public SkillsResponseBody getSkills() {
 
         SkillsResponseBody responseBody = new SkillsResponseBody();

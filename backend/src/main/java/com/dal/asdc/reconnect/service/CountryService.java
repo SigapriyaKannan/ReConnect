@@ -15,7 +15,10 @@ public class CountryService {
     @Autowired
     CountryRepository countryRepository;
 
-
+    /**
+     * Retrieves the list of all countries.
+     * @return a CountryResponseBody object containing the list of all countries.
+     */
     public CountryResponseBody getCountryList()
     {
         CountryResponseBody countryResponseBody = new CountryResponseBody();
