@@ -1,14 +1,13 @@
-package com.dal.asdc.reconnect.DTO;
-
+package com.dal.asdc.reconnect.DTO.SignUp;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
-
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SignUpResponse
+public class SignUpFirstPhaseBody
 {
+    //
     private Boolean emailIncorrect;
     private Boolean passwordError;
     private Boolean repeatPasswordError;

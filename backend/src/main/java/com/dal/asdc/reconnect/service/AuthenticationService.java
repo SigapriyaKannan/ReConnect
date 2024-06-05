@@ -1,10 +1,13 @@
 package com.dal.asdc.reconnect.service;
-import com.dal.asdc.reconnect.DTO.SignUpRequest;
-import com.dal.asdc.reconnect.DTO.SignUpRequestFinal;
-import com.dal.asdc.reconnect.DTO.SignUpResponse;
+import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
+import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
+import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
+import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -13,7 +16,7 @@ import java.util.regex.Pattern;
 
 @Component
 @Service
-public class SignUpService
+public class AuthenticationService
 {
     @Autowired
     UserTypeRepository userTypeRepository;
@@ -39,6 +42,12 @@ public class SignUpService
     @Autowired
     SkillsRepository skillsRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
 
     private static final String PASSWORD_PATTERN =
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
@@ -51,34 +60,39 @@ public class SignUpService
 
 
     /**
-     * @param signUpRequest This will Check the initial SignUp request if it valid or not.
+     * @param signUpFirstPhaseRequest This will Check the initial SignUp request if it valid or not.
      * @return If the all validations pass then it will return true.
      */
-    public SignUpResponse validateFirstPhase(SignUpRequest signUpRequest)
+    public SignUpFirstPhaseBody validateFirstPhase(SignUpFirstPhaseRequest signUpFirstPhaseRequest)
     {
-        SignUpResponse signUpResponse = new SignUpResponse();
+//        SignUpFirstPhaseResponse signUpFirstPhaseResponse = new SignUpFirstPhaseResponse();
 
-        if(!checkIfUserAlreadyPresent(signUpRequest.getUserEmail()))
+        SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
+
+        if(!checkIfUserAlreadyPresent(signUpFirstPhaseRequest.getUserEmail()))
         {
-            signUpResponse.setEmailAlreadyPresent(true);
+            signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
 
-        if(!validatePassword(signUpRequest.getPassword()))
+        if(!validatePassword(signUpFirstPhaseRequest.getPassword()))
         {
-            signUpResponse.setPasswordError(true);
+            signUpFirstPhaseBody.setPasswordError(true);
         }
 
-        if(!matchPasswordWithConfirmPassword(signUpRequest.getPassword(), signUpRequest.getReenteredPassword()))
+        if(!matchPasswordWithConfirmPassword(signUpFirstPhaseRequest.getPassword(), signUpFirstPhaseRequest.getReenteredPassword()))
         {
-            signUpResponse.setRepeatPasswordError(true);
+            signUpFirstPhaseBody.setRepeatPasswordError(true);
         }
 
-        if(!validateEmail(signUpRequest.getUserEmail()))
+        if(!validateEmail(signUpFirstPhaseRequest.getUserEmail()))
         {
-            signUpResponse.setEmailAlreadyPresent(true);
+            signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
 
-        return signUpResponse;
+
+        return signUpFirstPhaseBody;
+
+
     }
 
     /**
@@ -94,7 +108,7 @@ public class SignUpService
      */
     private boolean checkIfUserAlreadyPresent(String email)
     {
-        Optional<Users> user= usersRepository.findByUserEmail(email);
+        Optional<Users> user= Optional.ofNullable(usersRepository.findByUserEmail(email));
         return user.isEmpty();
     }
 
@@ -120,13 +134,13 @@ public class SignUpService
     /**
      * This method will add the user,user's details and skill details in the database.
      */
-    public Boolean AddNewUser(SignUpRequestFinal signUpRequestFinal)
+    public Boolean AddNewUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
-        if(validateSecondPhase(signUpRequestFinal))
+        if(validateSecondPhase(signUpSecondPhaseRequest))
         {
             try
             {
-                if(!addUser(signUpRequestFinal) || !addDetails(signUpRequestFinal) || !addSkills(signUpRequestFinal))
+                if(!addUser(signUpSecondPhaseRequest) || !addDetails(signUpSecondPhaseRequest) || !addSkills(signUpSecondPhaseRequest))
                 {
                     return false;
                 }
@@ -143,22 +157,22 @@ public class SignUpService
     /**
      * This method is used to verify the correctness of the second phase signup response
      */
-    private boolean validateSecondPhase(SignUpRequestFinal signUpRequestFinal)
+    private boolean validateSecondPhase(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
-        Optional<UserType> userType = userTypeRepository.findById(signUpRequestFinal.getUserType());
+        Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
-        Optional<Company> comapany = companyRepository.findById(signUpRequestFinal.getCompany());
+        Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
 
-        Optional<City> city = cityRepository.findById(signUpRequestFinal.getCity());
+        Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
 
-        Optional<Country> country = countryRepository.findById(signUpRequestFinal.getCountry());
+        Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
         if (userType.isEmpty() || comapany.isEmpty() || city.isEmpty() || country.isEmpty())
         {
             return false;
         }
 
-        for(Integer skillId : signUpRequestFinal.getSkill())
+        for(Integer skillId : signUpSecondPhaseRequest.getSkill())
         {
             Optional<Skills> skills = skillsRepository.findById(skillId);
             if(skills.isEmpty())
@@ -172,14 +186,14 @@ public class SignUpService
     /**
      * This method will add the skills into the database. (UserSkills Table)
      */
-    private boolean addSkills(SignUpRequestFinal signUpRequestFinal)
+    private boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
-        Optional<Users> users = usersRepository.findByUserEmail(signUpRequestFinal.getUserEmail());
+        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(signUpSecondPhaseRequest.getUserEmail()));
         if(users.isEmpty())
         {
             return false;
         }
-        for(Integer skillId : signUpRequestFinal.getSkill())
+        for(Integer skillId : signUpSecondPhaseRequest.getSkill())
         {
             Optional<Skills> skills = skillsRepository.findById(skillId);
             if(skills.isEmpty())
@@ -197,13 +211,13 @@ public class SignUpService
     /**
      * This method will add user's details into database. (UserDetails Table)
      */
-    private boolean addDetails(SignUpRequestFinal signUpRequestFinal)
+    private boolean addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
 
-        Optional<Users> users = usersRepository.findByUserEmail(signUpRequestFinal.getUserEmail());
-        Optional<Company> comapany = companyRepository.findById(signUpRequestFinal.getCompany());
-        Optional<City> city = cityRepository.findById(signUpRequestFinal.getCity());
-        Optional<Country> country = countryRepository.findById(signUpRequestFinal.getCountry());
+        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(signUpSecondPhaseRequest.getUserEmail()));
+        Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
+        Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
+        Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
         if (users.isEmpty() || comapany.isEmpty() || city.isEmpty() || country.isEmpty())
         {
@@ -211,12 +225,12 @@ public class SignUpService
         }
 
         UserDetails userDetails = new UserDetails();
-        userDetails.setUserName(signUpRequestFinal.getUserEmail());
+        userDetails.setUserName(signUpSecondPhaseRequest.getUserEmail());
         userDetails.setUsers(users.get());
         userDetails.setCompany(comapany.get());
-        userDetails.setExperience(signUpRequestFinal.getExperience());
-        userDetails.setResume(signUpRequestFinal.getResume());
-        userDetails.setProfilePicture(signUpRequestFinal.getProfile());
+        userDetails.setExperience(signUpSecondPhaseRequest.getExperience());
+        userDetails.setResume(signUpSecondPhaseRequest.getResume());
+        userDetails.setProfilePicture(signUpSecondPhaseRequest.getProfile());
         userDetails.setCity(city.get());
         userDetails.setCountry(country.get());
         userDetailsRepository.save(userDetails);
@@ -228,9 +242,9 @@ public class SignUpService
     /**
      * This method will add the data into user table.
      */
-    private boolean addUser(SignUpRequestFinal signUpRequestFinal)
+    private boolean addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
-        Optional<UserType> userType = userTypeRepository.findById(signUpRequestFinal.getUserType());
+        Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
         if (userType.isEmpty())
         {
@@ -238,11 +252,34 @@ public class SignUpService
         }
 
         Users user = new Users();
-        user.setUserEmail(signUpRequestFinal.getUserEmail());
-        user.setPassword(signUpRequestFinal.getPassword());
+        user.setUserEmail(signUpSecondPhaseRequest.getUserEmail());
+        user.setPassword(passwordEncoder.encode(signUpSecondPhaseRequest.getPassword()));
         user.setUserType(userType.get());
         usersRepository.save(user);
 
         return true;
+    }
+
+
+    /**
+     * Authenticates a user based on the provided login request.
+     * @param input the LoginRequest object containing the user's email and password.
+     * @return an Optional containing the authenticated user if the credentials are valid, or an empty Optional if not.
+     */
+    public Optional<Users> authenticate(LoginRequest input)
+    {
+
+        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(input.getUserEmail()));
+
+        if(users.isEmpty())
+        {
+            return Optional.empty();
+        }
+
+        if(passwordEncoder.matches(input.getPassword(), users.get().getPassword()))
+        {
+            return users;
+        }
+        return Optional.empty();
     }
 }
