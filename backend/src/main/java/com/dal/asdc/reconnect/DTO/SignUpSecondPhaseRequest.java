@@ -1,14 +1,13 @@
 package com.dal.asdc.reconnect.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SignUpRequestFinal
+public class SignUpSecondPhaseRequest
 {
     private int userType;
     private String userEmail;
