@@ -59,6 +59,8 @@ push:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     DOCKER_HOST: tcp://docker:2375
+  before_script:
+    - cd ./backend
   script:
     - docker info
     - docker build -t $APP_NAME:$CI_COMMIT_REF_NAME .
