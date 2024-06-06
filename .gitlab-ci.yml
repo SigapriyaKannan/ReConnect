@@ -48,12 +48,13 @@ test:
 # push stage
 push:
   stage: push
-  image: docker:20.10.7
+  image: docker:latest
   services:
-    - docker:20.10.7-dind
+    - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   script:
     - docker info
     - docker build -t $APP_NAME:$CI_COMMIT_REF_NAME .
