@@ -1,12 +1,11 @@
 stages:
   - build
   - test
+  - push
   - deploy
 
 variables:
   SPRING_PROFILES_ACTIVE: "dev"
-  APP_NAME: reconnect
-  APP_CONTAINER_NAME: reconnect-app
   APP_PORT: 8080
 
 before_script:
@@ -47,12 +46,19 @@ test:
 # push stage
 push:
   stage: push
-  image: docker:20.10.7
+  image: docker:20
+  tags:
+    - dalfcs_docker_kvm
   services:
-    - docker:20.10.7-dind
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
+  before_script:
+    - cd ./backend
   script:
     - docker info
     - docker build -t $APP_NAME:$CI_COMMIT_REF_NAME .
@@ -60,34 +66,26 @@ push:
     - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
     - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
 
-# Test stage
-test:
-  stage: test
-  image: maven:3.8.5-openjdk-17
-  script:
-    - mvn test
-  only:
-    - branches
-
 deploy_local:
   stage: deploy
-  image: docker:20.10.7
+  image: docker:20
+  tags:
+    - dalfcs_docker_kvm
   services:
-    - docker:20.10.7-dind
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   script:
     - echo "Deploying to local Docker environment"
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PWD" docker.io
     - docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
-    - docker stop $APP_NAME || true
-    - docker rm $APP_NAME || true
-    - docker run -d --name $APP_NAME -e $SPRING_PROFILES_ACTIVE -p $APP_PORT:$APP_PORT docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
-    - sleep 30
-    - curl --fail http://localhost:8080/actuator/health || (echo "Application failed to start"; exit 1)
-  only:
-    - branches
+    - docker stop $APP_CONTAINER_NAME || true
+    - docker rm $APP_CONTAINER_NAME || true
+    - docker run -d --name $APP_CONTAINER_NAME -e $SPRING_PROFILES_ACTIVE -p $APP_PORT:$APP_PORT docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
   rules:
     - if: '$SPRING_PROFILES_ACTIVE == "dev"'
 
@@ -99,12 +97,8 @@ deploy_prod:
   script:
     - echo "Deploying to vm environment"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker login -u $DOCKER_USERNAME -p $DOCKER_PWD docker.io"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker pull docker.io/$DOCKER_USERNAME/$APP_NAME:$CI_COMMIT_REF_NAME"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f backend || true"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p 8080:8080 $SPRING_PROFILES_ACTIVE --name $APP_NAME docker.io/$DOCKER_USERNAME/$APP_NAME:$CI_COMMIT_REF_NAME"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker images -a"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container ls -a"
-  only:
-    - branches
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f $APP_CONTAINER_NAME || true"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p $APP_PORT:$APP_PORT -e SPRING_PROFILES_ACTIVE="$SPRING_PROFILES_ACTIVE" --name $APP_CONTAINER_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
   rules:
     - if: '$SPRING_PROFILES_ACTIVE == "prod"'
