@@ -99,7 +99,7 @@ deploy_prod:
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker login -u $DOCKER_USERNAME -p $DOCKER_PWD docker.io"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f $APP_CONTAINER_NAME || true"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p $APP_PORT:$APP_PORT $SPRING_PROFILES_ACTIVE --name $APP_CONTAINER_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p $APP_PORT:$APP_PORT --build-arg SPRING_PROFILES_ACTIVE="$SPRING_PROFILES_ACTIVE" --name $APP_CONTAINER_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker images -a"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container ls -a"
   rules:
