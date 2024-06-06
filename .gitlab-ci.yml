@@ -20,7 +20,7 @@ build_frontend:
     - cd ./frontend/Re-Connect
     - npm install
   script:
-    - ng build --output-path '../../backend/src/main/resources/public/' --extract-licenses=false --verbose=true
+    - npm run build
 
 build_backend:
   stage: build_backend
