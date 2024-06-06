@@ -65,7 +65,6 @@ public class AuthenticationService
      */
     public SignUpFirstPhaseBody validateFirstPhase(SignUpFirstPhaseRequest signUpFirstPhaseRequest)
     {
-//        SignUpFirstPhaseResponse signUpFirstPhaseResponse = new SignUpFirstPhaseResponse();
 
         SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
 
@@ -88,7 +87,6 @@ public class AuthenticationService
         {
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
-
 
         return signUpFirstPhaseBody;
 
