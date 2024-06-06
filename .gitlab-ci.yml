@@ -1,5 +1,6 @@
 stages:
-  - build
+  - build_frontend
+  - build_backend
   - test
   - push
   - deploy
@@ -12,22 +13,22 @@ before_script:
   - echo "SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE"
 
 # Build stage
-# build_frontend:
-#   stage: build
-#   image: "node:20"
-#   before_script:
-#     - cd ./frontend/Re-Connect
-#     - npm install
-#   script:
-#     - npm run build
+build_frontend:
+  stage: build_frontend
+  image: "node:20"
+  before_script:
+    - cd ./frontend/Re-Connect
+    - npm install
+  script:
+    - ng build --output-path '../../backend/src/main/resources/public/' --extract-licenses=false --verbose=true
 
 build_backend:
-  stage: build
+  stage: build_backend
   image: maven:3.8.5-openjdk-17
   before_script:
     - cd ./backend
   script:
-    - mvn clean install -DskipTests=true
+    - mvn clean package -DskipTests=true
   artifacts:
     paths:
       - ./backend/target/reconnect-0.0.1-SNAPSHOT.jar
