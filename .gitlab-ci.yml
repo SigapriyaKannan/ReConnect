@@ -1,10 +1,12 @@
 stages:
   - build
   - test
+  - push
   - deploy
 
 variables:
   SPRING_PROFILES_ACTIVE: "dev"
+  APP_PORT: 8080
 
 before_script:
   - echo "SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE"
@@ -41,13 +43,64 @@ test:
   only:
     - branches
 
-# Deploy stage
-deploy:
-  stage: deploy
-  image: eclipse-temurin:17-jre
+# push stage
+push:
+  stage: push
+  image: docker:20
+  tags:
+    - dalfcs_docker_kvm
+  services:
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
   before_script:
     - cd ./backend
   script:
-    - java -jar ./target/reconnect-0.0.1-SNAPSHOT.jar --spring.profiles.active=$SPRING_PROFILES_ACTIVE
-  only:
-    - dev
+    - docker info
+    - docker build -t $APP_NAME:$CI_COMMIT_REF_NAME .
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PWD" docker.io
+    - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
+    - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
+
+deploy_local:
+  stage: deploy
+  image: docker:20
+  tags:
+    - dalfcs_docker_kvm
+  services:
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - echo "Deploying to local Docker environment"
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PWD" docker.io
+    - docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
+    - docker stop $APP_CONTAINER_NAME || true
+    - docker rm $APP_CONTAINER_NAME || true
+    - docker run -d --name $APP_CONTAINER_NAME -e $SPRING_PROFILES_ACTIVE -p $APP_PORT:$APP_PORT docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
+  rules:
+    - if: '$SPRING_PROFILES_ACTIVE == "dev"'
+
+deploy_prod:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk update && apk add openssh-client sshpass
+  script:
+    - echo "Deploying to vm environment"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker login -u $DOCKER_USERNAME -p $DOCKER_PWD docker.io"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f $APP_CONTAINER_NAME || true"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p $APP_PORT:$APP_PORT -e SPRING_PROFILES_ACTIVE="$SPRING_PROFILES_ACTIVE" --name $APP_CONTAINER_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker images -a"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container ls -a"
+  rules:
+    - if: '$SPRING_PROFILES_ACTIVE == "prod"'
