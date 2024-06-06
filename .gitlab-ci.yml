@@ -83,8 +83,8 @@ deploy_local:
     - echo "Deploying to local Docker environment"
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PWD" docker.io
     - docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
-    - docker stop $APP_NAME || true
-    - docker rm $APP_NAME || true
+    - docker stop $APP_CONTAINER_NAME || true
+    - docker rm $APP_CONTAINER_NAME || true
     - docker run -d --name $APP_CONTAINER_NAME -e $SPRING_PROFILES_ACTIVE -p $APP_PORT:$APP_PORT docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
   rules:
     - if: '$SPRING_PROFILES_ACTIVE == "dev"'
@@ -97,9 +97,9 @@ deploy_prod:
   script:
     - echo "Deploying to vm environment"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker login -u $DOCKER_USERNAME -p $DOCKER_PWD docker.io"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker pull docker.io/$DOCKER_USERNAME/$APP_NAME:$CI_COMMIT_REF_NAME"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f backend || true"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p 8080:8080 $SPRING_PROFILES_ACTIVE --name $APP_NAME docker.io/$DOCKER_USERNAME/$APP_NAME:$CI_COMMIT_REF_NAME"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f $APP_CONTAINER_NAME || true"
+    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p $APP_PORT:$APP_PORT $SPRING_PROFILES_ACTIVE --name $APP_CONTAINER_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker images -a"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container ls -a"
   rules:
