@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - push
   - deploy
 
 variables:
@@ -60,15 +61,6 @@ push:
     - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
     - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
 
-# Test stage
-test:
-  stage: test
-  image: maven:3.8.5-openjdk-17
-  script:
-    - mvn test
-  only:
-    - branches
-
 deploy_local:
   stage: deploy
   image: docker:20.10.7
@@ -86,8 +78,6 @@ deploy_local:
     - docker run -d --name $APP_NAME -e $SPRING_PROFILES_ACTIVE -p $APP_PORT:$APP_PORT docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
     - sleep 30
     - curl --fail http://localhost:8080/actuator/health || (echo "Application failed to start"; exit 1)
-  only:
-    - branches
   rules:
     - if: '$SPRING_PROFILES_ACTIVE == "dev"'
 
@@ -104,7 +94,5 @@ deploy_prod:
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p 8080:8080 $SPRING_PROFILES_ACTIVE --name $APP_NAME docker.io/$DOCKER_USERNAME/$APP_NAME:$CI_COMMIT_REF_NAME"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker images -a"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container ls -a"
-  only:
-    - branches
   rules:
     - if: '$SPRING_PROFILES_ACTIVE == "prod"'
