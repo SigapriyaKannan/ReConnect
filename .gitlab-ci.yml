@@ -6,8 +6,6 @@ stages:
 
 variables:
   SPRING_PROFILES_ACTIVE: "dev"
-  APP_NAME: reconnect
-  APP_CONTAINER_NAME: reconnect-app
   APP_PORT: 8080
 
 before_script:
