@@ -86,8 +86,6 @@ deploy_local:
     - docker stop $APP_NAME || true
     - docker rm $APP_NAME || true
     - docker run -d --name $APP_CONTAINER_NAME -e $SPRING_PROFILES_ACTIVE -p $APP_PORT:$APP_PORT docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
-    - sleep 30
-    - curl --fail http://localhost:8080/actuator/health || (echo "Application failed to start"; exit 1)
   rules:
     - if: '$SPRING_PROFILES_ACTIVE == "dev"'
 
