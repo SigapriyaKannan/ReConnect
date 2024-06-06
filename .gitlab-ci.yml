@@ -25,6 +25,7 @@ build_frontend:
 
 build_backend:
   stage: build
+  image: maven:3.8.5-openjdk-17
   before_script:
     - cd ./backend
   script:
@@ -36,6 +37,7 @@ build_backend:
 # Test stage
 test:
   stage: test
+  image: maven:3.8.5-openjdk-17
   before_script:
     - cd ./backend
   script:
