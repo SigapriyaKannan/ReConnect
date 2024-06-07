@@ -1,5 +1,6 @@
 stages:
-  - build
+  - build_frontend
+  - build_backend
   - test
   - push
   - deploy
@@ -13,7 +14,7 @@ before_script:
 
 # Build stage
 build_frontend:
-  stage: build
+  stage: build_frontend
   image: "node:20"
   before_script:
     - cd ./frontend/Re-Connect
@@ -22,7 +23,7 @@ build_frontend:
     - npm run build
 
 build_backend:
-  stage: build
+  stage: build_backend
   image: maven:3.8.5-openjdk-17
   before_script:
     - cd ./backend
@@ -100,7 +101,5 @@ deploy_prod:
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker pull docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f $APP_CONTAINER_NAME || true"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p $APP_PORT:$APP_PORT -e SPRING_PROFILES_ACTIVE="$SPRING_PROFILES_ACTIVE" --name $APP_CONTAINER_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker images -a"
-    - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container ls -a"
   rules:
     - if: '$SPRING_PROFILES_ACTIVE == "prod"'

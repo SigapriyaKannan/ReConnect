@@ -1,6 +1,13 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './shared/components/login/login.component';
 import { SignupComponent } from './shared/components/signup/signup.component';
+import { AdminLayoutComponent } from './cms/components/admin-layout/admin-layout.component';
+import { AdminDashboardComponent } from './cms/components/admin-dashboard/admin-dashboard.component';
+import { AdminUsersComponent } from './cms/components/admin-users/admin-users.component';
+import { AdminCountriesComponent } from './cms/components/admin-countries/admin-countries.component';
+import { AdminCitiesComponent } from './cms/components/admin-cities/admin-cities.component';
+import { AdminSkillsComponent } from './cms/components/admin-skills/admin-skills.component';
+import { AdminCompaniesComponent } from './cms/components/admin-companies/admin-companies.component';
 
 export const routes: Routes = [
     {
@@ -10,6 +17,41 @@ export const routes: Routes = [
     {
         path: "sign-up",
         component: SignupComponent
+    },
+    {
+        path: "admin",
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: "dashboard",
+                component: AdminDashboardComponent
+            },
+            {
+                path: "users",
+                component: AdminUsersComponent
+            },
+            {
+                path: "countries",
+                component: AdminCountriesComponent
+            },
+            {
+                path: "cities",
+                component: AdminCitiesComponent
+            },
+            {
+                path: "skills",
+                component: AdminSkillsComponent
+            },
+            {
+                path: "companies",
+                component: AdminCompaniesComponent
+            },
+            {
+                path: "",
+                redirectTo: "dashboard",
+                pathMatch: "full"
+            }
+        ]
     },
     {
         path: "",
