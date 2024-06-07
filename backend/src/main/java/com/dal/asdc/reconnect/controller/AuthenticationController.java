@@ -59,7 +59,7 @@ public class AuthenticationController
      * @param signUpFirstPhaseRequest The SignUpFirstPhaseRequest object containing signup details.
      * @return Response object containing the validation results along with status and message.
      */
-    @PostMapping("/signup")
+    @PostMapping("/verify-email")
     public ResponseEntity<?> signUp(@RequestBody SignUpFirstPhaseRequest signUpFirstPhaseRequest)
     {
         SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
@@ -85,7 +85,7 @@ public class AuthenticationController
      * @param signUpSecondPhaseRequest The SignUpSecondPhaseRequest object containing signup details.
      * @return Response object indicating success or failure of signup process along with validation results.
      */
-    @PostMapping("/signup-final")
+    @PostMapping("/signup")
     @Transactional
     public ResponseEntity<?> signUpFinal(@RequestBody SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {

@@ -32,6 +32,7 @@ public class CityService {
                 .map(city -> new CityDTO(city.getCityId(), city.getCityName()))
                 .toList();
 
+
         cityResponseBody.setCities(cityDTOs);
 
         return cityResponseBody;

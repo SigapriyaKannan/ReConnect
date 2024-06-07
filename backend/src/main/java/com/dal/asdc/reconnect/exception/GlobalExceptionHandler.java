@@ -36,9 +36,9 @@ public class GlobalExceptionHandler
         } else if (exception instanceof ExpiredJwtException) {
             response = new Response<>(403, "The JWT token has expired", null);
             status = HttpStatus.FORBIDDEN;
-        } else if (exception instanceof RuntimeException) {
-            response = new Response<>(403, "A runtime exception occurred", null);
-            status = HttpStatus.FORBIDDEN;
+        }
+        else{
+            response = new Response<>(500, "Internal server error", null);
         }
 
         return new ResponseEntity<>(response, status);
