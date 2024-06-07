@@ -2,8 +2,10 @@ package com.dal.asdc.reconnect.controller;
 
 
 import com.dal.asdc.reconnect.DTO.*;
+import com.dal.asdc.reconnect.DTO.Helper.CityResponseBody;
+import com.dal.asdc.reconnect.DTO.Helper.CountryResponseBody;
+import com.dal.asdc.reconnect.DTO.Helper.SkillsResponseBody;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
-import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponse;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponseBody;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenRequest;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenResponse;
@@ -16,8 +18,6 @@ import com.dal.asdc.reconnect.service.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationController
+{
 
     @Autowired
     AuthenticationService authenticationService;
@@ -59,17 +60,20 @@ public class AuthenticationController {
      * @return Response object containing the validation results along with status and message.
      */
     @PostMapping("/signup")
-    public Response<SignUpFirstPhaseBody> signUp(@RequestBody SignUpFirstPhaseRequest signUpFirstPhaseRequest)
+    public ResponseEntity<?> signUp(@RequestBody SignUpFirstPhaseRequest signUpFirstPhaseRequest)
     {
         SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
 
         signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
 
-        String message = (signUpFirstPhaseBody.areAllValuesNull()) ? "Success" : "Unsuccessful";
+        if(signUpFirstPhaseBody.areAllValuesNull())
+        {
 
-        int status = (signUpFirstPhaseBody.areAllValuesNull()) ? 200 : 400;
-
-        return new Response<>(status, message, signUpFirstPhaseBody);
+            Response<SignUpFirstPhaseBody>  response = new Response<>(200, "Success", signUpFirstPhaseBody);
+            return ResponseEntity.ok(response);
+        }
+        Response<Void>  response = new Response<>(403, "UnSuccessful", null);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
     }
 
@@ -83,26 +87,23 @@ public class AuthenticationController {
      */
     @PostMapping("/signup-final")
     @Transactional
-    public Response<SignUpFirstPhaseBody> signUpFinal(@RequestBody SignUpSecondPhaseRequest signUpSecondPhaseRequest)
+    public ResponseEntity<?> signUpFinal(@RequestBody SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
         SignUpFirstPhaseRequest signUpFirstPhaseRequest = convertIntoFirstPhase(signUpSecondPhaseRequest);
 
         SignUpFirstPhaseBody signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
 
-        String message = "Unsuccessful";
-        int status = 400;
-
         if(signUpFirstPhaseBody.areAllValuesNull())
         {
             if(authenticationService.AddNewUser(signUpSecondPhaseRequest))
             {
-                message = "Success";
-
-                status = 200;
-
+                Response<SignUpFirstPhaseBody>  response = new Response<>(200, "Success", signUpFirstPhaseBody);
+                return ResponseEntity.ok(response);
             }
         }
-        return new Response<>(status, message, signUpFirstPhaseBody);
+
+        Response<Void>  response = new Response<>(403, "UnSuccessful", null);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
 
@@ -135,19 +136,16 @@ public class AuthenticationController {
 
         if (authenticatedUser == null || authenticatedUser.isEmpty())
         {
-            ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), "Bad credentials");
-            errorDetail.setProperty("description", "The username or password is incorrect");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDetail);
+            Response<Void>  response = new Response<>(401, "UnSuccessful", null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUserEmail());
-
         String jwtToken = jwtService.generateToken(authenticatedUser.get());
-        LoginResponse loginResponse = getLoginResponse(loginRequest, jwtToken, refreshToken);
 
+        Response<LoginResponseBody> response = getLoginResponse(loginRequest, jwtToken, refreshToken);
 
-        return ResponseEntity.ok(loginResponse);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -158,19 +156,15 @@ public class AuthenticationController {
      * @param refreshToken The refresh token generated for the authenticated user.
      * @return LoginResponse object containing the login details.
      */
-    private LoginResponse getLoginResponse(LoginRequest loginRequest, String jwtToken, RefreshToken refreshToken) {
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setStatus(200);
-        loginResponse.setDetail("Login Successful");
-
+    private Response<LoginResponseBody> getLoginResponse(LoginRequest loginRequest, String jwtToken, RefreshToken refreshToken)
+    {
         LoginResponseBody loginResponseBody = new LoginResponseBody();
         loginResponseBody.setToken(jwtToken);
         loginResponseBody.setExpiresIn(jwtService.getExpirationTime());
         loginResponseBody.setRefreshToken(refreshToken.getToken());
         loginResponseBody.setUserEmail(loginRequest.getUserEmail());
-
-        loginResponse.setBody(loginResponseBody);
-        return loginResponse;
+        Response<LoginResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
+        return response;
     }
 
 
@@ -200,20 +194,13 @@ public class AuthenticationController {
      * Returns a response containing the list of countries along with status and message.
      * @return Response object containing the list of countries.
      */
-    @GetMapping("/GetCountry")
-    public Response<CountryResponseBody> getCountry()
-    {
+    @GetMapping("/getCountries")
+    public ResponseEntity<?> getCountries() {
+        CountryResponseBody countryResponseBody = countryService.getCountryList();
 
-        CountryResponseBody countryResponseBody = new CountryResponseBody();
+        Response<CountryResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", countryResponseBody);
 
-        countryResponseBody = countryService.getCountryList();
-
-        String message = (countryResponseBody != null) ? "Success" : "Unsuccessful";
-
-        int status = (countryResponseBody != null) ? 200 : 400;
-
-        return new Response<>(status, message, countryResponseBody);
-
+        return ResponseEntity.ok(response);
     }
 
 
@@ -223,20 +210,13 @@ public class AuthenticationController {
      * @param countryID The ID of the country for which cities are to be retrieved.
      * @return Response object containing the list of cities.
      */
-    @GetMapping("/GetCities")
-    public Response<CityResponseBody> getCities(@RequestParam int countryID)
-    {
+    @GetMapping("/getCities")
+    public ResponseEntity<?> getCities(@RequestParam int countryID) {
+        CityResponseBody cityResponseBody = cityService.getCitiesByCountryId(countryID);
 
-        CityResponseBody cityResponseBody = new CityResponseBody();
+        Response<CityResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", cityResponseBody);
 
-        cityResponseBody =  cityService.getCitiesByCountryId(countryID);
-
-        String message = (cityResponseBody != null) ? "Success" : "Unsuccessful";
-
-        int status = (cityResponseBody != null) ? 200 : 400;
-
-        return new Response<>(status, message, cityResponseBody);
-
+        return ResponseEntity.ok(response);
     }
 
 
@@ -245,19 +225,12 @@ public class AuthenticationController {
      * Returns a response containing the list of skills along with status and message.
      * @return Response object containing the list of skills.
      */
-    @GetMapping("/GetSkills")
-    public Response<SkillsResponseBody> getSkills()
-    {
-        SkillsResponseBody skillsResponseBody = new SkillsResponseBody();
+    @GetMapping("/getSkills")
+    public ResponseEntity<?> getSkills() {
+        SkillsResponseBody skillsResponseBody = skillsService.getSkills();
 
-        skillsResponseBody = skillsService.getSkills();
+        Response<SkillsResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", skillsResponseBody);
 
-        String message = (skillsResponseBody != null) ? "Success" : "Unsuccessful";
-
-        int status = (skillsResponseBody != null) ? 200 : 400;
-
-        return new Response<>(status, message, skillsResponseBody);
-
-
+        return ResponseEntity.ok(response);
     }
 }
