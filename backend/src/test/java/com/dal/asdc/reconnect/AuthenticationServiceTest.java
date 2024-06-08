@@ -66,7 +66,8 @@ public class AuthenticationServiceTest
 
 
     @Test
-    void testValidateFirstPhase_UserAlreadyPresent() {
+    void testValidateFirstPhase_UserAlreadyPresent()
+    {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
         request.setUserEmail("test@example.com");
         request.setPassword("Password1!");
@@ -80,7 +81,8 @@ public class AuthenticationServiceTest
     }
 
     @Test
-    void testValidateFirstPhase_UserNotPresent() {
+    void testValidateFirstPhase_UserNotPresent()
+    {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
         request.setUserEmail("test@example.com");
         request.setPassword("Password1!");
@@ -95,7 +97,8 @@ public class AuthenticationServiceTest
 
 
     @Test
-    void testValidateFirstPhase_ReenterPasswordError() {
+    void testValidateFirstPhase_ReenterPasswordError()
+    {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
         request.setUserEmail("test@example.com");
         request.setPassword("Password1!");
@@ -110,7 +113,8 @@ public class AuthenticationServiceTest
 
 
     @Test
-    void testValidateFirstPhase_InvalidEmail() {
+    void testValidateFirstPhase_InvalidEmail()
+    {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
         request.setUserEmail("invalid-email");
         request.setPassword("Password1!");
@@ -125,7 +129,8 @@ public class AuthenticationServiceTest
 
 
     @Test
-    void testAddNewUser_Success() {
+    void testAddNewUser_Success()
+    {
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
         request.setUserEmail("test@example.com");
         request.setPassword("Password1!");
@@ -149,7 +154,8 @@ public class AuthenticationServiceTest
 
 
     @Test
-    void testAddNewUser_NotSuccess() {
+    void testAddNewUser_NotSuccess()
+    {
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
         request.setUserEmail("test@example.com");
         request.setPassword("Password1!");
@@ -172,7 +178,8 @@ public class AuthenticationServiceTest
 
 
     @Test
-    void testAuthenticate_Failure() {
+    void testAuthenticate_Failure()
+    {
         LoginRequest request = new LoginRequest();
         request.setUserEmail("test@example.com");
         request.setPassword("WrongPassword1!");
