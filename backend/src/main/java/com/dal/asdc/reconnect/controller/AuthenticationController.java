@@ -7,6 +7,7 @@ import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponse;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponseBody;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenRequest;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenResponse;
+import com.dal.asdc.reconnect.DTO.ResetPassword.ResetPasswordRequest;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
@@ -48,6 +49,9 @@ public class AuthenticationController {
 
     @Autowired
     private SkillsService  skillsService;
+
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
 
 
 
@@ -259,5 +263,21 @@ public class AuthenticationController {
         return new Response<>(status, message, skillsResponseBody);
 
 
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+        forgotPasswordService.sendResetEmail(email);
+        return ResponseEntity.ok("Password reset email sent.");
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        boolean result = forgotPasswordService.resetPassword(request.getToken(), request.getNewPassword());
+        if (result) {
+            return ResponseEntity.ok("Password reset successful.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid token.");
+        }
     }
 }

@@ -1,0 +1,9 @@
+package com.dal.asdc.reconnect.DTO.ResetPassword;
+
+import lombok.Data;
+
+@Data
+public class ResetPasswordRequest {
+    private String token;
+    private String newPassword;
+}
