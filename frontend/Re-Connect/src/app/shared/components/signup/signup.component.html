@@ -1,8 +1,11 @@
 <div class="container h-100">
 	<div class="row h-100 d-flex align-items-center">
 		<div class="col-6 col-offset-3">
-			<p-card header="Sign Up" subheader="Create an account here">
-				<div class="row">
+			<p-card styleClass="position-relative shadow">
+				<ng-template pTemplate="title"><h1 class="fw-bold">Sign Up</h1></ng-template>
+				<ng-template pTemplate="subtitle"><h5>Create an account here</h5></ng-template>
+				<img src="/assets/images/logo.png" alt="Logo" class="logo" />
+				<div class="row mb-2">
 					<div class="col pl-4">
 						@for(role of roles; track role.roleId) {
 						<p-radioButton name="role" [id]="role.role" [value]="role.roleId" [(ngModel)]="selectedRole"></p-radioButton>
@@ -10,7 +13,7 @@
 						}
 					</div>
 				</div>
-				<p-stepper [linear]="true" [activeStep]="activeStep">
+				<p-stepper [linear]="true" [activeStep]="activeStep" styleClass="mb-0">
 					<p-stepperPanel>
 						<ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
 							<form [formGroup]="userCredentialsForm">
@@ -18,20 +21,20 @@
 									<div class="col-12">
 										<label for="email" class="required">Email</label>
 										<input id="email" formControlName="email" type="email" pInputText [required]="true" class="w-100" />
-										@if(userCredentialsForm.controls['email'].touched && userCredentialsForm.controls['email'].hasError('required')) {
+										@if(userCredentialsForm.controls['email'].dirty && userCredentialsForm.controls['email'].hasError('required')) {
 										<small class="invalid-form-control">Email is required</small>
-										} @if(userCredentialsForm.controls['email'].touched && userCredentialsForm.controls['email'].hasError('maxlength')) {
+										} @if(userCredentialsForm.controls['email'].dirty && userCredentialsForm.controls['email'].hasError('maxlength')) {
 										<small class="invalid-form-control">Email cannot be more than 50 characters</small>
-										} @if(userCredentialsForm.controls['email'].touched && userCredentialsForm.controls['email'].hasError('email')) {
+										} @if(userCredentialsForm.controls['email'].dirty && userCredentialsForm.controls['email'].hasError('email')) {
 										<small class="invalid-form-control">Enter a valid email</small>
 										}
 									</div>
 									<div class="col-12">
 										<label for="password" class="required">Password</label>
 										<p-password id="password" [toggleMask]="true" styleClass="w-100" inputStyleClass="w-100" formControlName="password"></p-password>
-										@if(userCredentialsForm.controls['password'].touched && userCredentialsForm.controls['password'].hasError('required')) {
+										@if(userCredentialsForm.controls['password'].dirty && userCredentialsForm.controls['password'].hasError('required')) {
 										<small class="invalid-form-control">Password is required</small>
-										} @if(userCredentialsForm.controls['password'].touched && userCredentialsForm.controls['password'].hasError('minlength')) {
+										} @if(userCredentialsForm.controls['password'].dirty && userCredentialsForm.controls['password'].hasError('minlength')) {
 										<small class="invalid-form-control">Password cannot be less than 5 characters</small>
 										}
 									</div>
@@ -44,11 +47,11 @@
 											inputStyleClass="w-100"
 											formControlName="confirmPassword"
 										></p-password>
-										@if(userCredentialsForm.controls['confirmPassword'].touched && userCredentialsForm.controls['confirmPassword'].hasError('required')) {
+										@if(userCredentialsForm.controls['confirmPassword'].dirty && userCredentialsForm.controls['confirmPassword'].hasError('required')) {
 										<small class="invalid-form-control">Confirm Password is required</small>
-										} @if(userCredentialsForm.controls['confirmPassword'].touched && userCredentialsForm.controls['confirmPassword'].hasError('minlength')) {
+										} @if(userCredentialsForm.controls['confirmPassword'].dirty && userCredentialsForm.controls['confirmPassword'].hasError('minlength')) {
 										<small class="invalid-form-control">Confirm Password cannot be less than 5 characters</small>
-										} @if(userCredentialsForm.controls['confirmPassword'].touched && userCredentialsForm.controls['password'].value !==
+										} @if(userCredentialsForm.controls['confirmPassword'].dirty && userCredentialsForm.controls['password'].value !==
 										userCredentialsForm.controls['confirmPassword'].value) {
 										<small class="invalid-form-control">Passwords do not match</small>
 										}
@@ -75,7 +78,7 @@
 											optionValue="companyId"
 											styleClass="w-100"
 										></p-dropdown>
-										@if(userDetailsForm.controls['company'].touched && userDetailsForm.controls['company'].hasError('required')) {
+										@if(userDetailsForm.controls['company'].dirty && userDetailsForm.controls['company'].hasError('required')) {
 										<small class="invalid-form-control">Company is required</small>
 										}
 									</div>
@@ -89,7 +92,7 @@
 											optionValue="experienceId"
 											styleClass="w-100"
 										></p-dropdown>
-										@if(userDetailsForm.controls['experience'].touched && userDetailsForm.controls['experience'].hasError('required')) {
+										@if(userDetailsForm.controls['experience'].dirty && userDetailsForm.controls['experience'].hasError('required')) {
 										<small class="invalid-form-control">Experience is required</small>
 										}
 									</div>
@@ -107,9 +110,9 @@
 											optionLabel="skillName"
 											optionValue="skillId"
 										></p-multiSelect>
-										@if(userDetailsForm.controls['skills'].touched && userDetailsForm.controls['skills'].hasError('required')) {
+										@if(userDetailsForm.controls['skills'].dirty && userDetailsForm.controls['skills'].hasError('required')) {
 										<small class="invalid-form-control">Skills are required</small>
-										} @if(userDetailsForm.controls['skills'].touched && userDetailsForm.controls['skills'].hasError('maxlength')) {
+										} @if(userDetailsForm.controls['skills'].dirty && userDetailsForm.controls['skills'].hasError('maxlength')) {
 										<small class="invalid-form-control">Cannot select more than 5 skills</small>
 										}
 									</div>
@@ -123,7 +126,7 @@
 											optionValue="countryId"
 											styleClass="w-100"
 										></p-dropdown>
-										@if(userDetailsForm.controls['country'].touched && userDetailsForm.controls['country'].hasError('required')) {
+										@if(userDetailsForm.controls['country'].dirty && userDetailsForm.controls['country'].hasError('required')) {
 										<small class="invalid-form-control">Country is required</small>
 										}
 									</div>
@@ -137,7 +140,7 @@
 											optionValue="cityId"
 											styleClass="w-100"
 										></p-dropdown>
-										@if(userDetailsForm.controls['city'].touched && userDetailsForm.controls['city'].hasError('required')) {
+										@if(userDetailsForm.controls['city'].dirty && userDetailsForm.controls['city'].hasError('required')) {
 										<small class="invalid-form-control">City is required</small>
 										}
 									</div>
