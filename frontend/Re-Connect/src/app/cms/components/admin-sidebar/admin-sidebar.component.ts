@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api/menuitem';
+import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 
 @Component({
   selector: 'rc-admin-sidebar',
   standalone: true,
-  imports: [MenuModule],
+  imports: [MenuModule, ButtonModule],
   templateUrl: './admin-sidebar.component.html',
   styleUrl: './admin-sidebar.component.scss'
 })
@@ -19,33 +20,28 @@ export class AdminSidebarComponent implements OnInit {
     this.items = [
       {
         label: "Dashboard",
-        command: () => {
-          this.router.navigate(["dashboard"], { relativeTo: this.route });
-        }
+        icon: "pi pi-home",
+        route: "/admin/dashboard"
       },
       {
         label: "Countries",
-        command: () => {
-          this.router.navigate(["countries"], { relativeTo: this.route });
-        }
+        icon: "pi pi-globe",
+        route: "/admin/countries"
       },
       {
         label: "Cities",
-        command: () => {
-          this.router.navigate(["cities"], { relativeTo: this.route });
-        }
+        icon: "pi pi-map-marker",
+        route: "/admin/cities"
       },
       {
         label: "Users",
-        command: () => {
-          this.router.navigate(["users"], { relativeTo: this.route });
-        }
+        icon: "pi pi-users",
+        route: "/admin/users"
       },
       {
         label: "Companies",
-        command: () => {
-          this.router.navigate(["companies"], { relativeTo: this.route });
-        }
+        icon: "pi pi-building",
+        route: "/admin/companies",
       }
     ]
   }

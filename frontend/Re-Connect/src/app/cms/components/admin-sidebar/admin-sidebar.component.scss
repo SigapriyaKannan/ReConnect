@@ -1,0 +1,21 @@
+:host ::ng-deep {
+	.p-menu {
+		background: var(--rc-base-color);
+		border: 0;
+		border-radius: 0;
+		border-right: 1px solid var(--rc-base-color);
+		border-top: 1px solid var(--bs-white);
+	}
+
+	.p-menuitem-link {
+		color: var(--bs-white);
+		border: 1px solid var(--rc-base-color);
+
+		&.active,
+		&:hover {
+			color: var(--rc-base-color);
+			background-color: var(--bs-white);
+			border: 1px solid var(--rc-base-color);
+		}
+	}
+}
