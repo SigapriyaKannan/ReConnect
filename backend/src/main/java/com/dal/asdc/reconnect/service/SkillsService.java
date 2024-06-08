@@ -1,10 +1,16 @@
 package com.dal.asdc.reconnect.service;
 
 
-import com.dal.asdc.reconnect.DTO.SkillsResponseBody;
+import com.dal.asdc.reconnect.DTO.Helper.SkillsDTO;
+import com.dal.asdc.reconnect.DTO.Helper.SkillsResponseBody;
+import com.dal.asdc.reconnect.model.Skills;
+import com.dal.asdc.reconnect.model.UserSkills;
 import com.dal.asdc.reconnect.repository.SkillsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SkillsService {
@@ -17,11 +23,15 @@ public class SkillsService {
      */
     public SkillsResponseBody getSkills() {
 
-        SkillsResponseBody responseBody = new SkillsResponseBody();
+        SkillsResponseBody skillsResponseBody = new SkillsResponseBody();
+        List<Skills> userSkills = skillsRepository.findAll();
 
-        responseBody.setSkills(skillsRepository.findAll());
+        List<SkillsDTO> skillsDTOs = userSkills.stream()
+                .map(skill -> new SkillsDTO(skill.getSkillId(), skill.getSkillName()))
+                .collect(Collectors.toList());
 
-        return responseBody;
+        skillsResponseBody.setSkills(skillsDTOs);
+        return skillsResponseBody;
 
     }
 }
