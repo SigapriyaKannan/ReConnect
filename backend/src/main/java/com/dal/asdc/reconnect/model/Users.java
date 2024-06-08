@@ -27,6 +27,9 @@ public class Users implements UserDetails {
     @JoinColumn(name = "TypeID", nullable = false)
     private UserType userType;
 
+    @Column(name = "ResetToken")
+    private String resetToken;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

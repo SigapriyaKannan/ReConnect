@@ -6,4 +6,6 @@ public interface UsersRepository extends JpaRepository<Users, Integer>
 {
     Users findByUserEmail(String email);
 
+    Users findByResetToken(String resetToken);
+
 }
