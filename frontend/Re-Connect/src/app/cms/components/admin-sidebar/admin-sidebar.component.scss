@@ -1,6 +1,6 @@
 :host ::ng-deep {
 	.p-menu {
-		background: var(--rc-base-color);
+		background-color: var(--rc-base-color);
 		border: 0;
 		border-radius: 0;
 		border-right: 1px solid var(--rc-base-color);
@@ -11,10 +11,13 @@
 		color: var(--bs-white);
 		border: 1px solid var(--rc-base-color);
 
-		&.active,
 		&:hover {
-			color: var(--rc-base-color);
-			background-color: var(--bs-white);
+			background-color: var(--rc-base-color-active);
+		}
+
+		&.active {
+			color: var(--bs-white);
+			background-color: var(--rc-base-color-active);
 			border: 1px solid var(--rc-base-color);
 		}
 	}
