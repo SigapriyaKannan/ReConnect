@@ -1,0 +1,25 @@
+<div class="messages-container container h-100">
+	<div class="row messages-row h-100">
+		<div class="col">
+			@for (message of listOfMessages; track $index) {
+			<div class="row m-4" [ngClass]="{ 'me-0 justify-content-end': message.role === 0, 'ms-0 justify-content-start': message.role === 1 }">
+				<div class="d-flex flex-column" style="width: 30%; max-width: 75%">
+					<span class="p-2 shadow-sm border rounded">
+						{{ message.message }}
+					</span>
+					<small class="fst-italic">{{ message.timestamp | date : "short" }}</small>
+				</div>
+			</div>
+			}
+		</div>
+	</div>
+	<!-- <hr /> -->
+	<div class="row textbox-row d-flex align-items-center">
+		<div class="col-11">
+			<textarea rows="5" class="w-100" pInputTextarea [(ngModel)]="value"></textarea>
+		</div>
+		<div class="col-1">
+			<p-button label="Send" type="button" (onClick)="addMessage()" [disabled]="!value" icon="pi pi-send"></p-button>
+		</div>
+	</div>
+</div>

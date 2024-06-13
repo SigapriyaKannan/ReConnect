@@ -8,6 +8,12 @@ import { AdminCountriesComponent } from './cms/components/admin-countries/admin-
 import { AdminCitiesComponent } from './cms/components/admin-cities/admin-cities.component';
 import { AdminSkillsComponent } from './cms/components/admin-skills/admin-skills.component';
 import { AdminCompaniesComponent } from './cms/components/admin-companies/admin-companies.component';
+import { LayoutComponent } from './shared/components/layout/layout.component';
+import { Component } from '@angular/core';
+import { HomepageComponent } from './shared/components/homepage/homepage.component';
+import { NotificationsComponent } from './shared/components/notifications/notifications.component';
+import { RequestsComponent } from './shared/components/requests/requests.component';
+import { MessagingComponent } from './shared/components/messaging/messaging.component';
 
 export const routes: Routes = [
     {
@@ -17,6 +23,33 @@ export const routes: Routes = [
     {
         path: "sign-up",
         component: SignupComponent
+    },
+    {
+        path: "",
+        component: LayoutComponent,
+        children: [
+            {
+                path: "homepage",
+                component: HomepageComponent
+            },
+            {
+                path: "notifications",
+                component: NotificationsComponent
+            },
+            {
+                path: "requests",
+                component: RequestsComponent
+            },
+            {
+                path: "messages",
+                component: MessagingComponent
+            },
+            {
+                path: "",
+                pathMatch: "full",
+                redirectTo: "homepage"
+            }
+        ]
     },
     {
         path: "admin",
@@ -54,13 +87,8 @@ export const routes: Routes = [
         ]
     },
     {
-        path: "",
-        redirectTo: "sign-up",
-        pathMatch: "full"
-    },
-    {
         path: "**",
-        redirectTo: "sign-up",
+        redirectTo: "homepage",
         pathMatch: "full"
     }
 ];
