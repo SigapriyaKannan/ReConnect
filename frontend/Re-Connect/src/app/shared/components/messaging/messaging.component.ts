@@ -3,16 +3,28 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from "primeng/inputtextarea";
+import { ListboxModule } from "primeng/listbox";
 
 @Component({
   selector: 'rc-messaging',
   standalone: true,
-  imports: [InputTextareaModule, FormsModule, ButtonModule, DatePipe, NgClass],
+  imports: [InputTextareaModule, FormsModule, ButtonModule, DatePipe, NgClass, ListboxModule],
   templateUrl: './messaging.component.html',
   styleUrl: './messaging.component.scss'
 })
 export class MessagingComponent {
   value: string = "";
+  selectedUser: any = null;
+  listOfUsers: any[] = [
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    }
+  ]
   listOfMessages: any[] = [{
     message: "Hello",
     timestamp: "10/06/2024 14:23",
