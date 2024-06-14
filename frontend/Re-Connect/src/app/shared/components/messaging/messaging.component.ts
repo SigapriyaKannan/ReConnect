@@ -23,9 +23,145 @@ export class MessagingComponent {
     {
       name: "QUET",
       userId: 2
-    }
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "ANBC",
+      userId: 1
+    },
+    {
+      name: "QUET",
+      userId: 2
+    },
+    {
+      name: "QUIET",
+      userId: 2
+    },
   ]
   listOfMessages: any[] = [{
+    message: "Hello",
+    timestamp: "10/06/2024 14:23",
+    role: 0,
+    userId: 12
+  },
+  {
+    message: "Hi",
+    timestamp: "10/06/2024 14:21",
+    role: 1,
+    userId: 21
+  },
+  {
+    message: "Hello",
+    timestamp: "10/06/2024 14:23",
+    role: 0,
+    userId: 12
+  },
+  {
+    message: "Hi",
+    timestamp: "10/06/2024 14:21",
+    role: 1,
+    userId: 21
+  }, {
+    message: "Hello",
+    timestamp: "10/06/2024 14:23",
+    role: 0,
+    userId: 12
+  },
+  {
+    message: "Hi",
+    timestamp: "10/06/2024 14:21",
+    role: 1,
+    userId: 21
+  },
+  {
+    message: "Hello",
+    timestamp: "10/06/2024 14:23",
+    role: 0,
+    userId: 12
+  },
+  {
+    message: "Hi",
+    timestamp: "10/06/2024 14:21",
+    role: 1,
+    userId: 21
+  }, {
+    message: "Hello",
+    timestamp: "10/06/2024 14:23",
+    role: 0,
+    userId: 12
+  },
+  {
+    message: "Hi",
+    timestamp: "10/06/2024 14:21",
+    role: 1,
+    userId: 21
+  }, {
+    message: "Hello",
+    timestamp: "10/06/2024 14:23",
+    role: 0,
+    userId: 12
+  },
+  {
+    message: "Hi",
+    timestamp: "10/06/2024 14:21",
+    role: 1,
+    userId: 21
+  }, {
     message: "Hello",
     timestamp: "10/06/2024 14:23",
     role: 0,

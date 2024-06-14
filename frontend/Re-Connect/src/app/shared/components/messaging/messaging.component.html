@@ -1,11 +1,18 @@
-<div class="messages-container container h-100">
+<div class="container h-100">
 	<div class="row mh-100 h-100">
-		<div class="col-2 border-end">
-			<h2>Users</h2>
-			<p-listbox [options]="listOfUsers" optionLabel="name" [(ngModel)]="selectedUser"> </p-listbox>
+		<div class="col-4 h-100 border-end">
+			<p-listbox
+				[filter]="true"
+				scrollHeight="100%"
+				[options]="listOfUsers"
+				optionLabel="name"
+				styleClass="h-100 d-flex flex-column"
+				[(ngModel)]="selectedUser"
+			>
+			</p-listbox>
 		</div>
-		<div class="col-10">
-			<div class="row messages-row w-100">
+		<div class="col-8 messages-container h-100">
+			<div class="row h-100 overflow-auto messages-row w-100">
 				<div class="col">
 					@for (message of listOfMessages; track $index) {
 					<div class="row m-4" [ngClass]="{ 'me-0 justify-content-end': message.role === 0, 'ms-0 justify-content-start': message.role === 1 }">
