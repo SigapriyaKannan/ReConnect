@@ -37,9 +37,6 @@ public class AuthenticationController
     JWTService jwtService;
 
     @Autowired
-    CountryService countryService;
-
-    @Autowired
     CityService cityService;
 
     @Autowired
@@ -190,52 +187,6 @@ public class AuthenticationController
                             .accessToken(accessToken)
                             .token(refreshTokenRequest.getToken()).build();
                 }).orElseThrow(() ->new RuntimeException("Refresh Token is not in DB..!!"));
-    }
-
-
-    /**
-     * Retrieves the list of all countries.
-     * Returns a response containing the list of countries along with status and message.
-     * @return Response object containing the list of countries.
-     */
-    @GetMapping("/getCountries")
-    public ResponseEntity<?> getCountries() {
-        CountryResponseBody countryResponseBody = countryService.getCountryList();
-
-        Response<CountryResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", countryResponseBody);
-
-        return ResponseEntity.ok(response);
-    }
-
-
-    /**
-     * Retrieves the list of cities for a given country ID.
-     * Returns a response containing the list of cities along with status and message.
-     * @param countryID The ID of the country for which cities are to be retrieved.
-     * @return Response object containing the list of cities.
-     */
-    @GetMapping("/getCities")
-    public ResponseEntity<?> getCities(@RequestParam int countryID) {
-        CityResponseBody cityResponseBody = cityService.getCitiesByCountryId(countryID);
-
-        Response<CityResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", cityResponseBody);
-
-        return ResponseEntity.ok(response);
-    }
-
-
-    /**
-     * Retrieves the list of all skills.
-     * Returns a response containing the list of skills along with status and message.
-     * @return Response object containing the list of skills.
-     */
-    @GetMapping("/getSkills")
-    public ResponseEntity<?> getSkills() {
-        SkillsResponseBody skillsResponseBody = skillsService.getSkills();
-
-        Response<SkillsResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", skillsResponseBody);
-
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/forgotPassword")
