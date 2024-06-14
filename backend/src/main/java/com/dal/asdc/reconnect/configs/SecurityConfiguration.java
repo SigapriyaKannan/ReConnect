@@ -38,6 +38,9 @@ public class SecurityConfiguration
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers("/auth/**").permitAll()
+                            .requestMatchers("/api/countries/**").permitAll()
+                            .requestMatchers("/api/cities/**").permitAll()
+                            .requestMatchers("/api/skills/**").permitAll()
                             .anyRequest().authenticated()
                     )
                     .sessionManagement(session -> session
