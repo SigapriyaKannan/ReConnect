@@ -1,15 +1,12 @@
 package com.dal.asdc.reconnect.controller;
 
 
-import com.dal.asdc.reconnect.DTO.*;
-import com.dal.asdc.reconnect.DTO.Helper.CityResponseBody;
-import com.dal.asdc.reconnect.DTO.Helper.CountryResponseBody;
-import com.dal.asdc.reconnect.DTO.Helper.SkillsResponseBody;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponseBody;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenRequest;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenResponse;
 import com.dal.asdc.reconnect.DTO.ResetPassword.ResetPasswordRequest;
+import com.dal.asdc.reconnect.DTO.Response;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
@@ -21,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
