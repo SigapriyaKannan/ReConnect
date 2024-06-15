@@ -38,6 +38,7 @@ public class SecurityConfiguration
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers("/auth/**").permitAll()
+                            .requestMatchers("/swagger-ui.html","/swagger-ui/**", "/v3/api-docs/**").permitAll()
                             .requestMatchers("/api/countries/**").permitAll()
                             .requestMatchers("/api/cities/**").permitAll()
                             .requestMatchers("/api/skills/**").permitAll()
