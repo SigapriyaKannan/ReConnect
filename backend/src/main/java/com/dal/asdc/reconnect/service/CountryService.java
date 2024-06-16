@@ -1,9 +1,6 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.DTO.Helper.CityDTO;
 import com.dal.asdc.reconnect.DTO.Helper.CountryDTO;
-import com.dal.asdc.reconnect.DTO.Helper.CountryResponseBody;
-import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 @Component
 public class CityMapper {
     public CityDTO mapCityToDTO(City city) {
-        return new CityDTO(city.getCityId(), city.getCityName(), city.getCountryId());
+        return new CityDTO(city.getCityId(), city.getCityName(), city.getCountry());
     }
 
     public City mapDTOToCity(CityDTO cityDTO) {
         City city = new City();
         city.setCityId(cityDTO.getCityId());
         city.setCityName(cityDTO.getCityName());
-        city.setCountryId(cityDTO.getCountryId());
+        city.setCountry(cityDTO.getCountry());
         return city;
     }
 

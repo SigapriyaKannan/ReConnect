@@ -15,7 +15,8 @@ public class City {
     @Column(name = "CityName", nullable = false, length = 100)
     private String cityName;
 
-    @Column(name = "CountryID")
-    private int countryId;
+    @ManyToOne
+    @JoinColumn(name = "CountryID")
+    private Country country;
 
 }

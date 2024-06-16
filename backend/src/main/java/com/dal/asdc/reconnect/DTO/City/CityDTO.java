@@ -1,5 +1,6 @@
 package com.dal.asdc.reconnect.DTO.City;
 
+import com.dal.asdc.reconnect.model.Country;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,5 +9,5 @@ import lombok.Data;
 public class CityDTO {
     private int cityId;
     private String cityName;
-    private int countryId;
+    private Country country;
 }
