@@ -238,12 +238,26 @@ public class AuthenticationController
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Endpoint to initiate the password reset process.
+     * Sends a password reset email to the user with the specified email address.
+     *
+     * @param email the email address of the user who requested a password reset.
+     * @return a ResponseEntity indicating the result of the operation.
+     */
     @PostMapping("/forgotPassword")
     public ResponseEntity<String> forgotPassword(@RequestBody String email) {
         forgotPasswordService.sendResetEmail(email);
         return ResponseEntity.ok("Password reset email sent.");
     }
 
+    /**
+     * Endpoint to reset the password.
+     * Resets the password for the user with the specified reset token.
+     *
+     * @param request the ResetPasswordRequest object containing the reset token and the new password.
+     * @return a ResponseEntity indicating the result of the operation.
+     */
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
         boolean result = forgotPasswordService.resetPassword(request.getToken(), request.getNewPassword());
