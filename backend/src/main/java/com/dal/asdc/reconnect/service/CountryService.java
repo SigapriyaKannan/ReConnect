@@ -1,12 +1,14 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.DTO.Helper.CountryResponseBody;
+import com.dal.asdc.reconnect.DTO.Helper.CountryDTO;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -19,15 +21,30 @@ public class CountryService {
      * Retrieves the list of all countries.
      * @return a CountryResponseBody object containing the list of all countries.
      */
-    public CountryResponseBody getCountryList()
+    public List<CountryDTO> getCountryList()
     {
-        CountryResponseBody countryResponseBody = new CountryResponseBody();
+        List<CountryDTO> listOfCountries = new ArrayList<>();
+        List<Country> listOfCountriesFromDatabase = countryRepository.findAll();
+        for(Country country: listOfCountriesFromDatabase) {
+            CountryDTO countryDTO = new CountryDTO(country.getCountryId(), country.getCountryName());
+            listOfCountries.add(countryDTO);
+        }
+        return listOfCountries;
+    }
 
-        List<Country> countryList = countryRepository.findAll();
+    public Country addCountry(String countryName) {
+        Country country = new Country();
+        country.setCountryName(countryName);
+        countryRepository.save(country);
+        return country;
+    }
 
-        countryResponseBody.setCountries(countryList);
+    public Country getCountryByName(String countryName) {
+        return countryRepository.findCountryByCountryName(countryName);
+    }
 
-        return countryResponseBody;
-
+    public Country getCountryById(int countryId) {
+        Optional<Country> country = countryRepository.findById(countryId);
+        return country.orElse(null);
     }
 }

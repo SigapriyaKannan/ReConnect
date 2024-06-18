@@ -9,5 +9,6 @@ import java.util.List;
 @Data
 public class CountryResponseBody
 {
-    List<Country> countries;
+    private List<Country> listOfCountries;
+    private Country country;
 }
