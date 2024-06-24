@@ -1,15 +1,11 @@
 package com.dal.asdc.reconnect.controller;
 
-
-import com.dal.asdc.reconnect.DTO.*;
-import com.dal.asdc.reconnect.DTO.Helper.CityResponseBody;
-import com.dal.asdc.reconnect.DTO.Helper.CountryResponseBody;
-import com.dal.asdc.reconnect.DTO.Helper.SkillsResponseBody;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponseBody;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenRequest;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenResponse;
 import com.dal.asdc.reconnect.DTO.ResetPassword.ResetPasswordRequest;
+import com.dal.asdc.reconnect.DTO.Response;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
 import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
@@ -20,7 +16,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -37,24 +32,13 @@ public class AuthenticationController
     JWTService jwtService;
 
     @Autowired
-    CountryService countryService;
-
-    @Autowired
     CityService cityService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private RefreshTokenService refreshTokenService;
 
     @Autowired
-    private SkillsService  skillsService;
-
-    @Autowired
     private ForgotPasswordService forgotPasswordService;
-
-
 
     /**
      * Handles the first phase of the signup process.
@@ -66,7 +50,7 @@ public class AuthenticationController
     @PostMapping("/verify-email")
     public ResponseEntity<?> signUp(@RequestBody SignUpFirstPhaseRequest signUpFirstPhaseRequest)
     {
-        SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
+        SignUpFirstPhaseBody signUpFirstPhaseBody;
 
         signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
 
@@ -99,7 +83,7 @@ public class AuthenticationController
 
         if(signUpFirstPhaseBody.areAllValuesNull())
         {
-            if(authenticationService.AddNewUser(signUpSecondPhaseRequest))
+            if(Boolean.TRUE.equals(authenticationService.AddNewUser(signUpSecondPhaseRequest)))
             {
                 Response<SignUpFirstPhaseBody>  response = new Response<>(200, "Success", signUpFirstPhaseBody);
                 return ResponseEntity.ok(response);
@@ -138,7 +122,7 @@ public class AuthenticationController
     {
         Optional<Users> authenticatedUser = authenticationService.authenticate(loginRequest);
 
-        if (authenticatedUser == null || authenticatedUser.isEmpty())
+        if (authenticatedUser.isEmpty())
         {
             Response<Void>  response = new Response<>(401, "UnSuccessful", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -167,8 +151,7 @@ public class AuthenticationController
         loginResponseBody.setExpiresIn(jwtService.getExpirationTime());
         loginResponseBody.setRefreshToken(refreshToken.getToken());
         loginResponseBody.setUserEmail(loginRequest.getUserEmail());
-        Response<LoginResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
-        return response;
+        return new Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
     }
 
 
@@ -190,52 +173,6 @@ public class AuthenticationController
                             .accessToken(accessToken)
                             .token(refreshTokenRequest.getToken()).build();
                 }).orElseThrow(() ->new RuntimeException("Refresh Token is not in DB..!!"));
-    }
-
-
-    /**
-     * Retrieves the list of all countries.
-     * Returns a response containing the list of countries along with status and message.
-     * @return Response object containing the list of countries.
-     */
-    @GetMapping("/getCountries")
-    public ResponseEntity<?> getCountries() {
-        CountryResponseBody countryResponseBody = countryService.getCountryList();
-
-        Response<CountryResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", countryResponseBody);
-
-        return ResponseEntity.ok(response);
-    }
-
-
-    /**
-     * Retrieves the list of cities for a given country ID.
-     * Returns a response containing the list of cities along with status and message.
-     * @param countryID The ID of the country for which cities are to be retrieved.
-     * @return Response object containing the list of cities.
-     */
-    @GetMapping("/getCities")
-    public ResponseEntity<?> getCities(@RequestParam int countryID) {
-        CityResponseBody cityResponseBody = cityService.getCitiesByCountryId(countryID);
-
-        Response<CityResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", cityResponseBody);
-
-        return ResponseEntity.ok(response);
-    }
-
-
-    /**
-     * Retrieves the list of all skills.
-     * Returns a response containing the list of skills along with status and message.
-     * @return Response object containing the list of skills.
-     */
-    @GetMapping("/getSkills")
-    public ResponseEntity<?> getSkills() {
-        SkillsResponseBody skillsResponseBody = skillsService.getSkills();
-
-        Response<SkillsResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", skillsResponseBody);
-
-        return ResponseEntity.ok(response);
     }
 
     /**
