@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -183,7 +184,8 @@ public class AuthenticationController
      * @return a ResponseEntity indicating the result of the operation.
      */
     @PostMapping("/forgotPassword")
-    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+    public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> emailRequest) {
+        String email = emailRequest.get("email");
         forgotPasswordService.sendResetEmail(email);
         return ResponseEntity.ok("Password reset email sent.");
     }

@@ -12,6 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -42,17 +43,19 @@ public class ForgotPasswordService {
      */
     public void sendResetEmail(String email) {
         Users user = usersRepository.findByUserEmail(email);
-        if (user != null) {
-            String token = UUID.randomUUID().toString();
-            user.setResetToken(token);
-            usersRepository.save(user);
-            
-            String resetUrl = resetPasswordUrl + token;
-            String subject = "Password Reset Request";
-            String message = "To reset your password, click the link below:\n" + resetUrl;
-
-            sendEmail(user.getUserEmail(), subject, message);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
+
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        usersRepository.save(user);
+
+        String resetUrl = resetPasswordUrl + token;
+        String subject = "Password Reset Request";
+        String message = "To reset your password, click the link below:\n" + resetUrl;
+
+        sendEmail(user.getUserEmail(), subject, message);
     }
 
     /**
