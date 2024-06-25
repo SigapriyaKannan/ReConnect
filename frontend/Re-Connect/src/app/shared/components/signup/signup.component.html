@@ -59,7 +59,13 @@
 								</div>
 							</form>
 							<div class="d-flex flex-column align-items-center pt-4 justify-content-center">
-								<p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="onCheckForm(userCredentialsForm, index)" />
+								<p-button
+									label="Next"
+									icon="pi pi-arrow-right"
+									iconPos="right"
+									[loading]="verificationPending"
+									(onClick)="onCheckForm(userCredentialsForm, index)"
+								/>
 								<p class="mt-2">Already have an account? <a href="javascript:void(0)" [routerLink]="['/login']">Login</a></p>
 							</div>
 						</ng-template>
@@ -148,7 +154,7 @@
 							</form>
 							<div class="d-flex gap-2 pt-4 justify-content-center">
 								<p-button label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()" />
-								<p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="onCheckForm(userDetailsForm, index)" />
+								<p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
 							</div>
 						</ng-template>
 					</p-stepperPanel>
@@ -163,7 +169,7 @@
 							</div>
 							<div class="d-flex gap-2 pt-4 justify-content-center">
 								<p-button label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()" />
-								<p-button type="submit" severity="primary" (onClick)="onSubmit()">Sign Up</p-button>
+								<p-button type="submit" severity="primary" [loading]="isCreatingUser" (onClick)="onSubmit()">Sign Up</p-button>
 							</div>
 						</ng-template>
 					</p-stepperPanel>
