@@ -7,20 +7,19 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler
-{
+public class GlobalExceptionHandler {
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response<Void>> handleSecurityException(Exception exception) {
-        Response<Void> response = null;
+        Response<Void> response;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         exception.printStackTrace();
+
         if (exception instanceof BadCredentialsException) {
             response = new Response<>(401, "The username or password is incorrect", null);
             status = HttpStatus.UNAUTHORIZED;
@@ -36,8 +35,10 @@ public class GlobalExceptionHandler
         } else if (exception instanceof ExpiredJwtException) {
             response = new Response<>(403, "The JWT token has expired", null);
             status = HttpStatus.FORBIDDEN;
-        }
-        else{
+        }  else if (exception instanceof EmailSendingException emailException) {
+            response = new Response<>(emailException.getStatus().value(), emailException.getMessage(), null);
+            status = emailException.getStatus();
+        } else {
             response = new Response<>(500, "Internal server error", null);
         }
 
