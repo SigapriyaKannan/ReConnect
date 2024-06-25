@@ -14,6 +14,8 @@ import { HomepageComponent } from './shared/components/homepage/homepage.compone
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 import { RequestsComponent } from './shared/components/requests/requests.component';
 import { MessagingComponent } from './shared/components/messaging/messaging.component';
+import {ForgotPasswordComponent} from "./shared/components/forgot-password/forgot-password.component";
+import {ResetPasswordComponent} from "./shared/components/reset-password/reset-password.component";
 
 export const routes: Routes = [
     {
@@ -23,6 +25,14 @@ export const routes: Routes = [
     {
         path: "sign-up",
         component: SignupComponent
+    },
+    {
+        path: "forgot-password",
+        component: ForgotPasswordComponent
+    },
+    {
+        path: "reset-password",
+        component: ResetPasswordComponent
     },
     {
         path: "",

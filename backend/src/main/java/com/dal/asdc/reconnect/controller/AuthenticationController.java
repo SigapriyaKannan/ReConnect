@@ -1,6 +1,5 @@
 package com.dal.asdc.reconnect.controller;
 
-
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
 import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponseBody;
 import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenRequest;
@@ -40,18 +39,10 @@ public class AuthenticationController
     CityService cityService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private RefreshTokenService refreshTokenService;
 
     @Autowired
-    private SkillsService  skillsService;
-
-    @Autowired
     private ForgotPasswordService forgotPasswordService;
-
-
 
     /**
      * Handles the first phase of the signup process.
@@ -140,7 +131,7 @@ public class AuthenticationController
     {
         Optional<Users> authenticatedUser = authenticationService.authenticate(loginRequest);
 
-        if (authenticatedUser == null || authenticatedUser.isEmpty())
+        if (authenticatedUser.isEmpty())
         {
             Response<Void>  response = new Response<>(401, "UnSuccessful", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -169,8 +160,7 @@ public class AuthenticationController
         loginResponseBody.setExpiresIn(jwtService.getExpirationTime());
         loginResponseBody.setRefreshToken(refreshToken.getToken());
         loginResponseBody.setUserEmail(loginRequest.getUserEmail());
-        Response<LoginResponseBody> response = new Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
-        return response;
+        return new Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
     }
 
 
@@ -194,12 +184,27 @@ public class AuthenticationController
                 }).orElseThrow(() ->new RuntimeException("Refresh Token is not in DB..!!"));
     }
 
+    /**
+     * Endpoint to initiate the password reset process.
+     * Sends a password reset email to the user with the specified email address.
+     *
+     * @param email the email address of the user who requested a password reset.
+     * @return a ResponseEntity indicating the result of the operation.
+     */
     @PostMapping("/forgotPassword")
-    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+    public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> emailRequest) {
+        String email = emailRequest.get("email");
         forgotPasswordService.sendResetEmail(email);
         return ResponseEntity.ok("Password reset email sent.");
     }
 
+    /**
+     * Endpoint to reset the password.
+     * Resets the password for the user with the specified reset token.
+     *
+     * @param request the ResetPasswordRequest object containing the reset token and the new password.
+     * @return a ResponseEntity indicating the result of the operation.
+     */
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
         boolean result = forgotPasswordService.resetPassword(request.getToken(), request.getNewPassword());
