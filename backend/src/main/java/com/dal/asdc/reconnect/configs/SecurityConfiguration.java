@@ -42,6 +42,7 @@ public class SecurityConfiguration
                             .requestMatchers("/api/countries/**").permitAll()
                             .requestMatchers("/api/cities/**").permitAll()
                             .requestMatchers("/api/skills/**").permitAll()
+                            .requestMatchers("/api/companies/**").permitAll()
                             .anyRequest().authenticated()
                     )
                     .sessionManagement(session -> session
@@ -54,12 +55,13 @@ public class SecurityConfiguration
 
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() 
+    CorsConfigurationSource corsConfigurationSource()
     {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
-        configuration.setAllowedMethods(List.of("GET","POST"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET","POST", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+//        configuration.addExposedHeader("Access-Control-Allow-Origin");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**",configuration);
 

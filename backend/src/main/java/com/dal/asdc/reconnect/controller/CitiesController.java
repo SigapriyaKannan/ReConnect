@@ -19,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cities")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CitiesController {
     @Autowired
     CityService cityService;
