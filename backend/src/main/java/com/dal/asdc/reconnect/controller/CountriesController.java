@@ -92,7 +92,7 @@ public class CountriesController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             }
             countryService.modifyCountry(countryDTO);
-            Response<?> response = new Response<>(HttpStatus.OK.value(), "Country updated successfully", null);
+            Response<CountryDTO> response = new Response<>(HttpStatus.OK.value(), "Country updated successfully", countryDTO);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Country does not exist", null);
