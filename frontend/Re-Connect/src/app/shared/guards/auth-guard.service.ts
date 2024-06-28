@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, CanActivateChildFn, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { map } from 'rxjs';
 
 
 
@@ -12,20 +13,29 @@ export const canActivatePage: CanActivateFn = (
   if (!authService.isLoggedIn()) {
     return true; // User is not authenticated, allow access to route
   } else {
-    return router.createUrlTree(["/", "homepage"])
+    return router.createUrlTree(["/", "user"])
   }
 }
 
-export const RoleGuard: CanActivateChildFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+export const RoleGuard: CanActivateChildFn = async (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  const user = authService.user; // Get user details from resolver
-  const roleId = user.roleId;
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return router.createUrlTree(["/", "login"]);
+  }
 
-  if (roleId === 0) {
-    router.createUrlTree(['/admin']); // Redirect to admin route if roleId is 0
-  } else {
-    router.createUrlTree(['/homepage']); // Redirect to homepage route for other roles
+  const user = await authService.getUserDetails(token)
+  const role = user['role'];
+
+  if (role > 0) {
+    const urlTree = router.createUrlTree(['/user']);
+    router.navigateByUrl(urlTree);
+    return false; // Prevent access to the empty route
+  } else if (role === 0) {
+    const urlTree = router.createUrlTree(['/admin']);
+    router.navigateByUrl(urlTree);
+    return false; // Prevent access to the empty route
   }
 
   return true;
@@ -35,37 +45,59 @@ export const canActivateChildPage: CanActivateChildFn = (childRoute: ActivatedRo
   const authService = inject(AuthService);
   const router = inject(Router);
   if (authService.isLoggedIn()) {
-    const roleId = authService.user['roleId'];
-
     return true; // User is authenticated, allow access to route
   } else {
     return router.createUrlTree(['/login']); // User is authenticated, redirect to login page
   }
 };
 
-export const canActivateHomePage: CanActivateChildFn = (childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-
-
-  // const authService = inject(AuthService);
-  // const router = inject(Router);
-  // if (authService.isLoggedIn() && childRoute.parent?.data['user'].roleId > 0) {
-  //   return true; // User is authenticated, allow access to route
-  // } else if (authService.isLoggedIn() && childRoute.parent?.data['user'].roleId == 0) {
-  //   return router.createUrlTree(['/admin']);
-  // } else {
-  //   return router.createUrlTree(['/login']); // User is authenticated, redirect to login page
-  // }
-  return true;
-};
-
-export const canActivateAdminPage: CanActivateChildFn = (childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+export const canActivateUserPages: CanActivateChildFn = (childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  if (authService.isLoggedIn() && childRoute.parent?.data['user'].roleId == 0) {
-    return true; // User is authenticated, allow access to route
-  } else if (authService.isLoggedIn() && childRoute.parent?.data['user'].roleId > 0) {
-    return router.createUrlTree(['/homepage']); // User is authenticated, allow access to route
-  } else {
-    return router.createUrlTree(['/login']); // User is authenticated, redirect to login page
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return router.createUrlTree(["/", "login"]);
   }
+
+  return authService.getUserDetails(token).pipe(
+    map(
+      user => {
+        const role = user['role'];
+        if (role > 0) {
+          return true; // Prevent access to the empty route
+        } else if (role === 0) {
+          const urlTree = router.createUrlTree(['/admin/dashboard']);
+          router.navigateByUrl(urlTree);
+          return false; // Prevent access to the empty route
+        }
+        return true;
+      }
+    )
+  );
+
+};
+
+export const canActivateAdminPages: CanActivateChildFn = (childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return router.createUrlTree(["/", "login"]);
+  }
+
+  return authService.getUserDetails(token).pipe(
+    map(
+      user => {
+        const role = user['role'];
+
+        if (role === 0) {
+          return true; // Prevent access to the empty route
+        } else if (role > 0) {
+          const urlTree = router.createUrlTree(['/user/homepage']);
+          router.navigateByUrl(urlTree);
+          return false; // Prevent access to the empty route
+        }
+
+        return true;
+      }));
 };

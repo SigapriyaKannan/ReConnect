@@ -51,20 +51,20 @@ export class AuthService {
 
     private setSession(authResult: any) {
         const expiresAt = addMilliseconds(new Date(), authResult.body.expiresIn);
-        sessionStorage.setItem('token', authResult.body.token);
-        sessionStorage.setItem("expiresIn", expiresAt.toISOString());
+        localStorage.setItem('token', authResult.body.token);
+        localStorage.setItem("expiresIn", expiresAt.toISOString());
     }
 
     logout() {
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("expiresIn");
+        localStorage.removeItem("token");
+        localStorage.removeItem("expiresIn");
         // this.toastService.showSuccess("User Logged out successfully");
         this.router.navigate(["/login"]);
     }
 
     public isLoggedIn() {
-        const expiration = sessionStorage.getItem("expiresIn");
-        const token = sessionStorage.getItem("token");
+        const expiration = localStorage.getItem("expiresIn");
+        const token = localStorage.getItem("token");
         if (!expiration || !token) {
 
             return false;
@@ -78,6 +78,6 @@ export class AuthService {
     }
 
     getUserDetails(token: string) {
-        return this.http.get(environment.AUTH_API + "getUserDetails?token=" + token).pipe(response => this.user = response);
+        return this.http.get(environment.AUTH_API + "getUserDetails?token=" + token).pipe(tap((response) => this.user = response));
     }
 }

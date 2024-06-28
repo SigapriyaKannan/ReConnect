@@ -17,7 +17,7 @@ export class AdminSidebarComponent implements OnInit {
   user: any;
 
   constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.data.subscribe(({ user }) => {
+    this.activatedRoute.parent?.data.subscribe(({ user }) => {
       this.user = user;
     })
   }

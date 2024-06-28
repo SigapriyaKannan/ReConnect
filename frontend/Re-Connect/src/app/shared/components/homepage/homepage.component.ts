@@ -51,7 +51,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   constructor(private activatedRoute: ActivatedRoute, private searchService: HomepageService, private overlayService: OverlayService, private router: Router, private toastService: ToastService, public dialogService: DialogService) {
     //this.activatedRoute.data.subscribe(({ user }) => { this.user = user });
-    this.activatedRoute.parent?.data.subscribe(({ user }) => {
+    this.activatedRoute.parent?.parent?.data.subscribe(({ user }) => {
       this.user = user;
     })
   }

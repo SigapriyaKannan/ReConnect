@@ -32,7 +32,7 @@ export class RequestsComponent implements OnInit, OnDestroy {
   fetchingPendingRequests: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute, private requestService: RequestService, private toastService: ToastService, private router: Router, private dialogService: DialogService) {
-    this.activatedRoute.parent?.data.subscribe(({ user }) => {
+    this.activatedRoute.parent?.parent?.data.subscribe(({ user }) => {
       this.user = user;
     })
   }

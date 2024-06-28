@@ -103,7 +103,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.userID = this.dialogConfig.data.userId;
             this.enableEdit = this.dialogConfig.data.enableEdit;
         } else {
-            this.activatedRoute$ = this.activatedRoute.parent?.data.subscribe(({ user }) => {
+            this.activatedRoute$ = this.activatedRoute.parent?.parent?.data.subscribe(({ user }) => {
                 this.userID = user['userId'];
             });
         }

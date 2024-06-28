@@ -13,7 +13,7 @@
 						} }
 					</div>
 				</div>
-				<p-stepper [linear]="true" [activeStep]="activeStep" styleClass="mb-0">
+				<p-stepper [linear]="true" [(activeStep)]="activeStep" styleClass="mb-0">
 					<p-stepperPanel>
 						<ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
 							<form [formGroup]="userCredentialsForm">

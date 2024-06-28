@@ -36,7 +36,7 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
   serverPath: string = environment.SERVER;
 
   constructor(private messagingService: MessagingService, private overlaySerivce: OverlayService, private actiavteRoute: ActivatedRoute, private dialogService: DialogService) {
-    this.actiavteRoute.parent?.data.subscribe(({ user }) => {
+    this.actiavteRoute.parent?.parent?.data.subscribe(({ user }) => {
       this.user = user;
     })
   }

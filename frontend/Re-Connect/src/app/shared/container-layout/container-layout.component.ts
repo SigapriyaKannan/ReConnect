@@ -9,14 +9,4 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
   styleUrl: './container-layout.component.scss'
 })
 export class ContainerLayoutComponent {
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-    // this.activatedRoute.data.subscribe(({ user }) => {
-
-    //   if (user['role'] == 0) {
-    //     this.router.navigate(["/", "admin"]);
-    //   } else {
-    //     this.router.navigate(["/", "homepage"]);
-    //   }
-    // })
-  }
 }

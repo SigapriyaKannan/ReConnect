@@ -16,13 +16,78 @@ import { MessagingComponent } from './shared/components/messaging/messaging.comp
 import { ForgotPasswordComponent } from "./shared/components/forgot-password/forgot-password.component";
 import { ResetPasswordComponent } from "./shared/components/reset-password/reset-password.component";
 import { AdminSkillDomainComponent } from "./cms/components/admin-skill-domain/admin-skill-domain.component";
-import { canActivateAdminPage, canActivateChildPage, canActivateHomePage, canActivatePage, RoleGuard } from "./shared/guards/auth-guard.service";
+import { canActivateAdminPages, canActivateChildPage, canActivateUserPages, canActivatePage, RoleGuard } from "./shared/guards/auth-guard.service";
 import { UserResolver } from './shared/resolvers/user-resolver.service';
 import { ProfileComponent } from "./shared/components/profile/profile.component";
 import { LogoutComponent } from './shared/logout/logout.component';
 import { ContainerLayoutComponent } from './shared/container-layout/container-layout.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
-import { DialogService } from 'primeng/dynamicdialog';
+
+const ADMIN_ROUTES: Routes = [{
+    path: "dashboard",
+    component: AdminDashboardComponent
+},
+{
+    path: "users",
+    component: AdminUsersComponent
+},
+{
+    path: "countries",
+    component: AdminCountriesComponent
+},
+{
+    path: "cities",
+    component: AdminCitiesComponent
+},
+{
+    path: "skills",
+    component: AdminSkillsComponent
+},
+{
+    path: "skill-domain",
+    component: AdminSkillDomainComponent
+},
+{
+    path: "companies",
+    component: AdminCompaniesComponent
+},
+{
+    path: "users",
+    component: AdminUsersComponent
+},
+{
+    path: "",
+    redirectTo: "dashboard",
+    pathMatch: "full"
+}]
+
+const USER_ROUTES: Routes = [
+    {
+        path: "homepage",
+        component: HomepageComponent
+    },
+    {
+        path: "notifications",
+        component: NotificationsComponent
+    },
+    {
+        path: "requests",
+        component: RequestsComponent
+    },
+    {
+        path: "messages",
+        component: MessagingComponent
+    },
+    {
+        path: "profile",
+        component: ProfileComponent,
+    },
+    {
+        path: "",
+        pathMatch: "full",
+        redirectTo: "homepage"
+    }
+]
 
 export const routes: Routes = [
     {
@@ -52,85 +117,28 @@ export const routes: Routes = [
     {
         path: "",
         component: ContainerLayoutComponent,
-        // canActivateChild: [RoleGuard],
+        canActivateChild: [RoleGuard],
         resolve: {
             user: UserResolver
         },
-        runGuardsAndResolvers: "paramsChange",
+        runGuardsAndResolvers: "always",
         children: [
             {
-                path: "",
+                path: "user",
                 component: LayoutComponent,
-                // canActivateChild: [canActivateHomePage],
-                children: [
-                    {
-                        path: "homepage",
-                        component: HomepageComponent
-                    },
-                    {
-                        path: "notifications",
-                        component: NotificationsComponent
-                    },
-                    {
-                        path: "requests",
-                        component: RequestsComponent
-                    },
-                    {
-                        path: "messages",
-                        component: MessagingComponent
-                    },
-                    {
-                        path: "profile",
-                        component: ProfileComponent,
-                    },
-                ]
+                canActivateChild: [canActivateUserPages],
+                children: USER_ROUTES
             },
             {
                 path: "admin",
                 component: AdminLayoutComponent,
-                resolve: {
-                    user: UserResolver
-                },
-                // canActivateChild: [canActivateAdminPage],
-                children: [
-                    {
-                        path: "dashboard",
-                        component: AdminDashboardComponent
-                    },
-                    {
-                        path: "users",
-                        component: AdminUsersComponent
-                    },
-                    {
-                        path: "countries",
-                        component: AdminCountriesComponent
-                    },
-                    {
-                        path: "cities",
-                        component: AdminCitiesComponent
-                    },
-                    {
-                        path: "skills",
-                        component: AdminSkillsComponent
-                    },
-                    {
-                        path: "skill-domain",
-                        component: AdminSkillDomainComponent
-                    },
-                    {
-                        path: "companies",
-                        component: AdminCompaniesComponent
-                    },
-                    {
-                        path: "users",
-                        component: AdminUsersComponent
-                    },
-                    {
-                        path: "",
-                        redirectTo: "dashboard",
-                        pathMatch: "full"
-                    }
-                ]
+                canActivateChild: [canActivateAdminPages],
+                children: ADMIN_ROUTES
+            },
+            {
+                path: "",
+                pathMatch: "full",
+                redirectTo: "user"
             },
             {
                 path: "404",
@@ -145,3 +153,4 @@ export const routes: Routes = [
     },
 
 ];
+

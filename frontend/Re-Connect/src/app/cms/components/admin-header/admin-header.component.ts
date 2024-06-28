@@ -22,7 +22,7 @@ export class AdminHeaderComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ user }) => {
+    this.activatedRoute.parent?.data.subscribe(({ user }) => {
       this.loggedUser = user;
     })
   }

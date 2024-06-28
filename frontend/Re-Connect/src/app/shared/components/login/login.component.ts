@@ -74,7 +74,7 @@ export class LoginComponent {
           if (response.body.role == 0) {
             this.router.navigate(["/", "admin"]);
           } else {
-            this.router.navigate(['/', "homepage"]);
+            this.router.navigate(['/', "user"]);
           }
         },
         (error: any) => {
