@@ -1,4 +1,5 @@
 export const environment = {
     production: false,
-    API: "http://localhost:8080/"
+    AUTH_API: "http://localhost:8080/auth/",
+    API: "http://localhost:8080/api/"
 };

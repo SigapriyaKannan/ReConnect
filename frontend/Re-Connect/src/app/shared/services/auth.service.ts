@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,7 +8,7 @@ import { environment } from '../../../environments/environment';
     providedIn: 'root'
 })
 export class AuthService {
-    private baseUrl = environment.API;
+    private baseUrl = environment.AUTH_API;
 
     constructor(private http: HttpClient) {}
 
@@ -20,5 +21,27 @@ export class AuthService {
             token,
             newPassword
         }, { responseType: 'text' });
+    }
+
+    verifyEmail(body: { userType: number, email: string, password: string, reenteredPassword: string }) {
+        return this.http.post(environment.AUTH_API + "verify-email", body);
+    }
+
+    signUp(body: {
+        userType: number,
+        userEmail: string,
+        password: string,
+        reenteredPassword: string,
+        company: number,
+        experience: number,
+        skills: [
+            number
+        ],
+        country: number,
+        city: number,
+        resume: string,
+        profile: string
+    }) {
+        return this.http.post(environment.AUTH_API + "signup", body);
     }
 }

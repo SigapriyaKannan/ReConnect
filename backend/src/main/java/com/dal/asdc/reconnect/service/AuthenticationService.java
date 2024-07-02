@@ -73,10 +73,10 @@ public class AuthenticationService
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
 
-        if(!validatePassword(signUpFirstPhaseRequest.getPassword()))
-        {
-            signUpFirstPhaseBody.setPasswordError(true);
-        }
+//        if(!validatePassword(signUpFirstPhaseRequest.getPassword()))
+//        {
+//            signUpFirstPhaseBody.setPasswordError(true);
+//        }
 
         if(!matchPasswordWithConfirmPassword(signUpFirstPhaseRequest.getPassword(), signUpFirstPhaseRequest.getReenteredPassword()))
         {
@@ -132,7 +132,7 @@ public class AuthenticationService
     /**
      * This method will add the user,user's details and skill details in the database.
      */
-    public Boolean AddNewUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
+    public boolean addNewUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
         if(validateSecondPhase(signUpSecondPhaseRequest))
         {
@@ -159,18 +159,18 @@ public class AuthenticationService
     {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
-        Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
+        Optional<Company> company = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
 
         Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
 
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
-        if (userType.isEmpty() || comapany.isEmpty() || city.isEmpty() || country.isEmpty())
+        if (userType.isEmpty() || company.isEmpty() || city.isEmpty() || country.isEmpty())
         {
             return false;
         }
 
-        for(Integer skillId : signUpSecondPhaseRequest.getSkill())
+        for(Integer skillId : signUpSecondPhaseRequest.getSkills())
         {
             Optional<Skills> skills = skillsRepository.findById(skillId);
             if(skills.isEmpty())
@@ -191,7 +191,7 @@ public class AuthenticationService
         {
             return false;
         }
-        for(Integer skillId : signUpSecondPhaseRequest.getSkill())
+        for(Integer skillId : signUpSecondPhaseRequest.getSkills())
         {
             Optional<Skills> skills = skillsRepository.findById(skillId);
             if(skills.isEmpty())
@@ -279,5 +279,9 @@ public class AuthenticationService
             return users;
         }
         return Optional.empty();
+    }
+
+    public Users verifyEmailExists(String email) {
+        return usersRepository.findByUserEmail(email);
     }
 }

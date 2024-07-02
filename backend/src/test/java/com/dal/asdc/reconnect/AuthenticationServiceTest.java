@@ -138,7 +138,7 @@ public class AuthenticationServiceTest
         request.setCompany(1);
         request.setCity(1);
         request.setCountry(1);
-        request.setSkill(List.of(new Integer[]{1, 2}));
+        request.setSkills(List.of(new Integer[]{1, 2}));
 
         when(userTypeRepository.findById(anyInt())).thenReturn(Optional.of(new UserType()));
         when(companyRepository.findById(anyInt())).thenReturn(Optional.of(new Company()));
@@ -148,7 +148,7 @@ public class AuthenticationServiceTest
         when(usersRepository.findByUserEmail(anyString())).thenReturn(new Users());
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        assertTrue(authenticationService.AddNewUser(request));
+        assertTrue(authenticationService.addNewUser(request));
     }
 
 
@@ -163,7 +163,7 @@ public class AuthenticationServiceTest
         request.setCompany(1);
         request.setCity(1);
         request.setCountry(1);
-        request.setSkill(List.of(new Integer[]{1, 2}));
+        request.setSkills(List.of(new Integer[]{1, 2}));
 
         when(userTypeRepository.findById(anyInt())).thenReturn(Optional.of(new UserType()));
         when(companyRepository.findById(anyInt())).thenReturn(Optional.of(new Company()));
@@ -173,7 +173,7 @@ public class AuthenticationServiceTest
         when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        assertFalse(authenticationService.AddNewUser(request));
+        assertFalse(authenticationService.addNewUser(request));
     }
 
 

@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SkillsDTO
 {
-    private int id;
-    private String name;
+    private int skillId;
+    private String skillName;
+    private String domainName;
 }
