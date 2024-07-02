@@ -57,7 +57,7 @@ public class JWTService {
         return jwtExpiration;
     }
 
-    private String buildToken(
+    public String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
             long expiration
