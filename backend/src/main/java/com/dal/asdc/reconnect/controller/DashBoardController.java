@@ -26,6 +26,8 @@ public class DashBoardController
 
         System.out.println(User.getUserEmail());
 
+        System.out.println(User.getUserID());
+
         var email =   SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println(email);
 
