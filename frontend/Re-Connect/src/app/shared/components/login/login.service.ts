@@ -10,7 +10,7 @@ import { environment } from "../../../../environments/environment";
 })
 export class LoginService {
 
-    constructor(private http: HttpClient) { } // Inject the AuthService
+    constructor(private http: HttpClient) { }
 
     login(credentials: { userEmail: string; password: string }): Observable<any> {
         return this.http.post<any>(environment.API + 'auth/login', credentials).pipe(
