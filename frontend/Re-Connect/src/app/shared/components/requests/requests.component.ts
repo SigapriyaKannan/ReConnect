@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 import { OrderListModule } from 'primeng/orderlist';
 import { CommonModule } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'rc-requests',
   standalone: true,
-  imports: [TabViewModule,OrderListModule,CommonModule],
+  imports: [TabViewModule,DragDropModule,OrderListModule,CommonModule],
   templateUrl: './requests.component.html',
   styleUrl: './requests.component.scss'
 })
