@@ -18,8 +18,7 @@ build_frontend:
   image: "node:20"
   before_script:
     - cd ./frontend/Re-Connect
-    - npm install
-    - npm install @angular/cdk --legacy-peer-deps
+    - npm install --legacy-peer-deps
   script:
     - npm run build
   only:
