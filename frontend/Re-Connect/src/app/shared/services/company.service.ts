@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 export interface Company {
   companyId: number,
@@ -14,6 +15,6 @@ export class CompanyService {
   constructor(private http: HttpClient) { }
 
   getCompanies() {
-    return this.http.get<Company[]>("");
+    return this.http.get<Company[]>(environment.API + "companies/getAllCompanies");
   }
 }

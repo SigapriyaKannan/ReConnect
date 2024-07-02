@@ -19,6 +19,7 @@ build_frontend:
   before_script:
     - cd ./frontend/Re-Connect
     - npm install
+    - npm install @angular/cdk --legacy-peer-deps
   script:
     - npm run build
 

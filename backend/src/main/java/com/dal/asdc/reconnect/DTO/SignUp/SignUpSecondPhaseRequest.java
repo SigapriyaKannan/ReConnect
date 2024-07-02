@@ -12,10 +12,10 @@ public class SignUpSecondPhaseRequest
     private int userType;
     private String userEmail;
     private String password;
-    private String reenteredPassword;
+        private String reenteredPassword;
     private int company;
     private int experience;
-    private List<Integer> skill;
+    private List<Integer> skills;
     private int country;
     private int city;
     private String resume;

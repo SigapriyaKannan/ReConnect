@@ -1,6 +1,7 @@
 package com.dal.asdc.reconnect.service;
 
 import com.dal.asdc.reconnect.DTO.City.CityDTO;
+import com.dal.asdc.reconnect.DTO.City.CityRequestDTO;
 import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CityRepository;
@@ -20,10 +21,9 @@ public class CityService {
 
     /**
      * Retrieves the cities associated with a given country ID.
-     * @param countryId the ID of the country for which cities are to be retrieved.
-     * @return a CityResponseBody object containing the list of cities for the specified country.
+     * @param country the country for which cities are to be retrieved.
+     * @return a list of CityDTO objects containing for the specified country.
      */
-
     public List<CityDTO> getAllCitiesByCountry(Country country) {
         List<CityDTO> listOfCities = new ArrayList<>();
         List<City> listOfCitiesFromDatabase = cityRepository.findCitiesByCountryCountryId(country.getCountryId());
@@ -34,6 +34,11 @@ public class CityService {
         return listOfCities;
     }
 
+    /**
+     * Retrieves a list of CityDTO objects representing all cities.
+     *
+     * @return List of CityDTO objects containing city information.
+     */
     public List<CityDTO> getAllCities() {
         List<CityDTO> listOfCities = new ArrayList<>();
         List<City> listOfCitiesFromDatabase = cityRepository.findAll();
@@ -44,23 +49,84 @@ public class CityService {
         return  listOfCities;
     }
 
+    /**
+     * Retrieves a city by its ID.
+     *
+     * @param cityId The ID of the city to retrieve.
+     * @return City object if found, otherwise null.
+     */
     public City getCityById(int cityId) {
         Optional<City> city = cityRepository.findById(cityId);
         return city.orElse(null);
     }
 
+    /**
+     * Retrieves a city by its name.
+     *
+     * @param cityName The name of the city to retrieve.
+     * @return City object if found, otherwise null.
+     */
     public City getCityByCityName(String cityName) {
         return cityRepository.findCityByCityName(cityName);
     }
 
+    /**
+     * Retrieves a city by its name and country ID.
+     *
+     * @param cityName The name of the city to retrieve.
+     * @param countryId The ID of the country the city belongs to.
+     * @return City object if found, otherwise null.
+     */
     public City getCityByCityNameAndCountryId(String cityName, int countryId) {
         return cityRepository.findCityByCityNameAndCountryCountryId(cityName, countryId);
     }
 
+    /**
+     * Adds a new city to the database.
+     *
+     * @param cityName The name of the city to add.
+     * @param country The Country object representing the country the city belongs to.
+     * @return The newly added City object.
+     */
     public City addCity(String cityName, Country country) {
         City newCity = new City();
         newCity.setCityName(cityName);
         newCity.setCountry(country);
         return cityRepository.save(newCity);
+    }
+
+
+    /**
+     * Modifies an existing city based on the provided CityRequestDTO.
+     *
+     * @param cityDTO The CityRequestDTO object containing the updated city information.
+     * @return The modified City object if found and updated, otherwise null.
+     */
+    public City modifyCity(CityRequestDTO cityDTO) {
+        Optional<City> cityFromDatabase = cityRepository.findById(cityDTO.getCityId());
+        if(cityFromDatabase.isPresent()) {
+            City existingCity = cityFromDatabase.get();
+            existingCity.setCityName(cityDTO.getCityName());
+            cityRepository.save(existingCity);
+            return existingCity;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Deletes a city by its ID.
+     *
+     * @param cityId The ID of the city to delete.
+     * @return True if the city is successfully deleted, false otherwise.
+     */
+    public boolean deleteCity(int cityId) {
+        Optional<City> cityFromDatabase = cityRepository.findById(cityId);
+        if(cityFromDatabase.isPresent()) {
+            cityRepository.deleteById(cityId);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
