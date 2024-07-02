@@ -18,9 +18,13 @@ build_frontend:
   image: "node:20"
   before_script:
     - cd ./frontend/Re-Connect
-    - npm install --legacy-peer-deps
+    - npm install
+    - npm install @angular/cdk --legacy-peer-deps
   script:
     - npm run build
+  only:
+    - merge_requests
+    - branches
 
 build_backend:
   stage: build_backend
@@ -32,6 +36,9 @@ build_backend:
   artifacts:
     paths:
       - ./backend/target/reconnect-0.0.1-SNAPSHOT.jar
+  only:
+    - merge_requests
+    - branches
 
 # Test stage
 test:
@@ -41,6 +48,9 @@ test:
     - cd ./backend
   script:
     - mvn test
+  only:
+    - merge_requests
+    - branches
 
 # push stage
 push:
@@ -65,6 +75,7 @@ push:
     - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
     - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
   only:
+    - main
     - dev
 
 deploy_local:
@@ -88,9 +99,8 @@ deploy_local:
     - docker rm $APP_CONTAINER_NAME || true
     - docker run -d --name $APP_CONTAINER_NAME -e $SPRING_PROFILES_ACTIVE -p $APP_PORT:$APP_PORT docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
   rules:
-    - if: '$SPRING_PROFILES_ACTIVE == "dev"'
-  only:
-    - dev
+    - if: '$SPRING_PROFILES_ACTIVE == "dev" && ($CI_MERGE_REQUEST_TARGET_BRANCH == "main" || $CI_MERGE_REQUEST_TARGET_BRANCH == "dev")'
+
 
 deploy_prod:
   stage: deploy
@@ -104,6 +114,4 @@ deploy_prod:
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker container rm -f $APP_CONTAINER_NAME || true"
     - sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no $VM_USER@$SERVER_NAME "echo $VM_PASSWORD | sudo -S docker run -d -p $APP_PORT:$APP_PORT -e SPRING_PROFILES_ACTIVE="$SPRING_PROFILES_ACTIVE" --name $APP_CONTAINER_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME"
   rules:
-    - if: '$SPRING_PROFILES_ACTIVE == "prod"'
-  only:
-    - dev
+    - if: '$SPRING_PROFILES_ACTIVE == "prod" && ($CI_MERGE_REQUEST_TARGET_BRANCH == "main" || $CI_MERGE_REQUEST_TARGET_BRANCH == "dev")'
