@@ -1,6 +1,6 @@
 stages:
-  - build_frontend
-  - build_backend
+  - frontend
+  - backend
   - test
   - push
   - deploy
@@ -14,7 +14,7 @@ before_script:
 
 # Build stage
 build_frontend:
-  stage: build_frontend
+  stage: frontend
   image: "node:20"
   before_script:
     - cd ./frontend/Re-Connect
@@ -26,7 +26,7 @@ build_frontend:
     paths:
       - node_modules
   script:
-    -|
+    - |
       if [ "$CI_COMMIT_BRANCH" == "main" ]; then
         npm run build --configuration=production
       else
@@ -42,7 +42,7 @@ build_frontend:
     - branches
 
 build_backend:
-  stage: build_backend
+  stage: backend
   image: maven:3.8.5-openjdk-17
   before_script:
     - cd ./backend
@@ -57,7 +57,9 @@ build_backend:
 
 # Test stage
 backend_test:
-  stage: test
+  stage: backend
+  needs:
+    - build_backend
   image: maven:3.8.5-openjdk-17
   before_script:
     - cd ./backend
