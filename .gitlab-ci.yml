@@ -70,7 +70,10 @@ backend_test:
   script:
     - mvn test
   only:
-    - merge_requests
+    changes:
+      - backend/
+    refs:
+      - merge_requests
 
 # push stage
 push:
