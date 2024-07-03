@@ -27,9 +27,9 @@ build_frontend:
   script:
     - |
       if [ "$CI_COMMIT_BRANCH" == "main" ]; then
-        ng build --configuration=production
+        npm run build:production
       else
-        ng build --configuration=development
+        npm run build:development
       fi
   artifacts:
     untracked: false
