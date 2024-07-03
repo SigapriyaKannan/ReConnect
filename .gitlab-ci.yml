@@ -79,6 +79,7 @@ backend_test:
       - .gitlab-ci.yml
     refs:
       - merge_requests
+      - branches
 
 # push stage
 push:
