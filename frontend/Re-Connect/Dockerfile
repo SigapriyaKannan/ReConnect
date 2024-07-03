@@ -5,7 +5,7 @@ FROM nginx:latest
 WORKDIR /usr/share/nginx/html
 
 # Copy the built Angular application files into the container
-COPY dist/ .
+COPY dist/re-connect .
 
 # Expose port 80 to allow external access
 EXPOSE 80
