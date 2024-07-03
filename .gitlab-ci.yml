@@ -37,7 +37,11 @@ build_frontend:
     paths:
       - ./frontend/Re-Connect/dist
   only:
-    - merge_requests
+    changes:
+      - frontend/
+    refs:
+      - merge_requests
+    
 
 build_backend:
   stage: build
@@ -50,8 +54,10 @@ build_backend:
     paths:
       - ./backend/target/reconnect-0.0.1-SNAPSHOT.jar
   only:
-    - merge_requests
-    - branches
+    changes:
+      - backend/
+    refs:
+      - merge_requests
 
 # Test stage
 backend_test:
