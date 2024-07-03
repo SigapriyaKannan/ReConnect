@@ -18,9 +18,25 @@ build_frontend:
   image: "node:20"
   before_script:
     - cd ./frontend/Re-Connect
-    - npm install --legacy-peer-deps
+    - npm install --legacy-peer-deps --prefer-offline
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - node_modules
   script:
-    - npm run build
+    -|
+      if [ "$CI_COMMIT_BRANCH" == "main" ]; then
+        npm run build --configuration=production
+      else
+        npm run build --configuration=development
+      fi
+  artifacts:
+    untracked: false
+    when: on_success
+    paths:
+      - ./frontend/Re-Connect/dist
   only:
     - merge_requests
     - branches
@@ -40,7 +56,7 @@ build_backend:
     - branches
 
 # Test stage
-test:
+backend_test:
   stage: test
   image: maven:3.8.5-openjdk-17
   before_script:
@@ -69,16 +85,23 @@ push:
     - cd ./backend
   script:
     - docker info
-    - docker build -t $APP_NAME:$CI_COMMIT_REF_NAME .
+    - docker-compose build
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PWD" docker.io
     - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
-    - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
+    - docker-compose up -d
+    - docker-compose push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
+    # - docker build -t $APP_NAME:$CI_COMMIT_REF_NAME .
+    # - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PWD" docker.io
+    # - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
+    # - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
   only:
     - main
     - dev
 
 deploy_local:
   stage: deploy
+  needs:
+    - push
   image: docker:20
   tags:
     - dalfcs_docker_kvm
@@ -103,6 +126,8 @@ deploy_local:
 
 deploy_prod:
   stage: deploy
+  needs:
+    - push
   image: alpine:latest
   before_script:
     - apk update && apk add openssh-client sshpass
