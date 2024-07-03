@@ -38,7 +38,6 @@ build_frontend:
       - ./frontend/Re-Connect/dist
   only:
     - merge_requests
-    - branches
 
 build_backend:
   stage: build
@@ -66,7 +65,6 @@ backend_test:
     - mvn test
   only:
     - merge_requests
-    - branches
 
 # push stage
 push:
