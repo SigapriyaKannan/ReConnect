@@ -42,6 +42,7 @@ build_frontend:
       - .gitlab-ci.yml
     refs:
       - merge_requests
+      - branches
     
 
 build_backend:
@@ -60,6 +61,7 @@ build_backend:
       - .gitlab-ci.yml
     refs:
       - merge_requests
+      - branches
 
 # Test stage
 backend_test:
@@ -77,6 +79,7 @@ backend_test:
       - .gitlab-ci.yml
     refs:
       - merge_requests
+      - branches
 
 # push stage
 push:
