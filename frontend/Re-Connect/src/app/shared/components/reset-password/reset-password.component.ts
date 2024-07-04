@@ -10,7 +10,6 @@ import {
     AbstractControl,
     ValidationErrors,
 } from '@angular/forms';
-import { MessageService } from 'primeng/api';
 import { AuthService } from '../../services/auth.service';
 import { ToastModule } from "primeng/toast";
 import { ButtonModule } from "primeng/button";
