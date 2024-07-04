@@ -69,7 +69,7 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_UserAlreadyPresent()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
@@ -84,7 +84,7 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_UserNotPresent()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
@@ -100,7 +100,7 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_ReenterPasswordError()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setReenteredPassword("DifferentPassword1!");
 
@@ -116,7 +116,7 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_InvalidEmail()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("invalid-email");
+        request.setEmail("invalid-email");
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
@@ -132,7 +132,7 @@ public class AuthenticationServiceTest
     void testAddNewUser_Success()
     {
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setUserType(1);
         request.setCompany(1);
@@ -157,7 +157,7 @@ public class AuthenticationServiceTest
     void testAddNewUser_NotSuccess()
     {
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setUserType(1);
         request.setCompany(1);
@@ -181,7 +181,7 @@ public class AuthenticationServiceTest
     void testAuthenticate_Failure()
     {
         LoginRequest request = new LoginRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("WrongPassword1!");
 
         Users user = new Users();

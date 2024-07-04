@@ -15,6 +15,6 @@ export class CityService {
   constructor(private http: HttpClient) { }
 
   getCities(countryId: number) {
-    return this.http.get<City[]>(environment.API + `cities/getAllCities/${countryId}`);
+    return this.http.get<City[]>(environment.API + `cities/getAllCities?countryId=${countryId}`);
   }
 }

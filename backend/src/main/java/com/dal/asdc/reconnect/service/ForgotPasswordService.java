@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -42,20 +43,20 @@ public class ForgotPasswordService {
      * @param email the email address of the user who requested a password reset.
      */
     public void sendResetEmail(String email) {
-        Users user = usersRepository.findByUserEmail(email);
+        Optional<Users> user = usersRepository.findByUserEmail(email);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         String token = UUID.randomUUID().toString();
-        user.setResetToken(token);
-        usersRepository.save(user);
+        user.get().setResetToken(token);
+        usersRepository.save(user.get());
 
         String resetUrl = resetPasswordUrl + token;
         String subject = "Password Reset Request";
         String message = "To reset your password, click the link below:\n" + resetUrl;
 
-        sendEmail(user.getUserEmail(), subject, message);
+        sendEmail(user.get().getUserEmail(), subject, message);
     }
 
     /**

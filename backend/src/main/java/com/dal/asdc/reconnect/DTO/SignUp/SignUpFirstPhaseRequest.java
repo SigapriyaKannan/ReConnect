@@ -9,7 +9,7 @@ import lombok.Data;
 public class SignUpFirstPhaseRequest
 {
     private int userType;
-    private String userEmail;
+    private String email;
     private String password;
     private String reenteredPassword;
 }
