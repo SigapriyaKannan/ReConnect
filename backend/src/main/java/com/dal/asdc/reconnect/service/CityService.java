@@ -67,7 +67,8 @@ public class CityService {
      * @return City object if found, otherwise null.
      */
     public City getCityByCityName(String cityName) {
-        return cityRepository.findCityByCityName(cityName);
+        Optional<City> city = cityRepository.findCityByCityName(cityName);
+        return city.orElse(null);
     }
 
     /**
