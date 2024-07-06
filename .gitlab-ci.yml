@@ -43,6 +43,8 @@ build_frontend:
     refs:
       - merge_requests
       - branches
+      - main
+      - dev
     
 
 build_backend:
@@ -62,6 +64,8 @@ build_backend:
     refs:
       - merge_requests
       - branches
+      - main
+      - dev
 
 # Test stage
 test_backend:
@@ -80,6 +84,8 @@ test_backend:
     refs:
       - merge_requests
       - branches
+      - main
+      - dev
 
 # push frontend
 push_frontend:
