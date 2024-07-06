@@ -1,4 +1,4 @@
-package com.dal.asdc.reconnect.DTO.Chat;
+package com.dal.asdc.reconnect.dto.Chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
