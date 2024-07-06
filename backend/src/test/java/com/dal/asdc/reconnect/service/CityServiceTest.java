@@ -1,7 +1,5 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.DTO.City.CityDTO;
-import com.dal.asdc.reconnect.DTO.City.CityRequestDTO;
 import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CityRepository;
@@ -12,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;

@@ -230,35 +230,6 @@
 				<configuration>
 					<workingDirectory>../frontend/Re-Connect</workingDirectory>
 				</configuration>
-				<executions>
-					<execution>
-						<id>three</id>
-						<phase>install</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>npm</executable>
-							<arguments>
-								<argument>install</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>Frontend</id>
-						<phase>install</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>npm</executable>
-							<arguments>
-								<argument>run</argument>
-								<argument>build</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
