@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MessagesService
@@ -24,11 +25,11 @@ public class MessagesService
 
     public boolean saveMessage(String senderEmail, String to, String context)
     {
-        Users sender = usersRepository.findByUserEmail(senderEmail);
-        Users receiver = usersRepository.findByUserEmail(to);
+        Optional<Users> sender = usersRepository.findByUserEmail(senderEmail);
+        Optional<Users> receiver = usersRepository.findByUserEmail(to);
         Messages message = new Messages();
-        message.setSender(sender);
-        message.setReceiver(receiver);
+        message.setSender(sender.get());
+        message.setReceiver(receiver.get());
         message.setMessageContent(context);
         message.setTime(LocalDateTime.now());
         message.setRead(false);
