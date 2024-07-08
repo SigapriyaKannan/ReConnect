@@ -1,6 +1,6 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.User.UserDetails;
+import com.dal.asdc.reconnect.dto.User.UserDetails;
 import com.dal.asdc.reconnect.model.RefreshToken;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.*;
