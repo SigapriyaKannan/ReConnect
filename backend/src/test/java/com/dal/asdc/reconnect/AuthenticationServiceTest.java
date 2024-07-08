@@ -1,9 +1,9 @@
 package com.dal.asdc.reconnect;
 
-import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
+import com.dal.asdc.reconnect.dto.LoginDto.LoginRequest;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import com.dal.asdc.reconnect.service.AuthenticationService;

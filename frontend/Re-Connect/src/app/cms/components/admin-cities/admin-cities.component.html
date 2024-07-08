@@ -1,1 +1,65 @@
-<p>admin-cities works!</p>
+<div class="cities">
+    <h2>Cities for {{ selectedCountry.countryName }}</h2>
+    <button class="btn btn-primary" (click)="showAddCityDialog()">Add City</button>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>City ID</th>
+            <th>City Name</th>
+            <th>Country ID</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let city of cities">
+            <td>{{ city.cityId }}</td>
+            <td>{{ city.cityName }}</td>
+            <td>{{ city.countryId }}</td>
+            <td>
+                <button class="btn btn-info" (click)="showEditCityDialog(city)">Edit</button>
+                <button class="btn btn-danger" (click)="onDeleteCity(city.cityId)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <p-dialog header="Add City" [(visible)]="displayAddDialog" modal="true" [closable]="false">
+        <form [formGroup]="addCityForm" (ngSubmit)="onAddCitySubmit()">
+            <div class="form-group">
+                <label for="addCityName">City Name</label>
+                <input type="text" id="addCityName" formControlName="cityName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="addCountry">Country</label>
+                <select id="addCountry" formControlName="countryId" class="form-control">
+                    <option *ngFor="let country of countries" [value]="country.countryId">{{ country.countryName }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Add City</button>
+                <button type="button" class="btn btn-secondary" (click)="hideAddDialog()">Cancel</button>
+            </div>
+        </form>
+    </p-dialog>
+
+    <p-dialog header="Edit City" [(visible)]="displayEditDialog" modal="true" [closable]="false">
+        <form [formGroup]="editCityForm" (ngSubmit)="onEditCitySubmit()">
+            <input type="hidden" formControlName="cityId">
+            <div class="form-group">
+                <label for="editCityName">City Name</label>
+                <input type="text" id="editCityName" formControlName="cityName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editCountry">Country</label>
+                <select id="editCountry" formControlName="countryId" class="form-control">
+                    <option *ngFor="let country of countries" [value]="country.countryId">{{ country.countryName }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-secondary" (click)="hideEditDialog()">Cancel</button>
+            </div>
+        </form>
+    </p-dialog>
+</div>

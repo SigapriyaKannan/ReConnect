@@ -1,9 +1,8 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.Chat.ChatHistoryResponseBody;
-import com.dal.asdc.reconnect.DTO.Chat.ChatMessageRequest;
-import com.dal.asdc.reconnect.DTO.City.CityDTO;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
+import com.dal.asdc.reconnect.dto.Chat.ChatMessageRequest;
+import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.service.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

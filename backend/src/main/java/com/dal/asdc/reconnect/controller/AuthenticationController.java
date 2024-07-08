@@ -1,14 +1,14 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
-import com.dal.asdc.reconnect.DTO.LoginDTO.LoginResponseBody;
-import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenRequest;
-import com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenResponse;
-import com.dal.asdc.reconnect.DTO.ResetPassword.ResetPasswordRequest;
-import com.dal.asdc.reconnect.DTO.Response;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
+import com.dal.asdc.reconnect.dto.LoginDto.LoginRequest;
+import com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody;
+import com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenRequest;
+import com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenResponse;
+import com.dal.asdc.reconnect.dto.ResetPassword.ResetPasswordRequest;
+import com.dal.asdc.reconnect.dto.Response;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.RefreshToken;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.*;
@@ -16,7 +16,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
