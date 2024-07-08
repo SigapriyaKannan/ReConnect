@@ -1,9 +1,9 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.dto.City.CityDTO;
-import com.dal.asdc.reconnect.dto.City.CityRequestDTO;
-import com.dal.asdc.reconnect.dto.Mappers.CityMapper;
-import com.dal.asdc.reconnect.dto.Response;
+import com.dal.asdc.reconnect.DTO.City.CityDTO;
+import com.dal.asdc.reconnect.DTO.City.CityRequestDTO;
+import com.dal.asdc.reconnect.DTO.Mappers.CityMapper;
+import com.dal.asdc.reconnect.DTO.Response;
 import com.dal.asdc.reconnect.exception.CityNotFoundException;
 import com.dal.asdc.reconnect.exception.CountryNotFoundException;
 import com.dal.asdc.reconnect.model.City;

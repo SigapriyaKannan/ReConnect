@@ -1,7 +1,7 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.dto.Response;
-import com.dal.asdc.reconnect.dto.Skill.SkillDomainDTO;
+import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.DTO.Skill.SkillDomainDTO;
 import com.dal.asdc.reconnect.service.SkillDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

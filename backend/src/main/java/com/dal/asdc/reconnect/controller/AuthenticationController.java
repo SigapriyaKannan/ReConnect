@@ -1,6 +1,6 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.dto.User.UserDetails;
+import com.dal.asdc.reconnect.DTO.User.UserDetails;
 import com.dal.asdc.reconnect.model.RefreshToken;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.*;
@@ -43,7 +43,7 @@ public class AuthenticationController {
      * @return Response object containing the validation results along with status and message.
      */
     @PostMapping("/verify-email")
-    public ResponseEntity<?> signUp(@RequestBody com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest) {
+    public ResponseEntity<?> signUp(@RequestBody com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest) {
         Map<String, Boolean> responseMap = new HashMap<>();
         Users user = authenticationService.getUserByEmail(signUpFirstPhaseRequest.getEmail());
 
@@ -60,7 +60,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(responseMap);
         }
 
-        com.dal.asdc.reconnect.dto.Response<?> response = new com.dal.asdc.reconnect.dto.Response<>(HttpStatus.OK.value(), "Verified", null);
+        com.dal.asdc.reconnect.DTO.Response<?> response = new com.dal.asdc.reconnect.DTO.Response<>(HttpStatus.OK.value(), "Verified", null);
         return ResponseEntity.ok(response);
 
 
@@ -77,18 +77,18 @@ public class AuthenticationController {
      */
     @PostMapping("/signup")
     @Transactional
-    public ResponseEntity<?> signUpFinal(@RequestBody com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
-        com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest = convertIntoFirstPhase(signUpSecondPhaseRequest);
+    public ResponseEntity<?> signUpFinal(@RequestBody com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
+        com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest = convertIntoFirstPhase(signUpSecondPhaseRequest);
 
-        com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
+        com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
 
         if (signUpFirstPhaseBody.areAllValuesNull() && (authenticationService.addNewUser(signUpSecondPhaseRequest))) {
-            com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody> response = new com.dal.asdc.reconnect.dto.Response<>(200, "Success", signUpFirstPhaseBody);
+            com.dal.asdc.reconnect.DTO.Response<com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody> response = new com.dal.asdc.reconnect.DTO.Response<>(200, "Success", signUpFirstPhaseBody);
             return ResponseEntity.ok(response);
 
         }
 
-        com.dal.asdc.reconnect.dto.Response<Void> response = new com.dal.asdc.reconnect.dto.Response<>(403, "UnSuccessful", null);
+        com.dal.asdc.reconnect.DTO.Response<Void> response = new com.dal.asdc.reconnect.DTO.Response<>(403, "UnSuccessful", null);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
@@ -97,8 +97,8 @@ public class AuthenticationController {
      * In the second phase of signup, all the information of first phase will pass again which will converted into
      * first Phase and will check for first phase again.
      */
-    private com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest convertIntoFirstPhase(com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
-        com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest = new com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest();
+    private com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest convertIntoFirstPhase(com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
+        com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest = new com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest();
         signUpFirstPhaseRequest.setPassword(signUpSecondPhaseRequest.getPassword());
         signUpFirstPhaseRequest.setEmail(signUpSecondPhaseRequest.getEmail());
         signUpFirstPhaseRequest.setReenteredPassword(signUpSecondPhaseRequest.getReenteredPassword());
@@ -116,17 +116,17 @@ public class AuthenticationController {
      * @return ResponseEntity containing either a successful login response or an error response.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody com.dal.asdc.reconnect.dto.LoginDto.LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticate(@RequestBody com.dal.asdc.reconnect.DTO.LoginDto.LoginRequest loginRequest) {
         Optional<Users> authenticatedUser = authenticationService.authenticate(loginRequest);
 
         if (authenticatedUser.isEmpty()) {
-            com.dal.asdc.reconnect.dto.Response<Void> response = new com.dal.asdc.reconnect.dto.Response<>(401, "UnSuccessful", null);
+            com.dal.asdc.reconnect.DTO.Response<Void> response = new com.dal.asdc.reconnect.DTO.Response<>(401, "UnSuccessful", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
         String jwtToken = jwtService.generateToken(authenticatedUser.get());
-        com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody> response = getLoginResponse(loginRequest, jwtToken, refreshToken);
+        com.dal.asdc.reconnect.DTO.Response<com.dal.asdc.reconnect.DTO.LoginDto.LoginResponseBody> response = getLoginResponse(loginRequest, jwtToken, refreshToken);
 
         return ResponseEntity.ok(response);
     }
@@ -140,13 +140,13 @@ public class AuthenticationController {
      * @param refreshToken The refresh token generated for the authenticated user.
      * @return LoginResponse object containing the login details.
      */
-    private com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody> getLoginResponse(com.dal.asdc.reconnect.dto.LoginDto.LoginRequest loginRequest, String jwtToken, RefreshToken refreshToken) {
-        com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody loginResponseBody = new com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody();
+    private com.dal.asdc.reconnect.DTO.Response<com.dal.asdc.reconnect.DTO.LoginDto.LoginResponseBody> getLoginResponse(com.dal.asdc.reconnect.DTO.LoginDto.LoginRequest loginRequest, String jwtToken, RefreshToken refreshToken) {
+        com.dal.asdc.reconnect.DTO.LoginDto.LoginResponseBody loginResponseBody = new com.dal.asdc.reconnect.DTO.LoginDto.LoginResponseBody();
         loginResponseBody.setToken(jwtToken);
         loginResponseBody.setExpiresIn(jwtService.getExpirationTime());
         loginResponseBody.setRefreshToken(refreshToken.getToken());
         loginResponseBody.setUserEmail(loginRequest.getEmail());
-        return new com.dal.asdc.reconnect.dto.Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
+        return new com.dal.asdc.reconnect.DTO.Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
     }
 
 
@@ -159,10 +159,10 @@ public class AuthenticationController {
      * @return JwtResponse object containing the new JWT token.
      */
     @PostMapping("/refreshToken")
-    public com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenResponse refreshToken(@RequestBody com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenRequest refreshTokenRequest) {
+    public com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenResponse refreshToken(@RequestBody com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenRequest refreshTokenRequest) {
         return refreshTokenService.findByToken(refreshTokenRequest.getToken()).map(refreshTokenService::verifyExpiration).map(RefreshToken::getUsers).map(userInfo -> {
             String accessToken = jwtService.generateToken(userInfo);
-            return com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenResponse.builder().accessToken(accessToken).token(refreshTokenRequest.getToken()).build();
+            return com.dal.asdc.reconnect.DTO.RefreshToken.RefreshTokenResponse.builder().accessToken(accessToken).token(refreshTokenRequest.getToken()).build();
         }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
     }
 
@@ -188,7 +188,7 @@ public class AuthenticationController {
      * @return a ResponseEntity indicating the result of the operation.
      */
     @PostMapping("/resetPassword")
-    public ResponseEntity<String> resetPassword(@RequestBody com.dal.asdc.reconnect.dto.ResetPassword.ResetPasswordRequest request) {
+    public ResponseEntity<String> resetPassword(@RequestBody com.dal.asdc.reconnect.DTO.ResetPassword.ResetPasswordRequest request) {
         boolean result = forgotPasswordService.resetPassword(request.getToken(), request.getNewPassword());
         if (result) {
             return ResponseEntity.ok("Password reset successful.");

@@ -1,6 +1,6 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.dto.Skill.SkillDomainDTO;
+import com.dal.asdc.reconnect.DTO.Skill.SkillDomainDTO;
 import com.dal.asdc.reconnect.model.SkillDomain;
 import com.dal.asdc.reconnect.repository.SkillDomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
