@@ -45,6 +45,7 @@ public class SecurityConfiguration
                             .requestMatchers("/api/cities/**").permitAll()
                             .requestMatchers("/api/skills/**").permitAll()
                             .requestMatchers("/api/companies/**").permitAll()
+                            .requestMatchers("/api/skillDomains/**").permitAll()
                             .anyRequest().authenticated()
                     )
                     .sessionManagement(session -> session

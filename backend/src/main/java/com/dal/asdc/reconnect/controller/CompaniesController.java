@@ -1,8 +1,8 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.Company.CompanyDTO;
-import com.dal.asdc.reconnect.DTO.Mappers.CompanyMapper;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Company.CompanyDTO;
+import com.dal.asdc.reconnect.dto.Mappers.CompanyMapper;
+import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.model.Company;
 import com.dal.asdc.reconnect.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,11 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.City.CityDTO;
-import com.dal.asdc.reconnect.DTO.City.CityRequestDTO;
-import com.dal.asdc.reconnect.DTO.Mappers.CityMapper;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.City.CityDTO;
+import com.dal.asdc.reconnect.dto.City.CityRequestDTO;
+import com.dal.asdc.reconnect.dto.Mappers.CityMapper;
+import com.dal.asdc.reconnect.dto.Response;
+import com.dal.asdc.reconnect.exception.CityNotFoundException;
+import com.dal.asdc.reconnect.exception.CountryNotFoundException;
 import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.service.CityService;
@@ -108,21 +110,19 @@ public class CitiesController {
      */
     @PutMapping("/editCity")
     public ResponseEntity<?> editCity(@RequestBody CityRequestDTO cityRequestDTO) {
-        City existingCity = cityService.getCityById(cityRequestDTO.getCityId());
-        if (existingCity != null) {
-            City existingCityName = cityService.getCityByCityNameAndCountryId(cityRequestDTO.getCityName(), cityRequestDTO.getCountryId());
-            if(existingCityName != null) {
-                Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "City name already exists", null);
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-            }
+        try {
             cityService.modifyCity(cityRequestDTO);
             Map<String, Integer> responseMap = new HashMap<>();
             responseMap.put("cityId", cityRequestDTO.getCityId());
             Response<Map<String, Integer>> response = new Response<>(HttpStatus.OK.value(), "City updated successfully", responseMap);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        } else {
-            Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "City does not exist", null);
+
+        } catch (CityNotFoundException | CountryNotFoundException ex) {
+            Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception ex) {
+            Response<?> response = new Response<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

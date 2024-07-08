@@ -78,21 +78,21 @@ export class SignupComponent {
       city: new FormControl(null, [Validators.required])
     });
 
-    this.countryService.getCountries().subscribe((response: any) => {
+    this.countryService.getAllCountries().subscribe((response: any) => {
       this.listOfCountries = response['body'];
     });
-    this.companyService.getCompanies().subscribe((response: Company[]) => {
+    this.companyService.getAllCompanies().subscribe((response: Company[]) => {
       this.listOfCompanies = response['body'];
     });
     // this.experienceService.getExperiences().subscribe((response: Experience[]) => {
     //   this.listOfExperiences = response['body'];
     // });
-    this.skillsService.getSkills().subscribe((response: Skill[]) => {
+    this.skillsService.getAllSkills().subscribe((response: Skill[]) => {
       this.listOfSkills = response['body'];
     });
 
     this.userDetailsForm.controls['country'].valueChanges.pipe(
-      switchMap(countryId => this.cityService.getCities(countryId))
+      switchMap(countryId => this.cityService.getAllCities(countryId))
     ).subscribe((response: City[]) => {
       this.listOfCities = response['body'];
     })
