@@ -1,7 +1,6 @@
 package com.dal.asdc.reconnect.service;
 
 
-import com.dal.asdc.reconnect.dto.Helper.SkillsDTO;
 import com.dal.asdc.reconnect.dto.Skill.SkillsDto;
 import com.dal.asdc.reconnect.model.SkillDomain;
 import com.dal.asdc.reconnect.model.Skills;

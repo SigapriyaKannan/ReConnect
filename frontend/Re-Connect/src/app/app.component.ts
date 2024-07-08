@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ToastService } from './shared/services/toast.service';
 
 @Component({
   selector: 'rc-root',
   standalone: true,
-  providers: [MessageService],
+  providers: [MessageService, ToastService],
   imports: [RouterOutlet, ToastModule],
   template: `
     <router-outlet />

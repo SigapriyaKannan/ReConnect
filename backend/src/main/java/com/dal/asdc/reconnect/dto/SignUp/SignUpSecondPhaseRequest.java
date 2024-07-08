@@ -10,7 +10,7 @@ import java.util.List;
 public class SignUpSecondPhaseRequest
 {
     private int userType;
-    private String userEmail;
+    private String email;
     private String password;
         private String reenteredPassword;
     private int company;

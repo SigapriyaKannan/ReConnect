@@ -21,16 +21,18 @@ public class RefreshTokenService {
     UsersRepository userRepository;
 
     public RefreshToken createRefreshToken(String username){
-        RefreshToken refreshToken = RefreshToken.builder()
-                .users(userRepository.findByUserEmail(username))
-                .token(UUID.randomUUID().toString())
-                .expiryDate(Instant.now().plusMillis(600000)) // set expiry of refresh token to 10 minutes - you can configure it application.properties file
-                .build();
-        Optional<RefreshToken> refreshToken1 = refreshTokenRepository.findRefreshTokenByUserId(refreshToken.getUsers().getUserID());
+        Optional<Users> user = userRepository.findByUserEmail(username);
 
-        refreshToken1.ifPresent(token -> refreshTokenRepository.delete(token));
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .users(user.get())
+                    .token(UUID.randomUUID().toString())
+                    .expiryDate(Instant.now().plusMillis(600000)) // set expiry of refresh token to 10 minutes - you can configure it application.properties file
+                    .build();
+            Optional<RefreshToken> refreshToken1 = refreshTokenRepository.findRefreshTokenByUserId(refreshToken.getUsers().getUserID());
 
-        return refreshTokenRepository.save(refreshToken);
+            refreshToken1.ifPresent(token -> refreshTokenRepository.delete(token));
+
+            return refreshTokenRepository.save(refreshToken);
     }
 
 

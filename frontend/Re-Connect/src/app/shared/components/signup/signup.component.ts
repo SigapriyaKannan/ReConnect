@@ -17,11 +17,11 @@ import { Experience, ExperienceService } from '../../services/experience.service
 import { Skill, SkillsService } from '../../services/skills.service';
 import { Country, CountryService } from '../../services/country.service';
 import { City, CityService } from '../../services/city.service';
-import { MessageService } from 'primeng/api';
 import { ROLES } from '../constants/roles';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { switchMap } from 'rxjs';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'rc-signup',
@@ -35,7 +35,7 @@ export class SignupComponent {
   userDetailsForm: FormGroup;
   loading: boolean = false;
   activeStep: number = 0;
-  roles = [{ roleId: 0, role: "Referrer" }, { roleId: 1, role: "Referent" }];
+  roles = [{ roleId: 0, role: "Admin" }, { roleId: 1, role: "Referrer" }, { roleId: 2, role: "Referent" }];
   selectedRole = 1;
   verificationPending: boolean = false;
   isCreatingUser: boolean = false;
@@ -63,7 +63,7 @@ export class SignupComponent {
   listOfCities: City[] = [];
   listOfSkills: Skill[] = [];
 
-  constructor(private router: Router, private messageService: MessageService, private signUpService: SignUpService, private authService: AuthService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
+  constructor(private router: Router, private toastService: ToastService, private signUpService: SignUpService, private authService: AuthService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
     this.userCredentialsForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(50)]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
@@ -103,21 +103,13 @@ export class SignupComponent {
     form.markAllAsTouched();
 
     if (!this.checkPasswordsMatch()) {
-      this.messageService.add({
-        severity: "danger",
-        summary: "Passwords Mismatch",
-        detail: "Passwords do not match!"
-      })
+      this.toastService.showError("Passwords do not match!")
       console.error("Passwords do not match!");
       return;
     }
 
     if (form.invalid) {
-      this.messageService.add({
-        severity: "error",
-        summary: "Form Error",
-        detail: "Error in form!"
-      })
+
     } else {
       this.verificationPending = true;
       const body = {
@@ -131,11 +123,7 @@ export class SignupComponent {
         this.activeStep = step + 1;
       }, (error) => {
         this.verificationPending = false;
-        this.messageService.add({
-          severity: "error",
-          summary: "User already exists",
-          detail: "Email is already registered with us!"
-        })
+        this.toastService.showError("Email is already registered with us!");
       }, () => {
         this.verificationPending = false;
       })
@@ -148,17 +136,12 @@ export class SignupComponent {
     this.userDetailsForm.markAllAsTouched();
     this.userDetailsForm.markAllAsDirty();
     if (this.userCredentialsForm.invalid || this.userDetailsForm.invalid) {
-      this.messageService.add({
-        severity: "danger",
-        summary: "Error",
-        detail: "Error in form"
-      })
-      console.error("ERROR!");
+      this.toastService.showFormError();
     } else {
       this.isCreatingUser = true;
       const body = {
         userType: this.selectedRole,
-        userEmail: this.userCredentialsForm.controls['email'].value,
+        email: this.userCredentialsForm.controls['email'].value,
         password: this.userCredentialsForm.controls['password'].value,
         reenteredPassword: this.userCredentialsForm.controls['confirmPassword'].value,
         company: this.userDetailsForm.controls['company'].value,
@@ -172,11 +155,7 @@ export class SignupComponent {
 
       this.authService.signUp(body).subscribe(response => {
         this.isCreatingUser = false;
-        this.messageService.add({
-          severity: "success",
-          summary: "Success",
-          detail: "User created successfully"
-        })
+        this.toastService.showSuccess("User created successfully");
         this.router.navigate(["/", "login"]);
       }, (error) => {
         this.isCreatingUser = false;
