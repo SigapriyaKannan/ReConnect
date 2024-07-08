@@ -1,6 +1,7 @@
 package com.dal.asdc.reconnect.controller;
 
 import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
+import com.dal.asdc.reconnect.dto.Chat.ChatMessageRequest;
 import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.service.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class ChatController
 
     @PostMapping("/chat.send")
     @SendTo("/topic/public")
-    public ResponseEntity<String> sendMessage(@RequestBody com.dal.asdc.reconnect.DTO.Chat.ChatMessageRequest chatMessage)
+    public ResponseEntity<String> sendMessage(@RequestBody ChatMessageRequest chatMessage)
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
         boolean messageSent =  messagesService.saveMessage(senderEmail,chatMessage.getTo(),chatMessage.getContext());
