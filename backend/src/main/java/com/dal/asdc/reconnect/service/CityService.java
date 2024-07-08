@@ -1,7 +1,7 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.DTO.City.CityDTO;
-import com.dal.asdc.reconnect.DTO.City.CityRequestDTO;
+import com.dal.asdc.reconnect.dto.City.CityDTO;
+import com.dal.asdc.reconnect.dto.City.CityRequestDTO;
 import com.dal.asdc.reconnect.exception.CityNotFoundException;
 import com.dal.asdc.reconnect.exception.CountryNotFoundException;
 import com.dal.asdc.reconnect.model.City;

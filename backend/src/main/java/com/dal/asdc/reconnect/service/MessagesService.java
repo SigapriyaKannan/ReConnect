@@ -1,7 +1,7 @@
 package com.dal.asdc.reconnect.service;
 
 
-import com.dal.asdc.reconnect.DTO.Chat.ChatHistoryResponseBody;
+import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
 import com.dal.asdc.reconnect.model.Messages;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.MessagesRepository;
