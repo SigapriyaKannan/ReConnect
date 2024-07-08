@@ -9,6 +9,7 @@ import com.dal.asdc.reconnect.repository.SkillsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,17 +22,15 @@ public class SkillsService {
      * Retrieves the list of all skills.
      * @return a SkillsResponseBody object containing the list of all skills.
      */
-    public SkillsResponseBody getSkills() {
+    public List<SkillsDTO> getSkills() {
+        List<SkillsDTO> listOfSkills = new ArrayList<>();
+        List<Skills> listOfSkillsFromDatabase = skillsRepository.findAll();
 
-        SkillsResponseBody skillsResponseBody = new SkillsResponseBody();
-        List<Skills> userSkills = skillsRepository.findAll();
+        for(Skills skill: listOfSkillsFromDatabase) {
+            SkillsDTO skillsDTO = new SkillsDTO(skill.getSkillId(), skill.getSkillName(), skill.getSkillDomain());
+            listOfSkills.add(skillsDTO);
+        }
 
-        List<SkillsDTO> skillsDTOs = userSkills.stream()
-                .map(skill -> new SkillsDTO(skill.getSkillId(), skill.getSkillName()))
-                .collect(Collectors.toList());
-
-        skillsResponseBody.setSkills(skillsDTOs);
-        return skillsResponseBody;
-
+        return listOfSkills;
     }
 }

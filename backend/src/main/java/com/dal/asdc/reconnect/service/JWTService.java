@@ -49,6 +49,7 @@ public class JWTService {
 
         extraClaims.put("email", userDetails.getUsername());
         extraClaims.put("userType", userType);
+        extraClaims.put("userID", user.getUserID());
 
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
@@ -57,7 +58,7 @@ public class JWTService {
         return jwtExpiration;
     }
 
-    private String buildToken(
+    public String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
             long expiration
@@ -107,5 +108,10 @@ public class JWTService {
     public String extractEmail(String token) {
         Claims claims = extractAllClaims(token);
         return (String) claims.get("email");
+    }
+
+    public int extractID(String token) {
+        Claims claims = extractAllClaims(token);
+        return (int) claims.get("userID");
     }
 }

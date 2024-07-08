@@ -35,12 +35,14 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
-		"build": "ng build --output-path='../../backend/src/main/resources/static/' --extract-licenses=false --verbose=true",
+		"build:development": "ng build  --extract-licenses=false --verbose=true --configuration=development",
+		"build:production": "ng build  --extract-licenses=false --verbose=true --configuration=production",
 		"watch": "ng build --watch --configuration development"
 	},
 	"private": true,
 	"dependencies": {
 		"@angular/animations": "^17.3.0",
+		"@angular/cdk": "^18.0.5",
 		"@angular/common": "^17.3.0",
 		"@angular/compiler": "^17.3.0",
 		"@angular/core": "^17.3.0",

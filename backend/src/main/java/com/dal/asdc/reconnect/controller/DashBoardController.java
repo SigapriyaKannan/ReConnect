@@ -21,22 +21,17 @@ public class DashBoardController
     {
         Users User = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-
         System.out.println(User.getUserType().getTypeID());
 
         System.out.println(User.getUserEmail());
 
+        System.out.println(User.getUserID());
+
         var email =   SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println(email);
-
         return  "I Should enter in the site";
     }
 
-    private String extractTokenFromContext()
-    {
-        String token = String.valueOf(SecurityContextHolder.getContext().getAuthentication());
-        return token;
-    }
 
 
 

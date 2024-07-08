@@ -6,4 +6,8 @@ import { Injectable } from "@angular/core";
 })
 export class SignUpService {
     constructor(private http: HttpClient) { }
+
+    // Observable verifyEmail() {
+    //     return this.http.post
+    // }
 }

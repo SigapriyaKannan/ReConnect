@@ -16,13 +16,16 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthenticationController
 {
 
@@ -51,18 +54,26 @@ public class AuthenticationController
     @PostMapping("/verify-email")
     public ResponseEntity<?> signUp(@RequestBody SignUpFirstPhaseRequest signUpFirstPhaseRequest)
     {
-        SignUpFirstPhaseBody signUpFirstPhaseBody;
+        Map<String, Boolean> responseMap = new HashMap<>();
+        Users user = authenticationService.verifyEmailExists(signUpFirstPhaseRequest.getUserEmail());
 
-        signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
+        if(user != null) {
+            responseMap.put("emailAlreadyExists", true);
+        }
 
-        if(signUpFirstPhaseBody.areAllValuesNull())
-        {
+        String password = signUpFirstPhaseRequest.getPassword();
+        String reEnteredPassword = signUpFirstPhaseRequest.getReenteredPassword();
 
-            Response<SignUpFirstPhaseBody>  response = new Response<>(200, "Success", signUpFirstPhaseBody);
+        if(!password.equals(reEnteredPassword)) {
+            responseMap.put("mismatchPasswords", true);
+        }
+
+        if(!responseMap.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseMap);
+        } else {
+            Response<?>  response = new Response<>(200, "Verified", null);
             return ResponseEntity.ok(response);
         }
-        Response<Void>  response = new Response<>(403, "UnSuccessful", null);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 
     }
 
@@ -82,13 +93,10 @@ public class AuthenticationController
 
         SignUpFirstPhaseBody signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
 
-        if(signUpFirstPhaseBody.areAllValuesNull())
-        {
-            if(Boolean.TRUE.equals(authenticationService.AddNewUser(signUpSecondPhaseRequest)))
-            {
+        if(signUpFirstPhaseBody.areAllValuesNull() && (authenticationService.addNewUser(signUpSecondPhaseRequest))) {
                 Response<SignUpFirstPhaseBody>  response = new Response<>(200, "Success", signUpFirstPhaseBody);
                 return ResponseEntity.ok(response);
-            }
+
         }
 
         Response<Void>  response = new Response<>(403, "UnSuccessful", null);

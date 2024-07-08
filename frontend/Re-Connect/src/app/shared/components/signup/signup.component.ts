@@ -19,7 +19,9 @@ import { Country, CountryService } from '../../services/country.service';
 import { City, CityService } from '../../services/city.service';
 import { MessageService } from 'primeng/api';
 import { ROLES } from '../constants/roles';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'rc-signup',
@@ -34,29 +36,9 @@ export class SignupComponent {
   loading: boolean = false;
   activeStep: number = 0;
   roles = [{ roleId: 0, role: "Referrer" }, { roleId: 1, role: "Referent" }];
-  selectedRole = 0;
-  listOfCompanies: Company[] = [
-    {
-      "companyId": 1,
-      "companyName": "Apple"
-    },
-    {
-      "companyId": 2,
-      "companyName": "Google"
-    },
-    {
-      "companyId": 3,
-      "companyName": "Amazon"
-    },
-    {
-      "companyId": 4,
-      "companyName": "Microsoft"
-    },
-    {
-      "companyId": 5,
-      "companyName": "Facebook"
-    }
-  ];
+  selectedRole = 1;
+  verificationPending: boolean = false;
+  isCreatingUser: boolean = false;
 
   listOfExperiences: Experience[] = [
     {
@@ -76,99 +58,12 @@ export class SignupComponent {
       "experienceName": "Executive Level"
     }
   ]
+  listOfCompanies: Company[] = [];
+  listOfCountries: Country[] = [];
+  listOfCities: City[] = [];
+  listOfSkills: Skill[] = [];
 
-  listOfCountries: Country[] = [
-    {
-      "countryId": 1,
-      "countryName": "United States"
-    },
-    {
-      "countryId": 2,
-      "countryName": "Canada"
-    },
-    {
-      "countryId": 3,
-      "countryName": "United Kingdom"
-    },
-    {
-      "countryId": 4,
-      "countryName": "Germany"
-    },
-    {
-      "countryId": 5,
-      "countryName": "Australia"
-    }
-  ];
-
-  listOfCities: City[] = [
-    {
-      "cityId": 1,
-      "cityName": "New York"
-    },
-    {
-      "cityId": 2,
-      "cityName": "Los Angeles"
-    },
-    {
-      "cityId": 3,
-      "cityName": "Chicago"
-    },
-    {
-      "cityId": 4,
-      "cityName": "San Francisco"
-    },
-    {
-      "cityId": 5,
-      "cityName": "Miami"
-    }
-  ];
-
-  listOfSkills: Skill[] = [
-    {
-      "skillId": 1,
-      "skillName": "Java"
-    },
-    {
-      "skillId": 2,
-      "skillName": "Python"
-    },
-    {
-      "skillId": 3,
-      "skillName": "JavaScript"
-    },
-    {
-      "skillId": 4,
-      "skillName": "SQL"
-    },
-    {
-      "skillId": 5,
-      "skillName": "HTML/CSS"
-    },
-    {
-      "skillId": 6,
-      "skillName": "C++"
-    },
-    {
-      "skillId": 7,
-      "skillName": "Ruby"
-    },
-    {
-      "skillId": 8,
-      "skillName": "PHP"
-    },
-    {
-      "skillId": 9,
-      "skillName": "React"
-    },
-    {
-      "skillId": 10,
-      "skillName": "Angular"
-    }
-  ];
-
-
-
-  constructor(private messageService: MessageService, private signUpService: SignUpService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
+  constructor(private router: Router, private messageService: MessageService, private signUpService: SignUpService, private authService: AuthService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
     this.userCredentialsForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(50)]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
@@ -183,23 +78,24 @@ export class SignupComponent {
       city: new FormControl(null, [Validators.required])
     });
 
-    // this.countryService.getCountries().subscribe((response: Country[]) => {
-    //   this.listOfCountries = response.countries
-    // });
-    // this.companyService.getCompanies().subscribe((response: Company[]) => {
-    //   this.listOfCompanies = response.companies
-    // });
+    this.countryService.getCountries().subscribe((response: any) => {
+      this.listOfCountries = response['body'];
+    });
+    this.companyService.getCompanies().subscribe((response: Company[]) => {
+      this.listOfCompanies = response['body'];
+    });
     // this.experienceService.getExperiences().subscribe((response: Experience[]) => {
-    //   this.listOfExperiences = response.experiences
+    //   this.listOfExperiences = response['body'];
     // });
-    // this.skillsService.getSkills().subscribe((response: Skill[]) => {
-    //   this.listOfSkills = response.skills
-    // });
-    // this.userDetailsForm.controls['country'].valueChanges.pipe(
-    //   switchMap(countryId => this.cityService.getCities(countryId))
-    // ).subscribe((response: City[]) => {
-    //   this.listOfCities = response
-    // })
+    this.skillsService.getSkills().subscribe((response: Skill[]) => {
+      this.listOfSkills = response['body'];
+    });
+
+    this.userDetailsForm.controls['country'].valueChanges.pipe(
+      switchMap(countryId => this.cityService.getCities(countryId))
+    ).subscribe((response: City[]) => {
+      this.listOfCities = response['body'];
+    })
   }
 
   onCheckForm(form: FormGroup, step: number) {
@@ -223,7 +119,26 @@ export class SignupComponent {
         detail: "Error in form!"
       })
     } else {
-      this.activeStep = step + 1;
+      this.verificationPending = true;
+      const body = {
+        userType: this.selectedRole,
+        email: form.get('email')?.value,
+        password: form.get('password')?.value,
+        reenteredPassword: form.get('confirmPassword')?.value
+      }
+      this.authService.verifyEmail(body).subscribe(response => {
+        this.verificationPending = false;
+        this.activeStep = step + 1;
+      }, (error) => {
+        this.verificationPending = false;
+        this.messageService.add({
+          severity: "error",
+          summary: "User already exists",
+          detail: "Email is already registered with us!"
+        })
+      }, () => {
+        this.verificationPending = false;
+      })
     }
   }
 
@@ -240,15 +155,32 @@ export class SignupComponent {
       })
       console.error("ERROR!");
     } else {
+      this.isCreatingUser = true;
       const body = {
-        email: this.userCredentialsForm.controls['email'].value,
+        userType: this.selectedRole,
+        userEmail: this.userCredentialsForm.controls['email'].value,
         password: this.userCredentialsForm.controls['password'].value,
+        reenteredPassword: this.userCredentialsForm.controls['confirmPassword'].value,
         company: this.userDetailsForm.controls['company'].value,
         experience: this.userDetailsForm.controls['experience'].value,
         skills: this.userDetailsForm.controls['skills'].value,
         country: this.userDetailsForm.controls['country'].value,
-        city: this.userDetailsForm.controls['city'].value
+        city: this.userDetailsForm.controls['city'].value,
+        resume: "",
+        profile: ""
       }
+
+      this.authService.signUp(body).subscribe(response => {
+        this.isCreatingUser = false;
+        this.messageService.add({
+          severity: "success",
+          summary: "Success",
+          detail: "User created successfully"
+        })
+        this.router.navigate(["/", "login"]);
+      }, (error) => {
+        this.isCreatingUser = false;
+      })
 
       console.table(body);
     }
