@@ -88,7 +88,7 @@ public class AuthenticationServiceTest
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
@@ -104,7 +104,7 @@ public class AuthenticationServiceTest
         request.setPassword("Password1!");
         request.setReenteredPassword("DifferentPassword1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
@@ -120,7 +120,7 @@ public class AuthenticationServiceTest
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
