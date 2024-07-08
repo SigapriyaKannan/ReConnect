@@ -73,7 +73,7 @@ public class AuthenticationServiceTest
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(new Users());
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(new Users()));
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
@@ -145,7 +145,7 @@ public class AuthenticationServiceTest
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(new City()));
         when(countryRepository.findById(anyInt())).thenReturn(Optional.of(new Country()));
         when(skillsRepository.findById(anyInt())).thenReturn(Optional.of(new Skills()));
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(new Users());
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(new Users()));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
         assertTrue(authenticationService.addNewUser(request));
@@ -188,7 +188,7 @@ public class AuthenticationServiceTest
         user.setUserEmail("test@example.com");
         user.setPassword("encodedPassword");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(user);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
         Optional<Users> result = authenticationService.authenticate(request);
