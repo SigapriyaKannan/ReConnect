@@ -1,6 +1,6 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.DTO.Company.CompanyDTO;
+import com.dal.asdc.reconnect.dto.Company.CompanyDTO;
 import com.dal.asdc.reconnect.model.Company;
 import com.dal.asdc.reconnect.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;

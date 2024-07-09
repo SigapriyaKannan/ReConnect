@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
     private baseUrl = environment.AUTH_API;
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     forgotPassword(email: string): Observable<any> {
         return this.http.post(`${this.baseUrl}auth/forgotPassword`, { email }, { responseType: 'text' });
@@ -29,7 +29,7 @@ export class AuthService {
 
     signUp(body: {
         userType: number,
-        userEmail: string,
+        email: string,
         password: string,
         reenteredPassword: string,
         company: number,

@@ -16,6 +16,8 @@ import { RequestsComponent } from './shared/components/requests/requests.compone
 import { MessagingComponent } from './shared/components/messaging/messaging.component';
 import {ForgotPasswordComponent} from "./shared/components/forgot-password/forgot-password.component";
 import {ResetPasswordComponent} from "./shared/components/reset-password/reset-password.component";
+import {AdminSkillDomainComponent} from "./cms/components/admin-skill-domain/admin-skill-domain.component";
+import {AdminLoginComponent} from "./cms/components/admin-login/admin-login.component";
 
 export const routes: Routes = [
     {
@@ -86,6 +88,10 @@ export const routes: Routes = [
                 component: AdminSkillsComponent
             },
             {
+                path: "skill-domain",
+                component: AdminSkillDomainComponent
+            },
+            {
                 path: "companies",
                 component: AdminCompaniesComponent
             },
@@ -95,6 +101,10 @@ export const routes: Routes = [
                 pathMatch: "full"
             }
         ]
+    },
+    {
+        path: "admin/login",
+        component: AdminLoginComponent
     },
     {
         path: "**",

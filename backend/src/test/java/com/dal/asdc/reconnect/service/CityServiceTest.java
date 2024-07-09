@@ -1,7 +1,6 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.DTO.City.CityDTO;
-import com.dal.asdc.reconnect.DTO.City.CityRequestDTO;
+import com.dal.asdc.reconnect.exception.CityNotFoundException;
 import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CityRepository;
@@ -12,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -53,13 +51,12 @@ class CityServiceTest {
     }
 
     @Test
-    void testEmptyCityById() {
-        Optional<City> emptyCity = Optional.empty();
-        when(cityRepository.findById(1)).thenReturn(emptyCity);
+    void testCityNotFoundException() {
+        when(cityRepository.findById(2)).thenReturn(Optional.empty());
 
-        City notFound = cityService.getCityById(2);
-
-        Assertions.assertNull(notFound);
+        Assertions.assertThrows(CityNotFoundException.class, () -> {
+            cityService.getCityById(2);
+        });
     }
 
     @Test

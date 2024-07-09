@@ -1,8 +1,8 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.Helper.CountryDTO;
-import com.dal.asdc.reconnect.DTO.Mappers.CountryMapper;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Helper.CountryDTO;
+import com.dal.asdc.reconnect.dto.Mappers.CountryMapper;
+import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;

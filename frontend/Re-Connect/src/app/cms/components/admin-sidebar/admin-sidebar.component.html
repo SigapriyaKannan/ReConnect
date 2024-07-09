@@ -1,4 +1,4 @@
-<p-menu [model]="items" styleClass="w-100 h-100 d-flex flex-column justify-content-between p-0">
+<p-menu [model]="items" styleClass="w-100 text-dark shadow h-100 d-flex flex-column justify-content-between p-0">
 	<ng-template pTemplate="item" let-item>
 		<a pRipple class="flex align-items-center p-menuitem-link py-3" [routerLink]="item.route" [routerLinkActive]="'active'">
 			<span [class]="item.icon + ' fs-5'"></span>

@@ -1,15 +1,12 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.Helper.SkillsDTO;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Response;
+import com.dal.asdc.reconnect.dto.Skill.SkillsDto;
 import com.dal.asdc.reconnect.service.SkillsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,13 +14,35 @@ import java.util.List;
 @RequestMapping("/api/skills")
 @CrossOrigin(origins = "http://localhost:4200")
 public class SkillsController {
+
     @Autowired
     SkillsService skillsService;
 
     @GetMapping("/getAllSkills")
     public ResponseEntity<?> getAllSkills() {
-        List<SkillsDTO> listOfSkills = skillsService.getSkills();
-        Response<List<SkillsDTO>> response = new Response<>(HttpStatus.OK.value(), "Fetched all skills", listOfSkills);
+        List<SkillsDto> listOfSkills = skillsService.getSkills();
+        Response<List<SkillsDto>> response = new Response<>(HttpStatus.OK.value(), "Fetched all skills", listOfSkills);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/addSkill")
+    public ResponseEntity<?> addSkill(@RequestBody SkillsDto skill) {
+        skillsService.addSkill(skill);
+        Response<String> response = new Response<>(HttpStatus.OK.value(), "Skill added successfully", null);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/editSkill")
+    public ResponseEntity<?> editSkill(@RequestBody SkillsDto skill) {
+        skillsService.editSkill(skill);
+        Response<String> response = new Response<>(HttpStatus.OK.value(), "Skill edited successfully", null);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/deleteSkill/{id}")
+    public ResponseEntity<?> deleteSkill(@PathVariable("id") Integer id) {
+        skillsService.deleteSkill(id);
+        Response<String> response = new Response<>(HttpStatus.OK.value(), "Skill deleted successfully", null);
         return ResponseEntity.ok(response);
     }
 }
