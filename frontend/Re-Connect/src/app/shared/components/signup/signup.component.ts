@@ -10,6 +10,7 @@ import { StepperModule } from "primeng/stepper";
 import { DropdownModule } from "primeng/dropdown";
 import { MultiSelectModule } from "primeng/multiselect";
 import { RadioButtonModule } from "primeng/radiobutton";
+import { FileUploadModule, UploadEvent } from 'primeng/fileupload';
 
 import { SignUpService } from './signup.service';
 import { Company, CompanyService } from '../../services/company.service';
@@ -26,13 +27,14 @@ import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'rc-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CardModule, ButtonModule, InputTextModule, PasswordModule, DividerModule, ReactiveFormsModule, StepperModule, DropdownModule, MultiSelectModule, RadioButtonModule],
+  imports: [CommonModule, FormsModule, RouterLink, CardModule, ButtonModule, InputTextModule, PasswordModule, DividerModule, ReactiveFormsModule, StepperModule, DropdownModule, MultiSelectModule, RadioButtonModule, FileUploadModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
   userCredentialsForm: FormGroup;
   userDetailsForm: FormGroup;
+  uploadForm: FormGroup;
   loading: boolean = false;
   activeStep: number = 0;
   roles = [{ roleId: 0, role: "Admin" }, { roleId: 1, role: "Referrer" }, { roleId: 2, role: "Referent" }];
@@ -67,7 +69,7 @@ export class SignupComponent {
     this.userCredentialsForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(50)]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
-      confirmPassword: new FormControl('', [Validators.required, Validators.minLength(5)]),
+      confirmPassword: new FormControl('', [Validators.required, Validators.minLength(5)])
     });
 
     this.userDetailsForm = new FormGroup({
@@ -75,7 +77,12 @@ export class SignupComponent {
       experience: new FormControl(null, [Validators.required]),
       skills: new FormControl([], [Validators.required, Validators.min(1), Validators.max(5)]),
       country: new FormControl(null, [Validators.required]),
-      city: new FormControl(null, [Validators.required])
+      city: new FormControl(null, [Validators.required]),
+    });
+
+    this.uploadForm = new FormGroup({
+      profileImage: new FormControl(null, [Validators.required]),
+      profile: new FormControl(null, [Validators.required])
     });
 
     this.countryService.getAllCountries().subscribe((response: any) => {
@@ -139,33 +146,43 @@ export class SignupComponent {
       this.toastService.showFormError();
     } else {
       this.isCreatingUser = true;
-      const body = {
-        userType: this.selectedRole,
-        email: this.userCredentialsForm.controls['email'].value,
-        password: this.userCredentialsForm.controls['password'].value,
-        reenteredPassword: this.userCredentialsForm.controls['confirmPassword'].value,
-        company: this.userDetailsForm.controls['company'].value,
-        experience: this.userDetailsForm.controls['experience'].value,
-        skills: this.userDetailsForm.controls['skills'].value,
-        country: this.userDetailsForm.controls['country'].value,
-        city: this.userDetailsForm.controls['city'].value,
-        resume: "",
-        profile: ""
-      }
+      const profileFile = this.uploadForm.controls['profile'].value;
 
-      this.authService.signUp(body).subscribe(response => {
+      const formData = new FormData();
+
+      formData.append('userType', this.selectedRole.toString());
+      formData.append('email', this.userCredentialsForm.controls['email'].value);
+      formData.append('password', this.userCredentialsForm.controls['password'].value);
+      formData.append('reenteredPassword', this.userCredentialsForm.controls['confirmPassword'].value);
+      formData.append('company', this.userDetailsForm.controls['company'].value);
+      formData.append('experience', this.userDetailsForm.controls['experience'].value);
+      formData.append('skills', this.userDetailsForm.controls['skills'].value);
+      formData.append('country', this.userDetailsForm.controls['country'].value);
+      formData.append('city', this.userDetailsForm.controls['city'].value);
+      formData.append('resume', "");  // Placeholder for resume field if needed
+      formData.append('profile', profileFile, profileFile.name);
+
+      this.authService.signUp(formData).subscribe(response => {
         this.isCreatingUser = false;
         this.toastService.showSuccess("User created successfully");
         this.router.navigate(["/", "login"]);
       }, (error) => {
         this.isCreatingUser = false;
       })
-
-      console.table(body);
     }
   }
 
   private checkPasswordsMatch(): boolean {
     return this.userCredentialsForm.controls['password'].value === this.userCredentialsForm.controls['confirmPassword'].value;
+  }
+
+  onUpload(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.uploadForm.patchValue({
+        profile: file
+      });
+      console.log(this.uploadForm.value);
+    }
   }
 }

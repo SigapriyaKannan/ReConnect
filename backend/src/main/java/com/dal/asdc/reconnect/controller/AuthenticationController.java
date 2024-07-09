@@ -6,13 +6,17 @@ import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,6 +37,10 @@ public class AuthenticationController {
 
     @Autowired
     private ForgotPasswordService forgotPasswordService;
+
+    @Value("${upload.images.directory}")
+    private String uploadImagesDirectory;
+
 
     /**
      * Handles the first phase of the signup process.
@@ -77,12 +85,27 @@ public class AuthenticationController {
      */
     @PostMapping("/signup")
     @Transactional
-    public ResponseEntity<?> signUpFinal(@RequestBody com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
+    public ResponseEntity<?> signUpFinal(@ModelAttribute com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest signUpSecondPhaseRequest, @RequestParam("profile") MultipartFile file) throws IOException {
         com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest = convertIntoFirstPhase(signUpSecondPhaseRequest);
 
         com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
 
-        if (signUpFirstPhaseBody.areAllValuesNull() && (authenticationService.addNewUser(signUpSecondPhaseRequest))) {
+        Path directory = Paths.get(uploadImagesDirectory);
+        if (!Files.exists(directory)) {
+            try {
+                Files.createDirectories(directory);
+                System.out.println("Directory created: " + directory);
+            } catch (IOException e) {
+                System.err.println("Failed to create directory: " + directory);
+                e.printStackTrace();
+            }
+        }
+
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path fileNameAndPath = Paths.get(uploadImagesDirectory, fileName);
+        Files.write(fileNameAndPath, file.getBytes());
+
+        if (signUpFirstPhaseBody.areAllValuesNull() && (authenticationService.addNewUser(signUpSecondPhaseRequest, String.valueOf(fileNameAndPath)))) {
             com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody> response = new com.dal.asdc.reconnect.dto.Response<>(200, "Success", signUpFirstPhaseBody);
             return ResponseEntity.ok(response);
 

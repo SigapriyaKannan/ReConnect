@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -27,21 +27,8 @@ export class AuthService {
         return this.http.post(environment.AUTH_API + "verify-email", body);
     }
 
-    signUp(body: {
-        userType: number,
-        email: string,
-        password: string,
-        reenteredPassword: string,
-        company: number,
-        experience: number,
-        skills: [
-            number
-        ],
-        country: number,
-        city: number,
-        resume: string,
-        profile: string
-    }) {
-        return this.http.post(environment.AUTH_API + "signup", body);
+    signUp(body: FormData) {
+        const headers = new HttpHeaders();
+        return this.http.post(environment.AUTH_API + "signup", body, { headers });
     }
 }
