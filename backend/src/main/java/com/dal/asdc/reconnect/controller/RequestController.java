@@ -2,7 +2,7 @@ package com.dal.asdc.reconnect.controller;
 
 
 import com.dal.asdc.reconnect.DTO.Request.Requests;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
