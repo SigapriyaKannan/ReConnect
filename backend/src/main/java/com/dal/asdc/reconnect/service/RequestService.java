@@ -1,7 +1,7 @@
 package com.dal.asdc.reconnect.service;
 
 
-import com.dal.asdc.reconnect.DTO.Request.Requests;
+import com.dal.asdc.reconnect.dto.Request.Requests;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.RequestRepository;
 import com.dal.asdc.reconnect.repository.UserDetailsRepository;

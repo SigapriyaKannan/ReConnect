@@ -1,21 +1,15 @@
 package com.dal.asdc.reconnect.controller;
 
 
-import com.dal.asdc.reconnect.DTO.Request.Requests;
+import com.dal.asdc.reconnect.dto.Request.Requests;
 import com.dal.asdc.reconnect.dto.Response;
-import com.dal.asdc.reconnect.model.Users;
-import com.dal.asdc.reconnect.repository.UsersRepository;
 import com.dal.asdc.reconnect.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
