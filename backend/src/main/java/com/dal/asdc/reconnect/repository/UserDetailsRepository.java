@@ -1,5 +1,6 @@
 package com.dal.asdc.reconnect.repository;
 import com.dal.asdc.reconnect.dto.Request.Requests;
+import com.dal.asdc.reconnect.model.Company;
 import com.dal.asdc.reconnect.model.UserDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
