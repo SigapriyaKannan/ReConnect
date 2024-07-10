@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SkillsService } from '../../../shared/services/skills.service';
 import { SkillDomainService } from '../../../shared/services/skilldomain.service';
 import { MessageService } from 'primeng/api';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {NgForOf} from "@angular/common";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgForOf } from "@angular/common";
+import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from "primeng/iconfield";
+import { InputIconModule } from "primeng/inputicon";
+import { InputTextModule } from 'primeng/inputtext';
 
 
 interface Skill {
@@ -28,7 +32,11 @@ interface SkillDomain {
     FormsModule,
     ReactiveFormsModule,
     TableModule,
-    NgForOf
+    NgForOf,
+    ButtonModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule
   ],
   styleUrls: ['./admin-skills.component.scss']
 })
@@ -40,11 +48,12 @@ export class AdminSkillsComponent implements OnInit {
   editSkillForm: FormGroup;
   displayAddDialog: boolean = false;
   displayEditDialog: boolean = false;
+  @ViewChild('dt') table!: Table;
 
   constructor(
-      private skillsService: SkillsService,
-      private skillDomainService: SkillDomainService,
-      private messageService: MessageService
+    private skillsService: SkillsService,
+    private skillDomainService: SkillDomainService,
+    private messageService: MessageService
   ) {
     this.addSkillForm = new FormGroup({
       skillName: new FormControl('', Validators.required),
@@ -64,33 +73,33 @@ export class AdminSkillsComponent implements OnInit {
 
   loadSkills(): void {
     this.skillsService.getAllSkills().subscribe(
-        (response: any) => {
-          this.listOfSkills = response.body;
-        },
-        (error) => {
-          console.error('Error loading skills:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to load skills'
-          });
-        }
+      (response: any) => {
+        this.listOfSkills = response.body;
+      },
+      (error) => {
+        console.error('Error loading skills:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load skills'
+        });
+      }
     );
   }
 
   loadSkillDomains(): void {
     this.skillDomainService.getAllSkillDomains().subscribe(
-        (response: any) => {
-          this.listOfSkillDomains = response.body;
-        },
-        (error) => {
-          console.error('Error loading skill domains:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to load skill domains'
-          });
-        }
+      (response: any) => {
+        this.listOfSkillDomains = response.body;
+      },
+      (error) => {
+        console.error('Error loading skill domains:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load skill domains'
+        });
+      }
     );
   }
 
@@ -159,5 +168,9 @@ export class AdminSkillsComponent implements OnInit {
     }, error => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete skill' });
     });
+  }
+
+  filterSkills(event: any) {
+    this.table.filterGlobal(event.target.value, 'contains')
   }
 }

@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { City } from '../../../shared/services/city.service';
 import { Country } from '../../../shared/services/country.service';
 import { CityService } from '../../../shared/services/city.service';
 import { CountryService } from '../../../shared/services/country.service';
-import {DialogModule} from "primeng/dialog";
-import {NgForOf} from "@angular/common"; // Import CountryService if not already imported
+import { DialogModule } from "primeng/dialog";
+import { NgForOf } from "@angular/common"; // Import CountryService if not already imported
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-admin-cities',
@@ -14,7 +15,8 @@ import {NgForOf} from "@angular/common"; // Import CountryService if not already
   imports: [
     ReactiveFormsModule,
     DialogModule,
-    NgForOf
+    NgForOf,
+    ButtonModule
   ],
   styleUrls: ['./admin-cities.component.scss']
 })
@@ -28,9 +30,9 @@ export class AdminCitiesComponent implements OnInit {
   editCityForm: FormGroup;
 
   constructor(
-      private cityService: CityService,
-      private countryService: CountryService, // Inject CountryService
-      private fb: FormBuilder
+    private cityService: CityService,
+    private countryService: CountryService, // Inject CountryService
+    private fb: FormBuilder
   ) {
     this.addCityForm = this.fb.group({
       cityName: ['', Validators.required],
@@ -59,23 +61,23 @@ export class AdminCitiesComponent implements OnInit {
 
   fetchCitiesByCountry(countryId: number) {
     this.cityService.getAllCities(countryId).subscribe(
-        data => {
-          this.cities = data.body;
-        },
-        error => {
-          console.error('Error loading cities:', error);
-        }
+      data => {
+        this.cities = data.body;
+      },
+      error => {
+        console.error('Error loading cities:', error);
+      }
     );
   }
 
   loadCountries() {
     this.countryService.getAllCountries().subscribe(
-        data => {
-          this.countries = data.body;
-        },
-        error => {
-          console.error('Error loading countries:', error);
-        }
+      data => {
+        this.countries = data.body;
+      },
+      error => {
+        console.error('Error loading countries:', error);
+      }
     );
   }
 
@@ -96,14 +98,14 @@ export class AdminCitiesComponent implements OnInit {
       countryId
     };
     this.cityService.addCity(newCity).subscribe(
-        response => {
-          console.log('City added successfully:', response);
-          this.fetchCitiesByCountry(newCity.countryId);
-          this.hideAddDialog();
-        },
-        error => {
-          console.error('Error adding city:', error);
-        }
+      response => {
+        console.log('City added successfully:', response);
+        this.fetchCitiesByCountry(newCity.countryId);
+        this.hideAddDialog();
+      },
+      error => {
+        console.error('Error adding city:', error);
+      }
     );
   }
 
@@ -125,26 +127,26 @@ export class AdminCitiesComponent implements OnInit {
     const { cityId, cityName, countryId } = this.editCityForm.value;
     const updatedCity: City = { cityId, cityName, countryId };
     this.cityService.editCity(updatedCity).subscribe(
-        response => {
-          console.log('City updated successfully:', response);
-          this.fetchCitiesByCountry(this.selectedCountry.countryId);
-          this.hideEditDialog();
-        },
-        error => {
-          console.error('Error updating city:', error);
-        }
+      response => {
+        console.log('City updated successfully:', response);
+        this.fetchCitiesByCountry(this.selectedCountry.countryId);
+        this.hideEditDialog();
+      },
+      error => {
+        console.error('Error updating city:', error);
+      }
     );
   }
 
   onDeleteCity(cityId: number | undefined) {
     this.cityService.deleteCity(cityId).subscribe(
-        response => {
-          console.log('City deleted successfully:', response);
-          this.fetchCitiesByCountry(this.selectedCountry.countryId);
-        },
-        error => {
-          console.error('Error deleting city:', error);
-        }
+      response => {
+        console.log('City deleted successfully:', response);
+        this.fetchCitiesByCountry(this.selectedCountry.countryId);
+      },
+      error => {
+        console.error('Error deleting city:', error);
+      }
     );
   }
 }

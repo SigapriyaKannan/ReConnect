@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SkillDomainService } from '../../../shared/services/skilldomain.service';
 import { MessageService } from 'primeng/api';
-import {TableModule} from "primeng/table";
-import {DialogModule} from "primeng/dialog";
+import { TableModule } from "primeng/table";
+import { DialogModule } from "primeng/dialog";
+import { ButtonModule } from 'primeng/button';
 
 interface SkillDomain {
   domainId: number;
@@ -16,7 +17,8 @@ interface SkillDomain {
   imports: [
     TableModule,
     DialogModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ButtonModule
   ],
   styleUrls: ['./admin-skill-domain.component.scss']
 })
@@ -27,9 +29,9 @@ export class AdminSkillDomainComponent implements OnInit {
   displayDialog = false;
 
   constructor(
-      private skillDomainService: SkillDomainService,
-      private messageService: MessageService,
-      private fb: FormBuilder
+    private skillDomainService: SkillDomainService,
+    private messageService: MessageService,
+    private fb: FormBuilder
   ) {
     this.skillDomainForm = this.fb.group({
       domainName: ['', Validators.required]
@@ -42,17 +44,17 @@ export class AdminSkillDomainComponent implements OnInit {
 
   fetchSkillDomains(): void {
     this.skillDomainService.getAllSkillDomains().subscribe(
-        (response: any) => {
-          this.listOfSkillDomains = response.body;
-        },
-        (error) => {
-          console.error('Error fetching skill domains:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to fetch skill domains'
-          });
-        }
+      (response: any) => {
+        this.listOfSkillDomains = response.body;
+      },
+      (error) => {
+        console.error('Error fetching skill domains:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to fetch skill domains'
+        });
+      }
     );
   }
 
@@ -69,15 +71,15 @@ export class AdminSkillDomainComponent implements OnInit {
       };
 
       this.skillDomainService.addSkillDomain(newSkillDomain).subscribe(
-          (response: any) => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Skill Domain added successfully' });
-            this.fetchSkillDomains();
-            this.hideDialog();
-          },
-          (error) => {
-            console.error('Error adding skill domain:', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add skill domain' });
-          }
+        (response: any) => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Skill Domain added successfully' });
+          this.fetchSkillDomains();
+          this.hideDialog();
+        },
+        (error) => {
+          console.error('Error adding skill domain:', error);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add skill domain' });
+        }
       );
     }
   }
@@ -98,15 +100,15 @@ export class AdminSkillDomainComponent implements OnInit {
       };
 
       this.skillDomainService.editSkillDomain(updatedSkillDomain).subscribe(
-          (response: any) => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Skill Domain updated successfully' });
-            this.fetchSkillDomains();
-            this.hideDialog();
-          },
-          (error) => {
-            console.error('Error updating skill domain:', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update skill domain' });
-          }
+        (response: any) => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Skill Domain updated successfully' });
+          this.fetchSkillDomains();
+          this.hideDialog();
+        },
+        (error) => {
+          console.error('Error updating skill domain:', error);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update skill domain' });
+        }
       );
     }
   }
@@ -114,14 +116,14 @@ export class AdminSkillDomainComponent implements OnInit {
   deleteSkillDomain(domainId: number): void {
     if (confirm('Are you sure you want to delete this skill domain?')) {
       this.skillDomainService.deleteSkillDomain(domainId).subscribe(
-          (response: any) => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Skill Domain deleted successfully' });
-            this.fetchSkillDomains();
-          },
-          (error) => {
-            console.error('Error deleting skill domain:', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete skill domain' });
-          }
+        (response: any) => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Skill Domain deleted successfully' });
+          this.fetchSkillDomains();
+        },
+        (error) => {
+          console.error('Error deleting skill domain:', error);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete skill domain' });
+        }
       );
     }
   }

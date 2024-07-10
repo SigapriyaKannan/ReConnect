@@ -1,22 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Country, CountryService } from '../../../shared/services/country.service';
-import {NgForOf, NgIf} from "@angular/common";
-import {AdminCitiesComponent} from "../admin-cities/admin-cities.component";
-import {DialogModule} from "primeng/dialog";
+import { NgForOf, NgIf } from "@angular/common";
+import { AdminCitiesComponent } from "../admin-cities/admin-cities.component";
+import { DialogModule } from "primeng/dialog";
+import { ButtonModule } from 'primeng/button';
 
 @Component({
-    selector: 'app-admin-countries',
-    templateUrl: './admin-countries.component.html',
-    standalone: true,
-    imports: [
-        NgForOf,
-        AdminCitiesComponent,
-        NgIf,
-        ReactiveFormsModule,
-        DialogModule
-    ],
-    styleUrls: ['./admin-countries.component.scss']
+  selector: 'app-admin-countries',
+  templateUrl: './admin-countries.component.html',
+  standalone: true,
+  imports: [
+    NgForOf,
+    AdminCitiesComponent,
+    NgIf,
+    ReactiveFormsModule,
+    DialogModule,
+    ButtonModule
+  ],
+  styleUrls: ['./admin-countries.component.scss']
 })
 export class AdminCountriesComponent implements OnInit {
   countries: Country[] = [];
@@ -43,12 +45,12 @@ export class AdminCountriesComponent implements OnInit {
 
   loadCountries() {
     this.countryService.getAllCountries().subscribe(
-        response => {
-          this.countries = response.body;
-        },
-        error => {
-          console.error('Error loading countries:', error);
-        }
+      response => {
+        this.countries = response.body;
+      },
+      error => {
+        console.error('Error loading countries:', error);
+      }
     );
   }
 
@@ -64,14 +66,14 @@ export class AdminCountriesComponent implements OnInit {
     const { countryId, countryName } = this.addCountryForm.value;
     const Country: Country = { countryId, countryName };
     this.countryService.addCountry(Country).subscribe(
-        response => {
-          console.log('Country added successfully:', response);
-          this.loadCountries();
-          this.hideAddDialog();
-        },
-        error => {
-          console.error('Error adding country:', error);
-        }
+      response => {
+        console.log('Country added successfully:', response);
+        this.loadCountries();
+        this.hideAddDialog();
+      },
+      error => {
+        console.error('Error adding country:', error);
+      }
     );
   }
 
@@ -91,31 +93,31 @@ export class AdminCountriesComponent implements OnInit {
     const { countryId, countryName } = this.editCountryForm.value;
     const updatedCountry: Country = { countryId, countryName };
     this.countryService.editCountry(updatedCountry).subscribe(
-        response => {
-          console.log('Country updated successfully:', response);
-          this.loadCountries();
-          this.hideEditDialog();
-        },
-        error => {
-          console.error('Error updating country:', error);
-        }
+      response => {
+        console.log('Country updated successfully:', response);
+        this.loadCountries();
+        this.hideEditDialog();
+      },
+      error => {
+        console.error('Error updating country:', error);
+      }
     );
   }
 
   onDeleteCountry(countryId: number) {
     this.countryService.deleteCountry(countryId).subscribe(
-        response => {
-          console.log('Country deleted successfully:', response);
-          this.loadCountries();
-        },
-        error => {
-          console.error('Error deleting country:', error);
-        }
+      response => {
+        console.log('Country deleted successfully:', response);
+        this.loadCountries();
+      },
+      error => {
+        console.error('Error deleting country:', error);
+      }
     );
   }
 
-    onCountrySelect(country: Country) {
-        this.selectedCountry = country;
-    }
+  onCountrySelect(country: Country) {
+    this.selectedCountry = country;
+  }
 
 }
