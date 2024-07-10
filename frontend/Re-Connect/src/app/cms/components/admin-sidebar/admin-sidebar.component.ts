@@ -29,9 +29,14 @@ export class AdminSidebarComponent implements OnInit {
         route: "/admin/countries"
       },
       {
-        label: "Cities",
+        label: "Skills",
         icon: "pi pi-map-marker",
-        route: "/admin/cities"
+        route: "/admin/skills"
+      },
+      {
+        label: "SkillDomain",
+        icon: "pi pi-map-marker",
+        route: "/admin/skill-domain"
       },
       {
         label: "Users",

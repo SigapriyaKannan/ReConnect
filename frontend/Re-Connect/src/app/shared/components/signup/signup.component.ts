@@ -17,9 +17,11 @@ import { Experience, ExperienceService } from '../../services/experience.service
 import { Skill, SkillsService } from '../../services/skills.service';
 import { Country, CountryService } from '../../services/country.service';
 import { City, CityService } from '../../services/city.service';
-import { MessageService } from 'primeng/api';
 import { ROLES } from '../constants/roles';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { switchMap } from 'rxjs';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'rc-signup',
@@ -33,30 +35,10 @@ export class SignupComponent {
   userDetailsForm: FormGroup;
   loading: boolean = false;
   activeStep: number = 0;
-  roles = [{ roleId: 0, role: "Referrer" }, { roleId: 1, role: "Referent" }];
-  selectedRole = 0;
-  listOfCompanies: Company[] = [
-    {
-      "companyId": 1,
-      "companyName": "Apple"
-    },
-    {
-      "companyId": 2,
-      "companyName": "Google"
-    },
-    {
-      "companyId": 3,
-      "companyName": "Amazon"
-    },
-    {
-      "companyId": 4,
-      "companyName": "Microsoft"
-    },
-    {
-      "companyId": 5,
-      "companyName": "Facebook"
-    }
-  ];
+  roles = [{ roleId: 0, role: "Admin" }, { roleId: 1, role: "Referrer" }, { roleId: 2, role: "Referent" }];
+  selectedRole = 1;
+  verificationPending: boolean = false;
+  isCreatingUser: boolean = false;
 
   listOfExperiences: Experience[] = [
     {
@@ -76,99 +58,12 @@ export class SignupComponent {
       "experienceName": "Executive Level"
     }
   ]
+  listOfCompanies: Company[] = [];
+  listOfCountries: Country[] = [];
+  listOfCities: City[] = [];
+  listOfSkills: Skill[] = [];
 
-  listOfCountries: Country[] = [
-    {
-      "countryId": 1,
-      "countryName": "United States"
-    },
-    {
-      "countryId": 2,
-      "countryName": "Canada"
-    },
-    {
-      "countryId": 3,
-      "countryName": "United Kingdom"
-    },
-    {
-      "countryId": 4,
-      "countryName": "Germany"
-    },
-    {
-      "countryId": 5,
-      "countryName": "Australia"
-    }
-  ];
-
-  listOfCities: City[] = [
-    {
-      "cityId": 1,
-      "cityName": "New York"
-    },
-    {
-      "cityId": 2,
-      "cityName": "Los Angeles"
-    },
-    {
-      "cityId": 3,
-      "cityName": "Chicago"
-    },
-    {
-      "cityId": 4,
-      "cityName": "San Francisco"
-    },
-    {
-      "cityId": 5,
-      "cityName": "Miami"
-    }
-  ];
-
-  listOfSkills: Skill[] = [
-    {
-      "skillId": 1,
-      "skillName": "Java"
-    },
-    {
-      "skillId": 2,
-      "skillName": "Python"
-    },
-    {
-      "skillId": 3,
-      "skillName": "JavaScript"
-    },
-    {
-      "skillId": 4,
-      "skillName": "SQL"
-    },
-    {
-      "skillId": 5,
-      "skillName": "HTML/CSS"
-    },
-    {
-      "skillId": 6,
-      "skillName": "C++"
-    },
-    {
-      "skillId": 7,
-      "skillName": "Ruby"
-    },
-    {
-      "skillId": 8,
-      "skillName": "PHP"
-    },
-    {
-      "skillId": 9,
-      "skillName": "React"
-    },
-    {
-      "skillId": 10,
-      "skillName": "Angular"
-    }
-  ];
-
-
-
-  constructor(private messageService: MessageService, private signUpService: SignUpService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
+  constructor(private router: Router, private toastService: ToastService, private signUpService: SignUpService, private authService: AuthService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
     this.userCredentialsForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(50)]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
@@ -183,23 +78,24 @@ export class SignupComponent {
       city: new FormControl(null, [Validators.required])
     });
 
-    // this.countryService.getCountries().subscribe((response: Country[]) => {
-    //   this.listOfCountries = response.countries
-    // });
-    // this.companyService.getCompanies().subscribe((response: Company[]) => {
-    //   this.listOfCompanies = response.companies
-    // });
+    this.countryService.getAllCountries().subscribe((response: any) => {
+      this.listOfCountries = response['body'];
+    });
+    this.companyService.getAllCompanies().subscribe((response: Company[]) => {
+      this.listOfCompanies = response['body'];
+    });
     // this.experienceService.getExperiences().subscribe((response: Experience[]) => {
-    //   this.listOfExperiences = response.experiences
+    //   this.listOfExperiences = response['body'];
     // });
-    // this.skillsService.getSkills().subscribe((response: Skill[]) => {
-    //   this.listOfSkills = response.skills
-    // });
-    // this.userDetailsForm.controls['country'].valueChanges.pipe(
-    //   switchMap(countryId => this.cityService.getCities(countryId))
-    // ).subscribe((response: City[]) => {
-    //   this.listOfCities = response
-    // })
+    this.skillsService.getAllSkills().subscribe((response: Skill[]) => {
+      this.listOfSkills = response['body'];
+    });
+
+    this.userDetailsForm.controls['country'].valueChanges.pipe(
+      switchMap(countryId => this.cityService.getAllCities(countryId))
+    ).subscribe((response: City[]) => {
+      this.listOfCities = response['body'];
+    })
   }
 
   onCheckForm(form: FormGroup, step: number) {
@@ -207,23 +103,30 @@ export class SignupComponent {
     form.markAllAsTouched();
 
     if (!this.checkPasswordsMatch()) {
-      this.messageService.add({
-        severity: "danger",
-        summary: "Passwords Mismatch",
-        detail: "Passwords do not match!"
-      })
+      this.toastService.showError("Passwords do not match!")
       console.error("Passwords do not match!");
       return;
     }
 
     if (form.invalid) {
-      this.messageService.add({
-        severity: "error",
-        summary: "Form Error",
-        detail: "Error in form!"
-      })
+
     } else {
-      this.activeStep = step + 1;
+      this.verificationPending = true;
+      const body = {
+        userType: this.selectedRole,
+        email: form.get('email')?.value,
+        password: form.get('password')?.value,
+        reenteredPassword: form.get('confirmPassword')?.value
+      }
+      this.authService.verifyEmail(body).subscribe(response => {
+        this.verificationPending = false;
+        this.activeStep = step + 1;
+      }, (error) => {
+        this.verificationPending = false;
+        this.toastService.showError("Email is already registered with us!");
+      }, () => {
+        this.verificationPending = false;
+      })
     }
   }
 
@@ -233,22 +136,30 @@ export class SignupComponent {
     this.userDetailsForm.markAllAsTouched();
     this.userDetailsForm.markAllAsDirty();
     if (this.userCredentialsForm.invalid || this.userDetailsForm.invalid) {
-      this.messageService.add({
-        severity: "danger",
-        summary: "Error",
-        detail: "Error in form"
-      })
-      console.error("ERROR!");
+      this.toastService.showFormError();
     } else {
+      this.isCreatingUser = true;
       const body = {
+        userType: this.selectedRole,
         email: this.userCredentialsForm.controls['email'].value,
         password: this.userCredentialsForm.controls['password'].value,
+        reenteredPassword: this.userCredentialsForm.controls['confirmPassword'].value,
         company: this.userDetailsForm.controls['company'].value,
         experience: this.userDetailsForm.controls['experience'].value,
         skills: this.userDetailsForm.controls['skills'].value,
         country: this.userDetailsForm.controls['country'].value,
-        city: this.userDetailsForm.controls['city'].value
+        city: this.userDetailsForm.controls['city'].value,
+        resume: "",
+        profile: ""
       }
+
+      this.authService.signUp(body).subscribe(response => {
+        this.isCreatingUser = false;
+        this.toastService.showSuccess("User created successfully");
+        this.router.navigate(["/", "login"]);
+      }, (error) => {
+        this.isCreatingUser = false;
+      })
 
       console.table(body);
     }

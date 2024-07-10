@@ -1,8 +1,8 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.Helper.CountryDTO;
-import com.dal.asdc.reconnect.DTO.Mappers.CountryMapper;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Helper.CountryDTO;
+import com.dal.asdc.reconnect.dto.Mappers.CountryMapper;
+import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/countries")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CountriesController {
     @Autowired
     CountryService countryService;
@@ -35,6 +36,12 @@ public class CountriesController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Retrieves a country by its ID.
+     *
+     * @param countryId The ID of the country to retrieve.
+     * @return ResponseEntity containing the fetched country information.
+     */
     @GetMapping("/getCountry/{countryId}")
     public ResponseEntity<?> getAllCountries(@PathVariable int countryId) {
         Country country = countryService.getCountryById(countryId);
@@ -48,9 +55,15 @@ public class CountriesController {
         }
     }
 
+    /**
+     * Adds a new country.
+     *
+     * @param countryDTO The CountryDTO object containing the details of the new country.
+     * @return ResponseEntity containing the response for adding the country.
+     */
     @PostMapping("/addCountry")
     public ResponseEntity<?> addCountry(@RequestBody CountryDTO countryDTO){
-        Country existingCountry = countryService.getCountryByName(countryDTO.getCountryName());
+        Country existingCountry = countryService.getCountryById(countryDTO.getCountryId());
         if (existingCountry != null) {
             Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Country already exists", null);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -60,6 +73,54 @@ public class CountriesController {
             responseMap.put("countryId", newCountry.getCountryId());
             Response<Map<String, Integer>> response = new Response<>(HttpStatus.CREATED.value(), "Country saved successfully", responseMap);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+    }
+
+    /**
+     * Edits an existing country.
+     *
+     * @param countryDTO The CountryDTO object containing the updated details of the country.
+     * @return ResponseEntity containing the response for editing the country.
+     */
+    @PutMapping("/editCountry")
+    public ResponseEntity<?> editCountry(@RequestBody CountryDTO countryDTO) {
+        Country existingCountry = countryService.getCountryById(countryDTO.getCountryId());
+        if (existingCountry != null) {
+            Country existingCountryName = countryService.getCountryByName(countryDTO.getCountryName());
+            if(existingCountryName != null) {
+                Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Country name already exists", null);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            }
+            countryService.modifyCountry(countryDTO);
+            Response<CountryDTO> response = new Response<>(HttpStatus.OK.value(), "Country updated successfully", countryDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Country does not exist", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    /**
+     * Deletes a country by its ID.
+     *
+     * @param countryId The ID of the country to delete.
+     * @return ResponseEntity containing the response for deleting the country.
+     */
+    @DeleteMapping("/deleteCountry/{countryId}")
+    public ResponseEntity<?> deleteCountry(@PathVariable int countryId) {
+        Country existingCountry = countryService.getCountryById(countryId);
+        if (existingCountry != null) {
+            boolean isCountryDeleted = countryService.deleteCountry(countryId);
+            if(isCountryDeleted) {
+                Response<?> response = new Response<>(HttpStatus.NO_CONTENT.value(), "Country deleted successfully", null);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+            } else {
+                Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Failed to delete country", null);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            }
+        } else {
+            Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Country does not exist", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 }

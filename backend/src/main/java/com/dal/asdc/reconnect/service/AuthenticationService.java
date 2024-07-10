@@ -1,8 +1,8 @@
 package com.dal.asdc.reconnect.service;
-import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
+import com.dal.asdc.reconnect.dto.LoginDto.LoginRequest;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,23 +67,24 @@ public class AuthenticationService
     {
 
         SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
+        Users user = getUserByEmail(signUpFirstPhaseRequest.getEmail());
 
-        if(!checkIfUserAlreadyPresent(signUpFirstPhaseRequest.getUserEmail()))
+        if(user != null)
         {
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
 
-        if(!validatePassword(signUpFirstPhaseRequest.getPassword()))
-        {
-            signUpFirstPhaseBody.setPasswordError(true);
-        }
+//        if(!validatePassword(signUpFirstPhaseRequest.getPassword()))
+//        {
+//            signUpFirstPhaseBody.setPasswordError(true);
+//        }
 
         if(!matchPasswordWithConfirmPassword(signUpFirstPhaseRequest.getPassword(), signUpFirstPhaseRequest.getReenteredPassword()))
         {
             signUpFirstPhaseBody.setRepeatPasswordError(true);
         }
 
-        if(!validateEmail(signUpFirstPhaseRequest.getUserEmail()))
+        if(!validateEmail(signUpFirstPhaseRequest.getEmail()))
         {
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
@@ -104,10 +105,10 @@ public class AuthenticationService
     /**
      * This method will verify if users already has a account
      */
-    private boolean checkIfUserAlreadyPresent(String email)
+    public Users getUserByEmail(String email)
     {
-        Optional<Users> user= Optional.ofNullable(usersRepository.findByUserEmail(email));
-        return user.isEmpty();
+        Optional<Users> user= usersRepository.findByUserEmail(email);
+        return user.orElse(null);
     }
 
     /**
@@ -132,7 +133,7 @@ public class AuthenticationService
     /**
      * This method will add the user,user's details and skill details in the database.
      */
-    public Boolean AddNewUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
+    public boolean addNewUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
         if(validateSecondPhase(signUpSecondPhaseRequest))
         {
@@ -159,18 +160,18 @@ public class AuthenticationService
     {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
-        Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
+        Optional<Company> company = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
 
         Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
 
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
-        if (userType.isEmpty() || comapany.isEmpty() || city.isEmpty() || country.isEmpty())
+        if (userType.isEmpty() || company.isEmpty() || city.isEmpty() || country.isEmpty())
         {
             return false;
         }
 
-        for(Integer skillId : signUpSecondPhaseRequest.getSkill())
+        for(Integer skillId : signUpSecondPhaseRequest.getSkills())
         {
             Optional<Skills> skills = skillsRepository.findById(skillId);
             if(skills.isEmpty())
@@ -186,12 +187,12 @@ public class AuthenticationService
      */
     private boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
-        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(signUpSecondPhaseRequest.getUserEmail()));
+        Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
         if(users.isEmpty())
         {
             return false;
         }
-        for(Integer skillId : signUpSecondPhaseRequest.getSkill())
+        for(Integer skillId : signUpSecondPhaseRequest.getSkills())
         {
             Optional<Skills> skills = skillsRepository.findById(skillId);
             if(skills.isEmpty())
@@ -212,7 +213,7 @@ public class AuthenticationService
     private boolean addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest)
     {
 
-        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(signUpSecondPhaseRequest.getUserEmail()));
+        Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
         Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
         Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
@@ -223,7 +224,7 @@ public class AuthenticationService
         }
 
         UserDetails userDetails = new UserDetails();
-        userDetails.setUserName(signUpSecondPhaseRequest.getUserEmail());
+        userDetails.setUserName(signUpSecondPhaseRequest.getEmail());
         userDetails.setUsers(users.get());
         userDetails.setCompany(comapany.get());
         userDetails.setExperience(signUpSecondPhaseRequest.getExperience());
@@ -250,7 +251,7 @@ public class AuthenticationService
         }
 
         Users user = new Users();
-        user.setUserEmail(signUpSecondPhaseRequest.getUserEmail());
+        user.setUserEmail(signUpSecondPhaseRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpSecondPhaseRequest.getPassword()));
         user.setUserType(userType.get());
         usersRepository.save(user);
@@ -267,17 +268,13 @@ public class AuthenticationService
     public Optional<Users> authenticate(LoginRequest input)
     {
 
-        Optional<Users> users = Optional.ofNullable(usersRepository.findByUserEmail(input.getUserEmail()));
+        Optional<Users> user = usersRepository.findByUserEmail(input.getEmail());
 
-        if(users.isEmpty())
+        if(user.isPresent() && passwordEncoder.matches(input.getPassword(), user.get().getPassword()))
         {
+            return user;
+        } else {
             return Optional.empty();
         }
-
-        if(passwordEncoder.matches(input.getPassword(), users.get().getPassword()))
-        {
-            return users;
-        }
-        return Optional.empty();
     }
 }

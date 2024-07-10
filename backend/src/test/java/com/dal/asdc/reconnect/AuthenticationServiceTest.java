@@ -1,9 +1,9 @@
 package com.dal.asdc.reconnect;
 
-import com.dal.asdc.reconnect.DTO.LoginDTO.LoginRequest;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseBody;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpFirstPhaseRequest;
-import com.dal.asdc.reconnect.DTO.SignUp.SignUpSecondPhaseRequest;
+import com.dal.asdc.reconnect.dto.LoginDto.LoginRequest;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest;
+import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import com.dal.asdc.reconnect.service.AuthenticationService;
@@ -69,11 +69,11 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_UserAlreadyPresent()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(new Users());
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(new Users()));
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
@@ -84,11 +84,11 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_UserNotPresent()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
@@ -100,11 +100,11 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_ReenterPasswordError()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setReenteredPassword("DifferentPassword1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
@@ -116,11 +116,11 @@ public class AuthenticationServiceTest
     void testValidateFirstPhase_InvalidEmail()
     {
         SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-        request.setUserEmail("invalid-email");
+        request.setEmail("invalid-email");
         request.setPassword("Password1!");
         request.setReenteredPassword("Password1!");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
 
         SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
 
@@ -132,23 +132,23 @@ public class AuthenticationServiceTest
     void testAddNewUser_Success()
     {
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setUserType(1);
         request.setCompany(1);
         request.setCity(1);
         request.setCountry(1);
-        request.setSkill(List.of(new Integer[]{1, 2}));
+        request.setSkills(List.of(new Integer[]{1, 2}));
 
         when(userTypeRepository.findById(anyInt())).thenReturn(Optional.of(new UserType()));
         when(companyRepository.findById(anyInt())).thenReturn(Optional.of(new Company()));
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(new City()));
         when(countryRepository.findById(anyInt())).thenReturn(Optional.of(new Country()));
         when(skillsRepository.findById(anyInt())).thenReturn(Optional.of(new Skills()));
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(new Users());
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(new Users()));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        assertTrue(authenticationService.AddNewUser(request));
+        assertTrue(authenticationService.addNewUser(request));
     }
 
 
@@ -157,13 +157,13 @@ public class AuthenticationServiceTest
     void testAddNewUser_NotSuccess()
     {
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setUserType(1);
         request.setCompany(1);
         request.setCity(1);
         request.setCountry(1);
-        request.setSkill(List.of(new Integer[]{1, 2}));
+        request.setSkills(List.of(new Integer[]{1, 2}));
 
         when(userTypeRepository.findById(anyInt())).thenReturn(Optional.of(new UserType()));
         when(companyRepository.findById(anyInt())).thenReturn(Optional.of(new Company()));
@@ -173,7 +173,7 @@ public class AuthenticationServiceTest
         when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        assertFalse(authenticationService.AddNewUser(request));
+        assertFalse(authenticationService.addNewUser(request));
     }
 
 
@@ -181,14 +181,14 @@ public class AuthenticationServiceTest
     void testAuthenticate_Failure()
     {
         LoginRequest request = new LoginRequest();
-        request.setUserEmail("test@example.com");
+        request.setEmail("test@example.com");
         request.setPassword("WrongPassword1!");
 
         Users user = new Users();
         user.setUserEmail("test@example.com");
         user.setPassword("encodedPassword");
 
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(user);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
         Optional<Users> result = authenticationService.authenticate(request);

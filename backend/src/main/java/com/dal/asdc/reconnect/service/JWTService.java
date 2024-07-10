@@ -17,6 +17,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class JWTService {
@@ -44,11 +45,12 @@ public class JWTService {
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails)
     {
-        Users user = usersRepository.findByUserEmail(userDetails.getUsername());
-        int userType = user.getUserType().getTypeID();
+        Optional<Users> user = usersRepository.findByUserEmail(userDetails.getUsername());
+        int userType = user.get().getUserType().getTypeID();
 
         extraClaims.put("email", userDetails.getUsername());
         extraClaims.put("userType", userType);
+        extraClaims.put("userID", user.get().getUserID());
 
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
@@ -57,7 +59,7 @@ public class JWTService {
         return jwtExpiration;
     }
 
-    private String buildToken(
+    public String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
             long expiration
@@ -107,5 +109,10 @@ public class JWTService {
     public String extractEmail(String token) {
         Claims claims = extractAllClaims(token);
         return (String) claims.get("email");
+    }
+
+    public int extractID(String token) {
+        Claims claims = extractAllClaims(token);
+        return (int) claims.get("userID");
     }
 }

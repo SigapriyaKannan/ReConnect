@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
     FormControl,
     FormGroup,
@@ -10,15 +10,15 @@ import {
     AbstractControl,
     ValidationErrors,
 } from '@angular/forms';
-import {MessageService} from 'primeng/api';
-import {AuthService} from '../../services/auth.service';
-import {ToastModule} from "primeng/toast";
-import {ButtonModule} from "primeng/button";
-import {PasswordModule} from "primeng/password";
-import {CardModule} from "primeng/card";
+import { AuthService } from '../../services/auth.service';
+import { ToastModule } from "primeng/toast";
+import { ButtonModule } from "primeng/button";
+import { PasswordModule } from "primeng/password";
+import { CardModule } from "primeng/card";
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
     selector: 'rc-reset-password',
@@ -44,7 +44,7 @@ export class ResetPasswordComponent {
 
     constructor(
         private route: ActivatedRoute,
-        private messageService: MessageService,
+        private toastService: ToastService,
         private authService: AuthService,
         private router: Router
     ) {
@@ -70,11 +70,7 @@ export class ResetPasswordComponent {
         this.resetPasswordForm.markAllAsDirty();
         this.resetPasswordForm.markAllAsTouched();
         if (this.resetPasswordForm.invalid) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Please provide valid information.'
-            });
+            this.toastService.showFormError();
             console.error('ERROR!');
         } else {
             const email = this.resetPasswordForm.controls['email'].value;
@@ -82,12 +78,7 @@ export class ResetPasswordComponent {
 
             this.authService.resetPassword(this.token, newPassword).subscribe(
                 (response: any) => {
-                    console.log('Password reset successful:', response);
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Success',
-                        detail: 'Password reset successfully'
-                    });
+                    this.toastService.showSuccess('Password reset successfully');
                     this.router.navigate(['/login'])
                         .then(() => {
                             console.log('Navigation to login page successful');
@@ -97,12 +88,7 @@ export class ResetPasswordComponent {
                         });
                 },
                 (error: any) => {
-                    console.error('Password reset failed:', error);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'Failed to reset password'
-                    });
+                    this.toastService.showError('Failed to reset password');
                 }
             );
         }

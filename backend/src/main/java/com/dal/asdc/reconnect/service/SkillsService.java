@@ -1,37 +1,66 @@
 package com.dal.asdc.reconnect.service;
 
 
-import com.dal.asdc.reconnect.DTO.Helper.SkillsDTO;
-import com.dal.asdc.reconnect.DTO.Helper.SkillsResponseBody;
+import com.dal.asdc.reconnect.dto.Skill.SkillsDto;
+import com.dal.asdc.reconnect.model.SkillDomain;
 import com.dal.asdc.reconnect.model.Skills;
-import com.dal.asdc.reconnect.model.UserSkills;
+import com.dal.asdc.reconnect.repository.SkillDomainRepository;
 import com.dal.asdc.reconnect.repository.SkillsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SkillsService {
     @Autowired
     SkillsRepository skillsRepository;
 
+    @Autowired
+    SkillDomainRepository skillDomainRepository;
+
     /**
      * Retrieves the list of all skills.
-     * @return a SkillsResponseBody object containing the list of all skills.
+     * @return a list of SkillsDTO containing the list of all skills.
      */
-    public SkillsResponseBody getSkills() {
+    public List<SkillsDto> getSkills() {
+        List<SkillsDto> listOfSkills = new ArrayList<>();
+        List<Skills> listOfSkillsFromDatabase = skillsRepository.findAll();
 
-        SkillsResponseBody skillsResponseBody = new SkillsResponseBody();
-        List<Skills> userSkills = skillsRepository.findAll();
+        for (Skills skill : listOfSkillsFromDatabase) {
+            SkillsDto skillsDTO = new SkillsDto(
+                    skill.getSkillId(),
+                    skill.getSkillName(),
+                    skill.getSkillDomain().getDomainId(),
+                    skill.getSkillDomain().getDomainName()
+            );
+            listOfSkills.add(skillsDTO);
+        }
 
-        List<SkillsDTO> skillsDTOs = userSkills.stream()
-                .map(skill -> new SkillsDTO(skill.getSkillId(), skill.getSkillName()))
-                .collect(Collectors.toList());
+        return listOfSkills;
+    }
 
-        skillsResponseBody.setSkills(skillsDTOs);
-        return skillsResponseBody;
+    public void addSkill(SkillsDto skillDTO) {
+        Skills skill = new Skills();
+        skill.setSkillName(skillDTO.getSkillName());
+        SkillDomain domain = skillDomainRepository.findById(skillDTO.getDomainId())
+                .orElseThrow(() -> new RuntimeException("Skill Domain not found"));
+        skill.setSkillDomain(domain);
+        skillsRepository.save(skill);
+    }
 
+    public void editSkill(SkillsDto skillDTO) {
+        Skills skill = skillsRepository.findById(skillDTO.getSkillId())
+                .orElseThrow(() -> new RuntimeException("Skill not found"));
+        skill.setSkillName(skillDTO.getSkillName());
+        SkillDomain domain = skillDomainRepository.findById(skillDTO.getDomainId())
+                .orElseThrow(() -> new RuntimeException("Skill Domain not found"));
+        skill.setSkillDomain(domain);
+        skillsRepository.save(skill);
+    }
+
+    public void deleteSkill(Integer id) {
+        skillsRepository.deleteById(id);
     }
 }

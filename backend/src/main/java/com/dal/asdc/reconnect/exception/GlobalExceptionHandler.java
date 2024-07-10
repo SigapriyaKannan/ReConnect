@@ -1,6 +1,6 @@
 package com.dal.asdc.reconnect.exception;
 
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,5 +43,15 @@ public class GlobalExceptionHandler {
         }
 
         return new ResponseEntity<>(response, status);
+    }
+
+    @ExceptionHandler(CountryNotFoundException.class)
+    public ResponseEntity<Object> handleCountryNotFoundException(CountryNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CityNotFoundException.class)
+    public ResponseEntity<Object> handleCityNotFoundException(CityNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
