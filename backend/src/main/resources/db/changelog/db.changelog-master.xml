@@ -8,4 +8,5 @@
 
     <include file="db/changelog/1-create-tables.xml"/>
     <include file="db/changelog/2-create-tables.xml"/>
+    <include file="db/changelog/3-create-tables.xml"/>
 </databaseChangeLog>

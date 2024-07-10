@@ -38,13 +38,11 @@ build_frontend:
       - ./frontend/Re-Connect/dist
   only:
     changes:
-      - frontend/
+      - frontend/**/*
       - .gitlab-ci.yml
     refs:
       - merge_requests
       - branches
-      - main
-      - dev
     
 
 build_backend:
@@ -59,13 +57,11 @@ build_backend:
       - ./backend/target/reconnect-0.0.1-SNAPSHOT.jar
   only:
     changes:
-      - backend/
+      - backend/**/*
       - .gitlab-ci.yml
     refs:
       - merge_requests
       - branches
-      - main
-      - dev
 
 # Test stage
 test_backend:
@@ -79,19 +75,15 @@ test_backend:
     - mvn test
   only:
     changes:
-      - backend/
+      - backend/**/*
       - .gitlab-ci.yml
     refs:
       - merge_requests
       - branches
-      - main
-      - dev
 
 # push frontend
 push_frontend:
   stage: push
-  needs:
-    - build_frontend
   image: docker:20
   tags:
     - dalfcs_docker_kvm
@@ -119,9 +111,6 @@ push_frontend:
 # push stage
 push_backend:
   stage: push
-  needs:
-    - build_backend
-    - test_backend
   image: docker:20
   tags:
     - dalfcs_docker_kvm

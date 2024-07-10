@@ -1,17 +1,13 @@
 package com.dal.asdc.reconnect.controller;
 
-import com.dal.asdc.reconnect.DTO.Chat.ChatHistoryResponseBody;
-import com.dal.asdc.reconnect.DTO.Chat.ChatMessageRequest;
-import com.dal.asdc.reconnect.DTO.City.CityDTO;
-import com.dal.asdc.reconnect.DTO.Response;
+import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
+import com.dal.asdc.reconnect.dto.Chat.ChatMessageRequest;
+import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.service.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

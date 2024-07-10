@@ -7,15 +7,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UsersRepository extends JpaRepository<Users, Integer>
 {
-    Users findByUserEmail(String email);
-    Users findByResetToken(String resetToken);
+    Optional<Users> findByUserEmail(String email);
 
     @Query(value = "SELECT ud.UserName, u.TypeID FROM Users u " +
             "JOIN UserDetails ud ON u.UserID = ud.UserID " +
             "JOIN UserType ut ON u.TypeID = ut.TypeID " +
             "WHERE ut.TypeName = :typeName", nativeQuery = true)
     List<Object[]> findUserNameAndTypeIdByUserType(@Param("typeName") String typeName);
+
+    Users findByResetToken(String resetToken);
+
 }
