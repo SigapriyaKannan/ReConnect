@@ -75,6 +75,13 @@ export class LoginComponent {
             detail: 'Login successful'
             
           });
+          this.router.navigate(['/home-page'])
+              .then(() => {
+                console.log('Navigation to home page successful');
+              })
+              .catch(err => {
+                console.error('Navigation to home page failed:', err);
+              });
          
         },
         (error: any) => {

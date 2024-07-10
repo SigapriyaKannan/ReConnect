@@ -1,1 +1,39 @@
-<p>admin-companies works!</p>
+<div class="companies">
+    <h2>Companies</h2>
+    <button class="btn btn-primary" (click)="showAddCompanyDialog()">Add Company</button>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Company ID</th>
+            <th>Company Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let company of companies">
+            <td>{{ company.companyId }}</td>
+            <td>{{ company.companyName }}</td>
+            <td>
+                <button class="btn btn-info" (click)="showEditCompanyDialog(company)">Edit</button>
+                <button class="btn btn-danger" (click)="onDeleteCompany(company.companyId)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="add-edit-dialog">
+    <p-dialog header="{{ selectedCompany ? 'Edit Company' : 'Add Company' }}" [(visible)]="displayAddDialog || displayEditDialog" modal="true" [closable]="false">
+        <form [formGroup]="selectedCompany ? editCompanyForm : addCompanyForm" (ngSubmit)="selectedCompany ? onEditCompanySubmit() : onAddCompanySubmit()">
+            <input *ngIf="selectedCompany" type="hidden" formControlName="companyId">
+            <div class="form-group">
+                <label for="companyName">Company Name</label>
+                <input type="text" id="companyName" formControlName="companyName" class="form-control">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">{{ selectedCompany ? 'Save Changes' : 'Add Company' }}</button>
+                <button type="button" class="btn btn-secondary" (click)="hideEditDialog()">Cancel</button>
+            </div>
+        </form>
+    </p-dialog>
+</div>

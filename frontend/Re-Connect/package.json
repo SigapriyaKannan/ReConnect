@@ -35,7 +35,8 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
-		"build": "ng build --output-path='../../backend/src/main/resources/static/' --extract-licenses=false --verbose=true",
+		"build:development": "ng build  --extract-licenses=false --verbose=true --configuration=development",
+		"build:production": "ng build  --extract-licenses=false --verbose=true --configuration=production",
 		"watch": "ng build --watch --configuration development"
 	},
 	"private": true,

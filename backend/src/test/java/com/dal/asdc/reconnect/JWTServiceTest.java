@@ -43,7 +43,7 @@ class JWTServiceTest {
         UserType userType = new UserType();
         userType.setTypeID(1);
         user.setUserType(userType);
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(user);
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(user));
 
         Collection<? extends SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
         UserDetails userDetails = new User("test@example.com", "password", authorities);

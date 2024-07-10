@@ -16,6 +16,7 @@ public class Skills {
     @Column(name = "SkillName", nullable = false, length = 100)
     private String skillName;
 
-    @Column(name = "SkillDomain", length = 100)
-    private String skillDomain;
+    @ManyToOne
+    @JoinColumn(name = "DomainID")
+    private SkillDomain skillDomain;
 }

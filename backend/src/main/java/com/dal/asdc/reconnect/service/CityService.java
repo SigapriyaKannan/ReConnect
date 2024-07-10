@@ -1,10 +1,13 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.DTO.City.CityDTO;
-import com.dal.asdc.reconnect.DTO.City.CityRequestDTO;
+import com.dal.asdc.reconnect.dto.City.CityDTO;
+import com.dal.asdc.reconnect.dto.City.CityRequestDTO;
+import com.dal.asdc.reconnect.exception.CityNotFoundException;
+import com.dal.asdc.reconnect.exception.CountryNotFoundException;
 import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CityRepository;
+import com.dal.asdc.reconnect.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,9 @@ public class CityService {
 
     @Autowired
     private CityRepository cityRepository;
+
+    @Autowired
+    private CountryRepository countryRepository;
 
 
     /**
@@ -56,8 +62,8 @@ public class CityService {
      * @return City object if found, otherwise null.
      */
     public City getCityById(int cityId) {
-        Optional<City> city = cityRepository.findById(cityId);
-        return city.orElse(null);
+        return cityRepository.findById(cityId)
+                .orElseThrow(() -> new CityNotFoundException("City not found with ID: " + cityId));
     }
 
     /**
@@ -67,7 +73,8 @@ public class CityService {
      * @return City object if found, otherwise null.
      */
     public City getCityByCityName(String cityName) {
-        return cityRepository.findCityByCityName(cityName);
+        Optional<City> city = cityRepository.findCityByCityName(cityName);
+        return city.orElse(null);
     }
 
     /**
@@ -100,20 +107,17 @@ public class CityService {
      * Modifies an existing city based on the provided CityRequestDTO.
      *
      * @param cityDTO The CityRequestDTO object containing the updated city information.
-     * @return The modified City object if found and updated, otherwise null.
      */
-    public City modifyCity(CityRequestDTO cityDTO) {
-        Optional<City> cityFromDatabase = cityRepository.findById(cityDTO.getCityId());
-        if(cityFromDatabase.isPresent()) {
-            City existingCity = cityFromDatabase.get();
-            existingCity.setCityName(cityDTO.getCityName());
-            cityRepository.save(existingCity);
-            return existingCity;
-        } else {
-            return null;
-        }
-    }
+    public void modifyCity(CityRequestDTO cityDTO) {
+        City existingCity = getCityById(cityDTO.getCityId());
+        existingCity.setCityName(cityDTO.getCityName());
 
+        Country newCountry = countryRepository.findById(cityDTO.getCountryId())
+                .orElseThrow(() -> new CountryNotFoundException("Country not found with ID: " + cityDTO.getCountryId()));
+
+        existingCity.setCountry(newCountry);
+        cityRepository.save(existingCity);
+    }
     /**
      * Deletes a city by its ID.
      *

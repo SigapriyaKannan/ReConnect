@@ -15,6 +15,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -45,7 +47,7 @@ class ForgotPasswordServiceTest {
     @Test
     void testSendResetEmail_UserExists() {
         Users user = mock(Users.class);
-        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(user);
+        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(Optional.ofNullable(user));
 
         forgotPasswordService.sendResetEmail(TestConstants.TEST_EMAIL);
 
@@ -81,7 +83,7 @@ class ForgotPasswordServiceTest {
     @Test
     void testSendEmail_Success() {
         Users user = mock(Users.class);
-        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(user);
+        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(Optional.ofNullable(user));
         doNothing().when(mailSender).send(any(SimpleMailMessage.class));
 
         forgotPasswordService.sendResetEmail(TestConstants.TEST_EMAIL);
@@ -110,7 +112,7 @@ class ForgotPasswordServiceTest {
     void testSendEmail_EmailSendingFailure() {
         Users user = new Users();
         user.setUserEmail(TestConstants.TEST_EMAIL);
-        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(user);
+        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(Optional.of(user));
 
         // Simulate email sending failure
         doThrow(new EmailSendingException(TestConstants.FAILED_TO_SEND_EMAIL, HttpStatus.EXPECTATION_FAILED)).when(mailSender).send(any(SimpleMailMessage.class));
