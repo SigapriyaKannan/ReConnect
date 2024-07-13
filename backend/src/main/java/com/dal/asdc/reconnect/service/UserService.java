@@ -16,7 +16,11 @@ public class UserService {
     public List<UserNameTypeIdDTO> getUserNameAndTypeIdByUserType(String typeName) {
         List<Object[]> results = usersRepository.findUserNameAndTypeIdByUserType(typeName);
         return results.stream()
-                .map(result -> new UserNameTypeIdDTO((String) result[0], (Integer) result[1]))
+                .map(result -> new UserNameTypeIdDTO(
+                        ((Number) result[0]).intValue(),  // UserID
+                        (String) result[1],               // UserName
+                        ((Number) result[2]).intValue()   // TypeID
+                ))
                 .collect(Collectors.toList());
     }
 

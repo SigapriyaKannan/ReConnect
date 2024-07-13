@@ -17,6 +17,7 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+
     @GetMapping("/usernames-and-typeids")
     public ResponseEntity<List<UserNameTypeIdDTO>> getUserNamesAndTypeIdsByUserType(@RequestParam String typeName) {
         List<UserNameTypeIdDTO> userNameTypeIdDTOList = userService.getUserNameAndTypeIdByUserType(typeName);

@@ -13,7 +13,7 @@ public interface UsersRepository extends JpaRepository<Users, Integer>
 {
     Optional<Users> findByUserEmail(String email);
 
-    @Query(value = "SELECT ud.UserName, u.TypeID FROM Users u " +
+    @Query(value = "SELECT u.UserID, ud.UserName, u.TypeID FROM Users u " +
             "JOIN UserDetails ud ON u.UserID = ud.UserID " +
             "JOIN UserType ut ON u.TypeID = ut.TypeID " +
             "WHERE ut.TypeName = :typeName", nativeQuery = true)
