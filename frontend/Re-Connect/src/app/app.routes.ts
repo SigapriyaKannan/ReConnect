@@ -18,31 +18,40 @@ import {ForgotPasswordComponent} from "./shared/components/forgot-password/forgo
 import {ResetPasswordComponent} from "./shared/components/reset-password/reset-password.component";
 import {AdminSkillDomainComponent} from "./cms/components/admin-skill-domain/admin-skill-domain.component";
 import {AdminLoginComponent} from "./cms/components/admin-login/admin-login.component";
+import {NonAuthGuard} from "./shared/components/auth/non-auth-guard.service";
+import {AuthGuard} from "./shared/components/auth/auth-guard.service";
 
 export const routes: Routes = [
     {
         path: "login",
-        component: LoginComponent
+        component: LoginComponent,
+        canActivate: [NonAuthGuard]
     },
     {
         path: "sign-up",
-        component: SignupComponent
+        component: SignupComponent,
+        canActivate: [NonAuthGuard]
     },
     {
         path: "forgot-password",
-        component: ForgotPasswordComponent
+        component: ForgotPasswordComponent,
+        canActivate: [NonAuthGuard]
     },
     {
         path: "reset-password",
-        component: ResetPasswordComponent
+        component: ResetPasswordComponent,
+        canActivate: [NonAuthGuard]
     },
     {
         path: "",
         component: LayoutComponent,
+        
+
         children: [
             {
                 path: "homepage",
                 component: HomepageComponent
+        
             },
             {
                 path: "notifications",
