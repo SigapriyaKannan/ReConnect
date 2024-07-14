@@ -105,6 +105,10 @@ export const routes: Routes = [
                 component: AdminCompaniesComponent
             },
             {
+                path:"users",
+                component: AdminUsersComponent
+            },
+            {
                 path: "",
                 redirectTo: "dashboard",
                 pathMatch: "full"
