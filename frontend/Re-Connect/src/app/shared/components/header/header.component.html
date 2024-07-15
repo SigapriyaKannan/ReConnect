@@ -1,4 +1,4 @@
-<p-menubar [model]="items">
+<!-- <p-menubar [model]="items">
 	<ng-template pTemplate="start">
 		<img src="/assets/images/logo.png" alt="Logo" height="50" width="50" class="rounded" role="button" [routerLink]="['/', 'admin']" />
 	</ng-template>
@@ -8,4 +8,25 @@
 			<p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
 		</div>
 	</ng-template>
-</p-menubar>
+</p-menubar> -->
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+	<div class="container-fluid">
+		<div class="mx-4">
+			<a class="navbar-brand" href="#">
+				<img src="/assets/images/logo.png" alt="Logo" height="50" width="50" class="rounded" role="button" [routerLink]="['/', 'admin']" />
+			</a>
+		</div>
+		<div class="d-flex flex-grow-1 align-items-center justify-content-between gap-2">
+			@if(loggedUser.role == roles.REFERENT) {
+			<p-inputGroup styleClass="w-75">
+				<input type="text" pInputText placeholder="Search..." />
+				<button type="button" pButton icon="pi pi-search" class="p-button-primary"></button>
+			</p-inputGroup>
+			}
+			<div class="ms-auto">
+				<span>Hi,&nbsp;{{ loggedUser.username }}</span>
+			</div>
+		</div>
+	</div>
+</nav>
