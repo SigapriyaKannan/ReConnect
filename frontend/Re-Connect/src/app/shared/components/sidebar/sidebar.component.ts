@@ -4,6 +4,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { TooltipModule } from 'primeng/tooltip';
+import { AuthService } from '../auth/auth-service.service';
 
 @Component({
   selector: 'rc-sidebar',
@@ -15,7 +16,7 @@ import { TooltipModule } from 'primeng/tooltip';
 export class SidebarComponent {
   items: MenuItem[] | undefined;
 
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.items = [
@@ -40,5 +41,9 @@ export class SidebarComponent {
         route: "/requests"
       }
     ]
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }

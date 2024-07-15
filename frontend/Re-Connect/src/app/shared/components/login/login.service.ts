@@ -12,9 +12,9 @@ export class LoginService {
 
     constructor(private http: HttpClient) { }
 
-    login(credentials: { userEmail: string; password: string }): Observable<any> {
-        return this.http.post<any>(environment.API + "auth/login", credentials).pipe(
-           
+    login(credentials: { email: string; password: string }): Observable<any> {
+        return this.http.post<any>(environment.AUTH_API + "login", credentials).pipe(
+
         );
     }
 }

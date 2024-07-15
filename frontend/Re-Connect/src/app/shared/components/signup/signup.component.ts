@@ -64,6 +64,7 @@ export class SignupComponent {
   listOfCountries: Country[] = [];
   listOfCities: City[] = [];
   listOfSkills: Skill[] = [];
+  previewImg: any;
 
   constructor(private router: Router, private toastService: ToastService, private signUpService: SignUpService, private authService: AuthService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
     this.userCredentialsForm = new FormGroup({
@@ -182,7 +183,15 @@ export class SignupComponent {
       this.uploadForm.patchValue({
         profile: file
       });
-      console.log(this.uploadForm.value);
+
+      const reader = new FileReader();
+
+      reader.onload = (e: any) => {
+        console.log(e.target.result);
+        this.previewImg = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
     }
   }
 }
