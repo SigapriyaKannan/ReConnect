@@ -1,7 +1,6 @@
-import { inject, Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, CanActivateChildFn, CanActivateFn } from '@angular/router';
-import { AuthService } from './auth-service.service';
-import { ToastService } from '../../services/toast.service';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, CanActivateChildFn, CanActivateFn } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 
 

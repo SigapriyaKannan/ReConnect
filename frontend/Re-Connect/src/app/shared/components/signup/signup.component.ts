@@ -10,7 +10,7 @@ import { StepperModule } from "primeng/stepper";
 import { DropdownModule } from "primeng/dropdown";
 import { MultiSelectModule } from "primeng/multiselect";
 import { RadioButtonModule } from "primeng/radiobutton";
-import { FileUploadModule, UploadEvent } from 'primeng/fileupload';
+import { FileUploadModule } from 'primeng/fileupload';
 
 import { SignUpService } from './signup.service';
 import { Company, CompanyService } from '../../services/company.service';
@@ -126,7 +126,7 @@ export class SignupComponent {
         password: form.get('password')?.value,
         reenteredPassword: form.get('confirmPassword')?.value
       }
-      this.authService.verifyEmail(body).subscribe(response => {
+      this.signUpService.verifyEmail(body).subscribe(response => {
         this.verificationPending = false;
         this.activeStep = step + 1;
       }, (error) => {
@@ -163,7 +163,7 @@ export class SignupComponent {
       formData.append('resume', "");  // Placeholder for resume field if needed
       formData.append('profile', profileFile, profileFile.name);
 
-      this.authService.signUp(formData).subscribe(response => {
+      this.signUpService.signUp(formData).subscribe(response => {
         this.isCreatingUser = false;
         this.toastService.showSuccess("User created successfully");
         this.router.navigate(["/", "login"]);

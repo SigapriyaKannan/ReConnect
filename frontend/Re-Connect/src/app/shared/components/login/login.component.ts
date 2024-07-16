@@ -8,10 +8,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
 import { RouterLink } from '@angular/router';
-import { LoginService } from './login.service';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth-service.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'rc-login',
@@ -74,7 +73,7 @@ export class LoginComponent {
             summary: 'Success',
             detail: 'Login successful'
           });
-          this.router.navigate(['/homepage']);
+          this.router.navigate(['/']);
         },
         (error: any) => {
           // Handle login error

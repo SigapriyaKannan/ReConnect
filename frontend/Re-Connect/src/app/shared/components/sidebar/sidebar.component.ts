@@ -4,7 +4,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { TooltipModule } from 'primeng/tooltip';
-import { AuthService } from '../auth/auth-service.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'rc-sidebar',

@@ -17,9 +17,8 @@ import { ForgotPasswordComponent } from "./shared/components/forgot-password/for
 import { ResetPasswordComponent } from "./shared/components/reset-password/reset-password.component";
 import { AdminSkillDomainComponent } from "./cms/components/admin-skill-domain/admin-skill-domain.component";
 import { AdminLoginComponent } from "./cms/components/admin-login/admin-login.component";
-import { NonAuthGuard } from "./shared/components/auth/non-auth-guard.service";
-import { canActivateChildPage, canActivatePage } from "./shared/components/auth/auth-guard.service";
-import { UserResolver } from './shared/components/auth/user-resolver.service';
+import { canActivateChildPage, canActivatePage } from "./shared/guards/auth-guard.service";
+import { UserResolver } from './shared/resolvers/user-resolver.service';
 
 export const routes: Routes = [
     {
@@ -116,10 +115,6 @@ export const routes: Routes = [
                 pathMatch: "full"
             }
         ]
-    },
-    {
-        path: "admin/login",
-        component: AdminLoginComponent
     },
     {
         path: "**",
