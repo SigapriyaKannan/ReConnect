@@ -67,7 +67,6 @@ export class AdminCountriesComponent implements OnInit {
     const Country: Country = { countryId, countryName };
     this.countryService.addCountry(Country).subscribe(
       response => {
-        console.log('Country added successfully:', response);
         this.loadCountries();
         this.hideAddDialog();
       },
@@ -94,7 +93,6 @@ export class AdminCountriesComponent implements OnInit {
     const updatedCountry: Country = { countryId, countryName };
     this.countryService.editCountry(updatedCountry).subscribe(
       response => {
-        console.log('Country updated successfully:', response);
         this.loadCountries();
         this.hideEditDialog();
       },
@@ -107,7 +105,6 @@ export class AdminCountriesComponent implements OnInit {
   onDeleteCountry(countryId: number) {
     this.countryService.deleteCountry(countryId).subscribe(
       response => {
-        console.log('Country deleted successfully:', response);
         this.loadCountries();
       },
       error => {

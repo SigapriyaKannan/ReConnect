@@ -26,6 +26,11 @@ export class SidebarComponent {
   ngOnInit() {
     this.items = [
       {
+        label: "Homepage",
+        icon: "pi pi-home",
+        route: "/homepage",
+      },
+      {
         label: "Notifications",
         icon: "pi pi-bell",
         route: "/notifications"
@@ -42,13 +47,13 @@ export class SidebarComponent {
       }
     ]
 
-    if (this.user.role == 2) {
-      this.items.unshift({
-        label: "Homepage",
-        icon: "pi pi-search",
-        route: "/homepage",
-      })
-    }
+    // if(this.user.role == 2) {
+    //   this.items.unshift({
+    //     label: "Homepage",
+    //     icon: "pi pi-search",
+    //     route: "/homepage",
+    //   })
+    // }
   }
 
   onLogout() {

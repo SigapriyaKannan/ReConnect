@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Company, CompanyService } from '../../../shared/services/company.service';
-import {DialogModule} from "primeng/dialog";
-import {NgForOf, NgIf} from "@angular/common";
+import { DialogModule } from "primeng/dialog";
+import { NgForOf, NgIf } from "@angular/common";
 
 @Component({
-    selector: 'rc-admin-companies',
-    templateUrl: './admin-companies.component.html',
-    standalone: true,
-    imports: [
-        DialogModule,
-        ReactiveFormsModule,
-        NgIf,
-        NgForOf
-    ],
-    styleUrls: ['./admin-companies.component.scss']
+  selector: 'rc-admin-companies',
+  templateUrl: './admin-companies.component.html',
+  standalone: true,
+  imports: [
+    DialogModule,
+    ReactiveFormsModule,
+    NgIf,
+    NgForOf
+  ],
+  styleUrls: ['./admin-companies.component.scss']
 })
 export class AdminCompaniesComponent implements OnInit {
   companies: Company[] = [];
@@ -41,12 +41,12 @@ export class AdminCompaniesComponent implements OnInit {
 
   loadCompanies() {
     this.companyService.getAllCompanies().subscribe(
-        (response: any) => {
-            this.companies = response.body;
-        },
-        error => {
-          console.error('Error loading companies:', error);
-        }
+      (response: any) => {
+        this.companies = response.body;
+      },
+      error => {
+        console.error('Error loading companies:', error);
+      }
     );
   }
 
@@ -64,14 +64,13 @@ export class AdminCompaniesComponent implements OnInit {
       companyName
     };
     this.companyService.addCompany(newCompany).subscribe(
-        response => {
-          console.log('Company added successfully:', response);
-          this.loadCompanies();
-          this.hideAddDialog();
-        },
-        error => {
-          console.error('Error adding company:', error);
-        }
+      response => {
+        this.loadCompanies();
+        this.hideAddDialog();
+      },
+      error => {
+        console.error('Error adding company:', error);
+      }
     );
   }
 
@@ -93,27 +92,25 @@ export class AdminCompaniesComponent implements OnInit {
     const { companyId, companyName } = this.editCompanyForm.value;
     const updatedCompany: Company = { companyId, companyName };
     this.companyService.editCompany(updatedCompany).subscribe(
-        response => {
-          console.log('Company updated successfully:', response);
-          this.loadCompanies();
-          this.hideEditDialog();
-        },
-        error => {
-          console.error('Error updating company:', error);
-        }
+      response => {
+        this.loadCompanies();
+        this.hideEditDialog();
+      },
+      error => {
+        console.error('Error updating company:', error);
+      }
     );
   }
 
   onDeleteCompany(companyId: number | undefined) {
     if (companyId) {
       this.companyService.deleteCompany(companyId).subscribe(
-          response => {
-            console.log('Company deleted successfully:', response);
-            this.loadCompanies();
-          },
-          error => {
-            console.error('Error deleting company:', error);
-          }
+        response => {
+          this.loadCompanies();
+        },
+        error => {
+          console.error('Error deleting company:', error);
+        }
       );
     }
   }

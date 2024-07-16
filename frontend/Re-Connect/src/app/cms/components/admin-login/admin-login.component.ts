@@ -68,7 +68,6 @@ export class AdminLoginComponent {
       this.loginService.login(body).subscribe(
         (response: any) => {
           // Handle successful login response
-          console.log('Login successful:', response);
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
