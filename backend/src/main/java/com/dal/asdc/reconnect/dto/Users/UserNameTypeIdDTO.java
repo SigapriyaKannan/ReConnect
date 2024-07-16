@@ -1,4 +1,4 @@
-package com.dal.asdc.reconnect.DTO.Users;
+package com.dal.asdc.reconnect.dto.Users;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

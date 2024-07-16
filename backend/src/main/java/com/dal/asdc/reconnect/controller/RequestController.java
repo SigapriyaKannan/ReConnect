@@ -3,23 +3,37 @@ package com.dal.asdc.reconnect.controller;
 
 import com.dal.asdc.reconnect.dto.Request.Requests;
 import com.dal.asdc.reconnect.dto.Response;
+import com.dal.asdc.reconnect.model.ReferralRequests;
+import com.dal.asdc.reconnect.model.Users;
+import com.dal.asdc.reconnect.repository.UsersRepository;
 import com.dal.asdc.reconnect.service.RequestService;
+import com.dal.asdc.reconnect.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
+@RequestMapping("/api")
 public class RequestController
 {
 
     @Autowired
     RequestService requestService;
+
+    @Autowired
+    UsersRepository usersRepository;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping("/getPendingRequestForReferent")
     public ResponseEntity<?> getPendingRequestForReferent()
@@ -36,19 +50,29 @@ public class RequestController
         }
     }
 
-    @GetMapping("/getAcceptedRequestForReferent")
+    @GetMapping("/getAcceptedConnections")
     public ResponseEntity<?> getAcceptedRequestForReferent()
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Requests> requestDTO = requestService.getAcceptedRequestForReferent(senderEmail);
-
-
-        if(requestDTO != null) {
-            Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
-            return ResponseEntity.ok(response);
+        Optional<Users> user = usersRepository.findByUserEmail(senderEmail);
+        if(user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } else {
-            Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Request Not Found!", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        List<ReferralRequests> referralRequests = requestService.getAcceptedRequestForReferent(user.get().getUserID());
+            if (referralRequests.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+            } else {
+                List<Requests> requestDTO = new ArrayList<>();
+                for(ReferralRequests referralRequest: referralRequests) {
+                    Requests tempRequest = new Requests();
+                    tempRequest.setId(referralRequest.getReferrer().getUserID());
+                    tempRequest.setName(referralRequest.getReferrer().getUsername());
+                    tempRequest.setProfile("profilePicture.png");
+                    requestDTO.add(tempRequest);
+                }
+                Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            }
         }
     }
 

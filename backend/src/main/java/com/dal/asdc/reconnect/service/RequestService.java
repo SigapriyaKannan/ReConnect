@@ -2,6 +2,8 @@ package com.dal.asdc.reconnect.service;
 
 
 import com.dal.asdc.reconnect.dto.Request.Requests;
+import com.dal.asdc.reconnect.enums.RequestStatus;
+import com.dal.asdc.reconnect.model.ReferralRequests;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.RequestRepository;
 import com.dal.asdc.reconnect.repository.UserDetailsRepository;
@@ -25,40 +27,26 @@ public class RequestService {
     UsersRepository usersRepository;
 
 
-    public List<Requests> getPendingRequestForReferent(String Sender)
-    {
+    public List<Requests> getPendingRequestForReferent(String Sender) {
         Optional<Users> users = usersRepository.findByUserEmail(Sender);
         int userID = users.get().getUserID();
         List<Integer> pendingRequestsID = requestRepository.findReferrerIdsByReferentIdAndStatusPending(userID);
 
-        List<Requests> pendingRequests = userDetailsRepository.findRequestsByReferrerIds(pendingRequestsID);
-
-        return pendingRequests;
+        return userDetailsRepository.findRequestsByReferrerIds(pendingRequestsID);
 
     }
 
 
-    public List<Requests> getAcceptedRequestForReferent(String Sender)
-    {
-        Optional<Users> users = usersRepository.findByUserEmail(Sender);
-        int userID = users.get().getUserID();
-
-        List<Integer> pendingRequestsID = requestRepository.findReferrerIdsByReferentIdAndStatusAccepted(userID);
-
-        List<Requests> pendingRequests = userDetailsRepository.findRequestsByReferrerIds(pendingRequestsID);
-
-        return pendingRequests;
+    public List<ReferralRequests> getAcceptedRequestForReferent(int userId) {
+        return requestRepository.findByReferent_UserIDAndStatus(userId, RequestStatus.Accepted);
     }
 
-    public List<Requests> getPendingRequestForReferrer(String Sender)
-    {
+    public List<Requests> getPendingRequestForReferrer(String Sender) {
         Optional<Users> users = usersRepository.findByUserEmail(Sender);
         int userID = users.get().getUserID();
 
         List<Integer> pendingRequestsID = requestRepository.findReferentIdsByReferrerIdAndStatusPending(userID);
 
-        List<Requests> pendingRequests = userDetailsRepository.findRequestsByReferrerIds(pendingRequestsID);
-
-        return pendingRequests;
+        return userDetailsRepository.findRequestsByReferrerIds(pendingRequestsID);
     }
 }

@@ -8,7 +8,14 @@
 				optionLabel="name"
 				styleClass="h-100 d-flex flex-column"
 				[(ngModel)]="selectedUser"
+				emptyMessage="No Connections"
+				filterPlaceHolder="Search Users"
+				(onChange)="fetchMessages()"
 			>
+				<ng-template pTemplate="item" let-user>
+					<img [src]="imagePath + user.profile" [alt]="user.name" height="40" width="40" class="me-2" />
+					<span>{{ user.name }}</span>
+				</ng-template>
 			</p-listbox>
 		</div>
 		<div class="col-8 messages-container h-100">

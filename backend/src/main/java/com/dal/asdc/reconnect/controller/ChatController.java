@@ -10,14 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
+@RequestMapping("/api")
 public class ChatController
 {
     @Autowired
@@ -46,8 +44,8 @@ public class ChatController
     }
 
 
-    @GetMapping("/getChatHistory/{receiverEmail}")
-    public ResponseEntity<?> getChatHistory(@PathVariable String receiverEmail)
+    @GetMapping("/getChatHistory")
+    public ResponseEntity<?> getChatHistory(@RequestParam("email") String receiverEmail)
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
         List<ChatHistoryResponseBody> list = messagesService.getChatHistory(senderEmail,receiverEmail);

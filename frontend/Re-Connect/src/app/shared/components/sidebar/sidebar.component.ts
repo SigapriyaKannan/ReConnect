@@ -15,16 +15,16 @@ import { AuthService } from '../../services/auth.service';
 })
 export class SidebarComponent {
   items: MenuItem[] | undefined;
+  user: any;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.data.subscribe(({ user }) => {
+      this.user = user;
+    })
+  }
 
   ngOnInit() {
     this.items = [
-      {
-        label: "Homepage",
-        icon: "pi pi-home",
-        route: "/homepage",
-      },
       {
         label: "Notifications",
         icon: "pi pi-bell",
@@ -41,6 +41,14 @@ export class SidebarComponent {
         route: "/requests"
       }
     ]
+
+    if (this.user.role == 2) {
+      this.items.unshift({
+        label: "Homepage",
+        icon: "pi pi-search",
+        route: "/homepage",
+      })
+    }
   }
 
   onLogout() {

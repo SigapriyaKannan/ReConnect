@@ -2,11 +2,13 @@ package com.dal.asdc.reconnect.model;
 
 import com.dal.asdc.reconnect.enums.RequestStatus;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ReferralRequests")
+@Data
 public class ReferralRequests
 {
     @Id
@@ -24,7 +26,7 @@ public class ReferralRequests
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Status", length = 50, nullable = false)
-    private RequestStatus status = RequestStatus.PENDING;
+    private RequestStatus status = RequestStatus.Pending;
 
     @Column(name = "RequestDate", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime requestDate;
