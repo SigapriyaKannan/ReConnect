@@ -1,5 +1,6 @@
 package com.dal.asdc.reconnect.controller;
 
+import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.dto.User.UserDetails;
 import com.dal.asdc.reconnect.model.RefreshToken;
 import com.dal.asdc.reconnect.model.Users;
@@ -147,9 +148,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
-        String jwtToken = jwtService.generateToken(authenticatedUser.get());
-        com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody> response = getLoginResponse(loginRequest, jwtToken, refreshToken);
+        com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody> response = getLoginResponse(authenticatedUser.get());
 
         return ResponseEntity.ok(response);
     }
@@ -158,17 +157,18 @@ public class AuthenticationController {
     /**
      * Generates a login response containing the JWT token, expiration time, and refresh token.
      *
-     * @param loginRequest The LoginRequest object containing user credentials.
-     * @param jwtToken     The JWT token generated for the authenticated user.
-     * @param refreshToken The refresh token generated for the authenticated user.
+     * @param user The logged-in user.
      * @return LoginResponse object containing the login details.
      */
-    private com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody> getLoginResponse(com.dal.asdc.reconnect.dto.LoginDto.LoginRequest loginRequest, String jwtToken, RefreshToken refreshToken) {
+    private Response getLoginResponse(Users user) {
         com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody loginResponseBody = new com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody();
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUserEmail());
+        String jwtToken = jwtService.generateToken(user);
         loginResponseBody.setToken(jwtToken);
         loginResponseBody.setExpiresIn(jwtService.getExpirationTime());
         loginResponseBody.setRefreshToken(refreshToken.getToken());
-        loginResponseBody.setUserEmail(loginRequest.getEmail());
+        loginResponseBody.setUserEmail(user.getUserEmail());
+        loginResponseBody.setRole(user.getUserType().getTypeID());
         return new com.dal.asdc.reconnect.dto.Response<>(HttpStatus.OK.value(), "Success", loginResponseBody);
     }
 

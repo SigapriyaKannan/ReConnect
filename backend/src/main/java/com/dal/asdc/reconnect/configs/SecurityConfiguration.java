@@ -46,6 +46,7 @@ public class SecurityConfiguration
                             .requestMatchers("/api/skills/**").permitAll()
                             .requestMatchers("/api/companies/**").permitAll()
                             .requestMatchers("/api/skillDomains/**").permitAll()
+                            .requestMatchers("/api/users/**").permitAll()
                             .requestMatchers("/uploads/**").permitAll()
                             .anyRequest().authenticated()
                     )

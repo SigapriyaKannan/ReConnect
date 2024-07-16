@@ -10,7 +10,6 @@ public interface CityRepository extends JpaRepository<City, Integer>
 {
     List<City> findCitiesByCountryCountryId(int countryId);
     Optional<City> findCityByCityName(String cityName);
-
     City findCityByCityNameAndCountryCountryId(String cityName, int countryId);
 
 }
