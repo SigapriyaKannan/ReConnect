@@ -7,10 +7,10 @@
 				<img src="/assets/images/logo.png" alt="Logo" class="logo" />
 				<div class="row mb-2">
 					<div class="col pl-4">
-						@for(role of roles; track role.roleId) {
+						@for(role of roles; track role.roleId) { @if(role.roleId != 0){
 						<p-radioButton name="role" [id]="role.role" [value]="role.roleId" [(ngModel)]="selectedRole"></p-radioButton>
 						<label for="{{ role.role }}" class="ml-1 mr-3">{{ role.role }}</label>
-						}
+						} }
 					</div>
 				</div>
 				<p-stepper [linear]="true" [activeStep]="activeStep" styleClass="mb-0">
@@ -46,6 +46,7 @@
 											styleClass="w-100"
 											inputStyleClass="w-100"
 											formControlName="confirmPassword"
+											[feedback]="false"
 										></p-password>
 										@if(userCredentialsForm.controls['confirmPassword'].dirty && userCredentialsForm.controls['confirmPassword'].hasError('required')) {
 										<small class="invalid-form-control">Confirm Password is required</small>
@@ -60,7 +61,7 @@
 							</form>
 							<div class="d-flex flex-column align-items-center pt-4 justify-content-center">
 								<p-button
-									label="Next"
+									[label]="loading ? 'Verifying Email ...' : 'Next'"
 									icon="pi pi-arrow-right"
 									iconPos="right"
 									[loading]="verificationPending"

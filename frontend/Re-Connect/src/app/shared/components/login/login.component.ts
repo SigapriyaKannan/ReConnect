@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'rc-login',
@@ -58,14 +59,14 @@ export class LoginComponent {
         summary: 'Error',
         detail: 'Error in form'
       });
-      console.error('ERROR!');
     } else {
+      this.loading = true;
       const body = {
         email: this.userCredentialsForm.controls['email'].value,
         password: this.userCredentialsForm.controls['password'].value
       };
 
-      this.authService.login(body).subscribe(
+      this.authService.login(body).pipe(tap(() => this.loading = false)).subscribe(
         (response: any) => {
           // Handle successful login response
           this.messageService.add({

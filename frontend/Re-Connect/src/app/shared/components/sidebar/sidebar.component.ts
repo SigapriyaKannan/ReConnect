@@ -23,7 +23,7 @@ export class SidebarComponent {
       {
         label: "Homepage",
         icon: "pi pi-home",
-        route: "/homepage"
+        route: "/homepage",
       },
       {
         label: "Notifications",

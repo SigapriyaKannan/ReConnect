@@ -117,7 +117,7 @@ export class SignupComponent {
     }
 
     if (form.invalid) {
-
+      this.toastService.showFormError();
     } else {
       this.verificationPending = true;
       const body = {
@@ -128,7 +128,7 @@ export class SignupComponent {
       }
       this.signUpService.verifyEmail(body).subscribe(response => {
         this.verificationPending = false;
-        this.activeStep = step + 1;
+        this.activeStep = 1;
       }, (error) => {
         this.verificationPending = false;
         this.toastService.showError("Email is already registered with us!");

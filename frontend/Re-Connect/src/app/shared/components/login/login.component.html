@@ -5,14 +5,14 @@
 				<ng-template pTemplate="title">
 					<h1 class="fw-bold">Login</h1>
 				</ng-template>
-				<div class="row mb-2">
+				<!-- <div class="row mb-2">
 					<div class="col pl-4">
 						@for(role of roles; track role.roleId) {
 						<p-radioButton name="role" [id]="role.role" [value]="role.roleId" [(ngModel)]="selectedRole"></p-radioButton>
 						<label for="{{ role.role }}" class="ml-1 mr-3">{{ role.role }}</label>
 						}
 					</div>
-				</div>
+				</div> -->
 
 				<form [formGroup]="userCredentialsForm">
 					<div class="row">
@@ -47,8 +47,7 @@
 				</form>
 
 				<div class="d-flex flex-column align-items-center pt-4 justify-content-center">
-					<p-button type="submit" severity="primary" (click)="onSubmit()">Login</p-button>
-
+					<p-button type="submit" severity="primary" (click)="onSubmit()" [loading]="loading">Login</p-button>
 					<p class="mt-2">Don't have an account? <a href="javascript:void(0)" [routerLink]="['/sign-up']">Sign Up</a></p>
 					<p class="mt-2">Forgot password? <a href="javascript:void(0)" [routerLink]="['/forgot-password']">Reset Password</a></p>
 				</div>
