@@ -33,7 +33,6 @@ public class RequestService {
         Optional<Users> users = usersRepository.findByUserEmail(Sender);
         int userID = users.get().getUserID();
         List<Integer> pendingRequestsID = requestRepository.findReferrerIdsByReferentIdAndStatusPending(userID);
-
         return userDetailsRepository.findRequestsByReferrerIds(pendingRequestsID);
 
     }

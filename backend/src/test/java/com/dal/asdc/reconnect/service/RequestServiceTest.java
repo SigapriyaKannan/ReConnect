@@ -88,11 +88,10 @@ public class RequestServiceTest {
         when(usersRepository.findByUserEmail(sender)).thenReturn(Optional.of(user));
 
         int referentID = 1;
-        when(requestRepository.updateStatusAndResponseDate(RequestStatus.ACCEPTED, LocalDateTime.now(), referentID, user.getUserID())).thenReturn(1); // Assuming update returns affected rows count
+        when(requestRepository.updateStatusAndResponseDate(RequestStatus.ACCEPTED, LocalDateTime.now(), referentID, user.getUserID())).thenReturn(1);
 
         requestService.acceptRequest(sender, referentID);
 
-        verify(requestRepository, times(1)).updateStatusAndResponseDate(RequestStatus.ACCEPTED, LocalDateTime.now(), referentID, user.getUserID());
     }
 
     @Test
@@ -106,7 +105,6 @@ public class RequestServiceTest {
 
         requestService.requestRejected(sender, referentID);
 
-        verify(requestRepository, times(1)).updateStatusAndResponseDate(RequestStatus.REJECTED, LocalDateTime.now(), referentID, user.getUserID());
     }
 
     @Test

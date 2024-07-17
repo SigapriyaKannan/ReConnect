@@ -18,18 +18,13 @@ export class RequestService
 {
   constructor(private http: HttpClient) { }
 
-  getPendingRequestForReferent() 
+  getPendingRequest(role : number) 
   {
-    return this.http.get<Request[]>(`${environment.API}getPendingRequestForReferent`);
+    return this.http.get<Request[]>(`${environment.API}getPendingRequest/${role}`);
   }
 
-  getAcceptedConnections() {
+  getAcceptedRequest() {
     return this.http.get<Request[]>(`${environment.API}getAcceptedConnections`);
-  }
-
-  getPendingRequestForReferrer() 
-  {
-    return this.http.get<Request[]>(`${environment.API}getPendingRequestForReferrer`);
   }
 
   acceptRequest(referentId: number) 

@@ -33,20 +33,33 @@ public class RequestController
     @Autowired
     UserService userService;
 
-    @GetMapping("/getPendingRequestForReferent")
-    public ResponseEntity<?> getPendingRequestForReferent()
+    @GetMapping("/getPendingRequest/{UserRole}")
+    public ResponseEntity<?> getPendingRequest(@PathVariable String UserRole)
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Requests> requestDTO = requestService.getPendingRequestForReferent(senderEmail);
 
-        if(requestDTO != null) {
+        List<Requests> requestDTO;
+
+        if(Integer.parseInt(UserRole) == 1)
+        {
+            requestDTO = requestService.getPendingRequestForReferent(senderEmail);
+        }else
+        {
+            requestDTO =  requestService.getPendingRequestForReferrer(senderEmail);
+        }
+
+        if(requestDTO != null)
+        {
             Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
             return ResponseEntity.ok(response);
         } else {
             Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Request Not Found!", null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
     }
+
+
 
     @GetMapping("/getAcceptedConnections")
     public ResponseEntity<?> getAcceptedRequestForReferent()
@@ -71,22 +84,6 @@ public class RequestController
                 Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             }
-        }
-    }
-
-
-    @GetMapping("/getPendingRequestForReferrer")
-    public ResponseEntity<?> getPendingRequestForReferrer()
-    {
-        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Requests> requestDTO = requestService.getPendingRequestForReferrer(senderEmail);
-
-        if(requestDTO != null) {
-            Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
-            return ResponseEntity.ok(response);
-        } else {
-            Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Request Not Found!", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 

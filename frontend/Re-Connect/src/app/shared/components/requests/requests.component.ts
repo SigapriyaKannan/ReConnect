@@ -30,38 +30,16 @@ export class RequestsComponent {
     })
   }
 
-  // onTabChange(event: any) {
-  //   const index = event.index;
-  //   if (this.user.id === 1) {
-  //     if (index === 0) {
-  //       this.acceptedReferer();
-  //     } else if (index === 1) {
-  //       this.PendingReferer();
-  //     }
-  //   } else if (this.userRole === 0) {
-  //     if (index === 0) {
-  //       this.PendingReferent();
-  //     }
-  //   }
-  // }
-
-  acceptedReferer() {
-    this.requestService.getAcceptedConnections().subscribe(
+  acceptedRequest() {
+    this.requestService.getAcceptedRequest().subscribe(
       (response: Request[]) => {
         this.listOfAccepted = response['body'];
       });
   }
 
-  PendingReferent() 
+  pendingRequest(role : number) 
   {
-    this.requestService.getPendingRequestForReferrer().subscribe(
-      (response: Request[]) => {
-        this.listOfPending = response['body'];
-      });
-  }
-
-  PendingReferer() {
-    this.requestService.getPendingRequestForReferent().subscribe(
+    this.requestService.getPendingRequest(role).subscribe(
       (response: Request[]) => {
         this.listOfPending = response['body'];
       });
@@ -71,7 +49,7 @@ export class RequestsComponent {
     this.requestService.acceptRequest(referentId).subscribe(
       (response) => {
         this.toastService.showSuccess('Request accepted successfully!');
-        this.PendingReferent()
+        this.pendingRequest(this.user.role)
       },
       (error) => {
         this.toastService.showError('Sonething Went Wrong!');
@@ -83,7 +61,7 @@ requestRejected(referentId: number) {
   this.requestService.requestRejected(referentId).subscribe(
     (response) => {
       this.toastService.showSuccess('Request rejected successfully!');
-      this.PendingReferent()
+      this.pendingRequest(this.user.role)
     },
     (error) => {
       this.toastService.showError('Sonething Went Wrong!');
@@ -96,47 +74,8 @@ requestRejected(referentId: number) {
     this.initialTabIndex = 0;
     if(this.user.role == 1)
       {
-        this. acceptedReferer();
-        this. PendingReferer();
-      }else
-      {
-        this.PendingReferent();
+        this. acceptedRequest();
       }
+      this. pendingRequest(this.user.role);
   }
-
-  // listOfPendingReferer: any[] = [
-  //   {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   }, {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   }, {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   }, {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   }, {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   }, {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   }, {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   }, {
-  //     name: "Vineeth",
-  //     profile: "profilePicture.png",
-  //     userId: 1
-  //   },
-  // ]
 }
