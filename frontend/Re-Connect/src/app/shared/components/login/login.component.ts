@@ -8,24 +8,25 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
 import { RouterLink } from '@angular/router';
-import { LoginService } from './login.service';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'rc-login',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    RouterLink, 
-    CardModule, 
-    ButtonModule, 
-    InputTextModule, 
-    PasswordModule, 
-    ReactiveFormsModule, 
-    RadioButtonModule, 
-    HttpClientModule 
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    CardModule,
+    ButtonModule,
+    InputTextModule,
+    PasswordModule,
+    ReactiveFormsModule,
+    RadioButtonModule,
+    HttpClientModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -39,13 +40,13 @@ export class LoginComponent {
 
 
 
-  constructor(private messageService: MessageService, private loginService: LoginService,private router: Router) {
+  constructor(private messageService: MessageService, private authService: AuthService, private router: Router) {
     this.userCredentialsForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(50)]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
     });
   }
-  
+
 
 
 
@@ -58,31 +59,22 @@ export class LoginComponent {
         summary: 'Error',
         detail: 'Error in form'
       });
-      console.error('ERROR!');
     } else {
+      this.loading = true;
       const body = {
-        userEmail: this.userCredentialsForm.controls['email'].value,
+        email: this.userCredentialsForm.controls['email'].value,
         password: this.userCredentialsForm.controls['password'].value
       };
 
-      this.loginService.login(body).subscribe(
+      this.authService.login(body).pipe(tap(() => this.loading = false)).subscribe(
         (response: any) => {
           // Handle successful login response
-          console.log('Login successful:', response);
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Login successful'
-            
           });
-          this.router.navigate(['/home-page'])
-              .then(() => {
-                console.log('Navigation to home page successful');
-              })
-              .catch(err => {
-                console.error('Navigation to home page failed:', err);
-              });
-         
+          this.router.navigate(['/']);
         },
         (error: any) => {
           // Handle login error

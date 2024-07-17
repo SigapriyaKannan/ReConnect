@@ -4,6 +4,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { TooltipModule } from 'primeng/tooltip';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'rc-sidebar',
@@ -14,15 +15,20 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class SidebarComponent {
   items: MenuItem[] | undefined;
+  user: any;
 
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  constructor(private authService: AuthService, private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.data.subscribe(({ user }) => {
+      this.user = user;
+    })
+  }
 
   ngOnInit() {
     this.items = [
       {
         label: "Homepage",
         icon: "pi pi-home",
-        route: "/homepage"
+        route: "/homepage",
       },
       {
         label: "Notifications",
@@ -40,5 +46,17 @@ export class SidebarComponent {
         route: "/requests"
       }
     ]
+
+    // if(this.user.role == 2) {
+    //   this.items.unshift({
+    //     label: "Homepage",
+    //     icon: "pi pi-search",
+    //     route: "/homepage",
+    //   })
+    // }
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }

@@ -1,47 +1,67 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { addMilliseconds, isBefore } from 'date-fns';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private baseUrl = environment.AUTH_API;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private router: Router) { }
 
     forgotPassword(email: string): Observable<any> {
-        return this.http.post(`${this.baseUrl}auth/forgotPassword`, { email }, { responseType: 'text' });
+        return this.http.post(environment.AUTH_API + 'forgotPassword', { email }, { responseType: 'text' });
     }
 
     resetPassword(token: string, newPassword: string): Observable<any> {
-        return this.http.post(`${this.baseUrl}auth/resetPassword`, {
+        return this.http.post(environment.AUTH_API + 'resetPassword', {
             token,
             newPassword
         }, { responseType: 'text' });
     }
 
-    verifyEmail(body: { userType: number, email: string, password: string, reenteredPassword: string }) {
-        return this.http.post(environment.AUTH_API + "verify-email", body);
+    login({ email, password }) {
+        return this.http.post<any>(environment.AUTH_API + 'login', { email, password }).pipe(
+            tap({
+                next: (response) => this.setSession(response), // Corrected to use response directly
+                error: (error) => console.error('Login error:', error)
+            })
+        );
     }
 
-    signUp(body: {
-        userType: number,
-        email: string,
-        password: string,
-        reenteredPassword: string,
-        company: number,
-        experience: number,
-        skills: [
-            number
-        ],
-        country: number,
-        city: number,
-        resume: string,
-        profile: string
-    }) {
-        return this.http.post(environment.AUTH_API + "signup", body);
+    private setSession(authResult: any) {
+        const expiresAt = addMilliseconds(new Date(), authResult.body.expiresIn);
+        sessionStorage.setItem('token', authResult.body.token);
+        sessionStorage.setItem("expiresIn", expiresAt.toISOString());
+    }
+
+    logout() {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("expiresIn");
+        // this.toastService.showSuccess("User Logged out successfully");
+        this.router.navigate(["/login"]);
+    }
+
+    public isLoggedIn() {
+        const expiration = sessionStorage.getItem("expiresIn");
+        const token = sessionStorage.getItem("token");
+        if (!expiration || !token) {
+            console.log('No expiration found in sessionStorage.');
+            return false;
+        }
+        const expiresAt = new Date(expiration);
+        return isBefore(new Date(), expiresAt);
+    }
+
+    isLoggedOut() {
+        return !this.isLoggedIn();
+    }
+
+    getUserDetails(token: string) {
+        return this.http.get(environment.AUTH_API + "getUserDetails?token=" + token);
     }
 }

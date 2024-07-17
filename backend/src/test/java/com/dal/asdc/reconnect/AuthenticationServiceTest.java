@@ -148,7 +148,7 @@ public class AuthenticationServiceTest
         when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(new Users()));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        assertTrue(authenticationService.addNewUser(request));
+        assertTrue(authenticationService.addNewUser(request, ""));
     }
 
 
@@ -173,7 +173,7 @@ public class AuthenticationServiceTest
         when(usersRepository.findByUserEmail(anyString())).thenReturn(null);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        assertFalse(authenticationService.addNewUser(request));
+        assertFalse(authenticationService.addNewUser(request, ""));
     }
 
 

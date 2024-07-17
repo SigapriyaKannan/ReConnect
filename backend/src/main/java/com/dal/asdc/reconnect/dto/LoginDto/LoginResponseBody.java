@@ -16,4 +16,5 @@ public class LoginResponseBody
     private String UserEmail;
 
     private String refreshToken;
+    private int role;
 }

@@ -99,7 +99,6 @@ export class AdminCitiesComponent implements OnInit {
     };
     this.cityService.addCity(newCity).subscribe(
       response => {
-        console.log('City added successfully:', response);
         this.fetchCitiesByCountry(newCity.countryId);
         this.hideAddDialog();
       },
@@ -128,7 +127,6 @@ export class AdminCitiesComponent implements OnInit {
     const updatedCity: City = { cityId, cityName, countryId };
     this.cityService.editCity(updatedCity).subscribe(
       response => {
-        console.log('City updated successfully:', response);
         this.fetchCitiesByCountry(this.selectedCountry.countryId);
         this.hideEditDialog();
       },
@@ -141,7 +139,6 @@ export class AdminCitiesComponent implements OnInit {
   onDeleteCity(cityId: number | undefined) {
     this.cityService.deleteCity(cityId).subscribe(
       response => {
-        console.log('City deleted successfully:', response);
         this.fetchCitiesByCountry(this.selectedCountry.countryId);
       },
       error => {

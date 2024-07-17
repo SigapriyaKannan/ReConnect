@@ -9,49 +9,50 @@ import { AdminCitiesComponent } from './cms/components/admin-cities/admin-cities
 import { AdminSkillsComponent } from './cms/components/admin-skills/admin-skills.component';
 import { AdminCompaniesComponent } from './cms/components/admin-companies/admin-companies.component';
 import { LayoutComponent } from './shared/components/layout/layout.component';
-import { Component } from '@angular/core';
 import { HomepageComponent } from './shared/components/homepage/homepage.component';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 import { RequestsComponent } from './shared/components/requests/requests.component';
 import { MessagingComponent } from './shared/components/messaging/messaging.component';
-import {ForgotPasswordComponent} from "./shared/components/forgot-password/forgot-password.component";
-import {ResetPasswordComponent} from "./shared/components/reset-password/reset-password.component";
-import {AdminSkillDomainComponent} from "./cms/components/admin-skill-domain/admin-skill-domain.component";
-import {AdminLoginComponent} from "./cms/components/admin-login/admin-login.component";
-import {NonAuthGuard} from "./shared/components/auth/non-auth-guard.service";
-import {AuthGuard} from "./shared/components/auth/auth-guard.service";
+import { ForgotPasswordComponent } from "./shared/components/forgot-password/forgot-password.component";
+import { ResetPasswordComponent } from "./shared/components/reset-password/reset-password.component";
+import { AdminSkillDomainComponent } from "./cms/components/admin-skill-domain/admin-skill-domain.component";
+import { AdminLoginComponent } from "./cms/components/admin-login/admin-login.component";
+import { canActivateChildPage, canActivatePage } from "./shared/guards/auth-guard.service";
+import { UserResolver } from './shared/resolvers/user-resolver.service';
 
 export const routes: Routes = [
     {
         path: "login",
         component: LoginComponent,
-        canActivate: [NonAuthGuard]
+        canActivate: [canActivatePage]
     },
     {
         path: "sign-up",
         component: SignupComponent,
-        canActivate: [NonAuthGuard]
+        canActivate: [canActivatePage]
     },
     {
         path: "forgot-password",
         component: ForgotPasswordComponent,
-        canActivate: [NonAuthGuard]
+        canActivate: [canActivatePage]
     },
     {
         path: "reset-password",
         component: ResetPasswordComponent,
-        canActivate: [NonAuthGuard]
+        canActivate: [canActivatePage]
     },
     {
         path: "",
         component: LayoutComponent,
-        
-
+        canActivateChild: [canActivateChildPage],
+        resolve: {
+            user: UserResolver
+        },
         children: [
             {
                 path: "homepage",
                 component: HomepageComponent
-        
+
             },
             {
                 path: "notifications",
@@ -105,7 +106,7 @@ export const routes: Routes = [
                 component: AdminCompaniesComponent
             },
             {
-                path:"users",
+                path: "users",
                 component: AdminUsersComponent
             },
             {
@@ -114,10 +115,6 @@ export const routes: Routes = [
                 pathMatch: "full"
             }
         ]
-    },
-    {
-        path: "admin/login",
-        component: AdminLoginComponent
     },
     {
         path: "**",

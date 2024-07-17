@@ -10,9 +10,9 @@ export class AdminLoginService {
 
     constructor(private http: HttpClient) { }
 
-    login(credentials: { userEmail: string; password: string }): Observable<any> {
+    login(credentials: { email: string; password: string }): Observable<any> {
         return this.http.post<any>(environment.API + "auth/login", credentials).pipe(
-           
+
         );
     }
 }

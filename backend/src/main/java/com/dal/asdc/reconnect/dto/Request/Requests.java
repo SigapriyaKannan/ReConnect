@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Requests
 {
-    String Name;
-    String Profile;
-    Integer ID;
+    String name;
+    String profile;
+    Integer id;
 }

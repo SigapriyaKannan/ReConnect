@@ -61,38 +61,37 @@ export class AdminLoginComponent {
       console.error('ERROR!');
     } else {
       const body = {
-        userEmail: this.userCredentialsForm.controls['email'].value,
+        email: this.userCredentialsForm.controls['email'].value,
         password: this.userCredentialsForm.controls['password'].value
       };
 
       this.loginService.login(body).subscribe(
-          (response: any) => {
-            // Handle successful login response
-            console.log('Login successful:', response);
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Login successful'
+        (response: any) => {
+          // Handle successful login response
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Login successful'
 
+          });
+          this.router.navigate(['/admin/dashboard'])
+            .then(() => {
+              console.log('Navigation to admin page successful');
+            })
+            .catch(err => {
+              console.error('Navigation to admin page failed:', err);
             });
-            this.router.navigate(['/admin/dashboard'])
-                .then(() => {
-                  console.log('Navigation to admin page successful');
-                })
-                .catch(err => {
-                  console.error('Navigation to admin page failed:', err);
-                });
 
-          },
-          (error: any) => {
-            // Handle login error
-            console.error('Login failed:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Email or password is incorrect'
-            });
-          }
+        },
+        (error: any) => {
+          // Handle login error
+          console.error('Login failed:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Email or password is incorrect'
+          });
+        }
       );
     }
   }

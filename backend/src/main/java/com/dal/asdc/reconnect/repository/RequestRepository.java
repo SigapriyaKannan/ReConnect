@@ -1,5 +1,6 @@
 package com.dal.asdc.reconnect.repository;
 
+import com.dal.asdc.reconnect.enums.RequestStatus;
 import com.dal.asdc.reconnect.model.ReferralRequests;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,6 @@ public interface RequestRepository extends JpaRepository<ReferralRequests,Intege
 
     @Query("SELECT r.referent.userID FROM ReferralRequests r WHERE r.referrer.userID = :referrerID AND r.status = 'PENDING'")
     List<Integer> findReferentIdsByReferrerIdAndStatusPending(@Param("referrerID") int referrerID);
+
+    List<ReferralRequests> findByReferent_UserIDAndStatus(int referentId, RequestStatus status);
 }

@@ -1,265 +1,106 @@
 import { Component } from '@angular/core';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
-import { OrderListModule } from 'primeng/orderlist';
+import { DataViewModule } from 'primeng/dataview';
 import { CommonModule } from '@angular/common';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ActivatedRoute } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'rc-requests',
   standalone: true,
-  imports: [TabViewModule,DragDropModule,OrderListModule,CommonModule],
+  imports: [CommonModule, ButtonModule, TabViewModule, DataViewModule],
   templateUrl: './requests.component.html',
   styleUrl: './requests.component.scss'
 })
 export class RequestsComponent {
-
-onTabChange(event: any) {
-    const index = event.index;
-    if (this.userRole === 1) {
-      if (index === 0) {
-        this.acceptedReferer();
-      } else if (index === 1) {
-        this.PendingReferer();
-      }
-    } else if (this.userRole === 0) {
-      if (index === 0) {
-        this.PendingReferent();
-      }
-    }
-  }
-
-  userRole: number | undefined;
-  showList: boolean = true;
+  user: any;
   currentList: any[] = [];
   initialTabIndex!: number | 0;
-  
-  acceptedReferer()
-  {
-    this.currentList =this.ListOfacceptedReferer
-    this.showList = true;
+  imagePath: string = environment.IMAGE_PATH;
+
+  constructor(private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.parent?.data.subscribe(({ user }) => {
+      this.user = user;
+    })
   }
 
-  PendingReferent()
-  {
-    this.currentList = this.ListOfPendingReferent
-    this.showList = true;
-  }
+  // onTabChange(event: any) {
+  //   const index = event.index;
+  //   if (this.userRole === 1) {
+  //     if (index === 0) {
+  //       this.acceptedReferer();
+  //     } else if (index === 1) {
+  //       this.PendingReferer();
+  //     }
+  //   } else if (this.userRole === 0) {
+  //     if (index === 0) {
+  //       this.PendingReferent();
+  //     }
+  //   }
+  // }
 
-  PendingReferer()
-  {
-    this.currentList = this.ListOfPendingReferer
-    this.showList = true;
-  }
+
+  // acceptedReferer() {
+  //   this.currentList = this.ListOfacceptedReferer
+  //   this.showList = true;
+  // }
+
+  // PendingReferent() {
+  //   this.currentList = this.ListOfPendingReferent
+  //   this.showList = true;
+  // }
+
+  // PendingReferer() {
+  //   this.currentList = this.ListOfPendingReferer
+  //   this.showList = true;
+  // }
 
 
 
   ngOnInit(): void {
-    this.initialTabIndex =0;
-    this.userRole = 1 ; 
-    if(this.userRole == 1)
-      {
-        this.currentList =this.ListOfacceptedReferer
-      }else
-      {
-        this.currentList = this.ListOfPendingReferent
-      }
+    this.initialTabIndex = 0;
+    // this.userRole = 1;
+    // if (this.userRole == 1) {
+    //   this.currentList = this.ListOfacceptedReferer
+    // } else {
+    //   this.currentList = this.ListOfPendingReferent
+    // }
   }
 
-
-
-
-  ListOfPendingReferent: any[] = [
+  listOfPendingReferer: any[] = [
     {
-      name: "refereant",
-      profile: "profile",
+      name: "Vineeth",
+      profile: "profilePicture.png",
+      userId: 1
+    }, {
+      name: "Vineeth",
+      profile: "profilePicture.png",
+      userId: 1
+    }, {
+      name: "Vineeth",
+      profile: "profilePicture.png",
+      userId: 1
+    }, {
+      name: "Vineeth",
+      profile: "profilePicture.png",
+      userId: 1
+    }, {
+      name: "Vineeth",
+      profile: "profilePicture.png",
+      userId: 1
+    }, {
+      name: "Vineeth",
+      profile: "profilePicture.png",
+      userId: 1
+    }, {
+      name: "Vineeth",
+      profile: "profilePicture.png",
+      userId: 1
+    }, {
+      name: "Vineeth",
+      profile: "profilePicture.png",
       userId: 1
     },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    }
   ]
-
-
-
-  ListOfPendingReferer: any[] = [
-    {
-      name: "pending",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    }
-  ]
-
-
-
-  ListOfacceptedReferer: any[] = [
-    {
-      name: "accepted",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    },
-    {
-      name: "ANBC",
-      profile: "profile",
-      userId: 1
-    }
-  ]
-
-
 }
