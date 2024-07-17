@@ -37,8 +37,9 @@ public class RequestService {
     }
 
 
-    public List<ReferralRequests> getAcceptedRequestForReferent(int userId) {
-        return requestRepository.findByReferent_UserIDAndStatus(userId, RequestStatus.Accepted);
+    public List<ReferralRequests> getAcceptedRequestForReferent(int userId)
+    {
+        return requestRepository.findByReferent_UserIDAndStatus(userId, RequestStatus.ACCEPTED);
     }
 
     public List<Requests> getPendingRequestForReferrer(String Sender) {

@@ -26,7 +26,7 @@ public class ReferralRequests
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Status", length = 50, nullable = false)
-    private RequestStatus status = RequestStatus.Pending;
+    private RequestStatus status = RequestStatus.PENDING;
 
     @Column(name = "RequestDate", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime requestDate;
