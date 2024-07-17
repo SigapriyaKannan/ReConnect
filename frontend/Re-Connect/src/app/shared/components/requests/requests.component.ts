@@ -67,6 +67,30 @@ export class RequestsComponent {
       });
   }
 
+  acceptRequest(referentId: number) {
+    this.requestService.acceptRequest(referentId).subscribe(
+      (response) => {
+        this.toastService.showSuccess('Request accepted successfully!');
+        this.PendingReferent()
+      },
+      (error) => {
+        this.toastService.showError('Sonething Went Wrong!');
+      }
+    );
+}
+
+requestRejected(referentId: number) {
+  this.requestService.requestRejected(referentId).subscribe(
+    (response) => {
+      this.toastService.showSuccess('Request rejected successfully!');
+      this.PendingReferent()
+    },
+    (error) => {
+      this.toastService.showError('Sonething Went Wrong!');
+    }
+  );
+}
+
 
   ngOnInit(): void {
     this.initialTabIndex = 0;

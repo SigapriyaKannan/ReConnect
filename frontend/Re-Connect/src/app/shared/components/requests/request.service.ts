@@ -42,6 +42,5 @@ export class RequestService
     return this.http.post<undefined>(`${environment.API}requestRejected/${referentId}`,null);
   }
 
-  
 }
 

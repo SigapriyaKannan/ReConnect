@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +63,7 @@ public class RequestController
                 List<Requests> requestDTO = new ArrayList<>();
                 for(ReferralRequests referralRequest: referralRequests) {
                     Requests tempRequest = new Requests();
-                    tempRequest.setId(referralRequest.getReferrer().getUserID());
+                    tempRequest.setUserId(referralRequest.getReferrer().getUserID());
                     tempRequest.setName(referralRequest.getReferrer().getUsername());
                     tempRequest.setProfile("profilePicture.png");
                     requestDTO.add(tempRequest);
@@ -90,6 +88,27 @@ public class RequestController
             Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Request Not Found!", null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+    }
+
+
+    @PostMapping("/requestAccepted/{UserID}")
+    public ResponseEntity<?> requestAccepted(@PathVariable String UserID)
+    {
+        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
+        int referentID = Integer.parseInt(UserID);
+        requestService.acceptRequest(senderEmail,referentID);
+        Response<String> response = new Response<>(HttpStatus.OK.value(), "Request Accepted", null);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/requestRejected/{UserID}")
+    public ResponseEntity<?> requestRejected(@PathVariable String UserID)
+    {
+        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
+        int referentID = Integer.parseInt(UserID);
+        requestService.requestRejected(senderEmail,referentID);
+        Response<String> response = new Response<>(HttpStatus.OK.value(), "Request Accepted", null);
+        return ResponseEntity.ok(response);
     }
 
 
