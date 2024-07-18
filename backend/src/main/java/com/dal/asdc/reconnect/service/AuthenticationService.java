@@ -46,14 +46,6 @@ public class AuthenticationService {
     AuthenticationManager authenticationManager;
 
     /**
-     * This method will check the strength of the password.
-     */
-    public static boolean validatePassword(String password) {
-        Matcher matcher = password_pattern.matcher(password);
-        return matcher.matches();
-    }
-
-    /**
      * This method will validate the email and check if it's correct.
      */
     public static boolean validateEmail(String email) {
@@ -73,11 +65,6 @@ public class AuthenticationService {
         if (user != null) {
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
-
-//        if(!validatePassword(signUpFirstPhaseRequest.getPassword()))
-//        {
-//            signUpFirstPhaseBody.setPasswordError(true);
-//        }
 
         if (!matchPasswordWithConfirmPassword(signUpFirstPhaseRequest.getPassword(), signUpFirstPhaseRequest.getReenteredPassword())) {
             signUpFirstPhaseBody.setRepeatPasswordError(true);
@@ -128,7 +115,7 @@ public class AuthenticationService {
     /**
      * This method is used to verify the correctness of the second phase signup response
      */
-    private boolean validateSecondPhase(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
+    public boolean validateSecondPhase(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
         Optional<Company> company = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
@@ -153,7 +140,7 @@ public class AuthenticationService {
     /**
      * This method will add the skills into the database. (UserSkills Table)
      */
-    private boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
+    public boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
         Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
         if (users.isEmpty()) {
             return false;
@@ -174,7 +161,7 @@ public class AuthenticationService {
     /**
      * This method will add user's details into database. (UserDetails Table)
      */
-    private boolean addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
+    public boolean addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
 
         Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
         Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
@@ -204,7 +191,7 @@ public class AuthenticationService {
     /**
      * This method will add the data into user table.
      */
-    private boolean addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
+    public boolean addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
         if (userType.isEmpty()) {
