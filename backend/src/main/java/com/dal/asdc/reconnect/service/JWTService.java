@@ -55,6 +55,7 @@ public class JWTService {
         extraClaims.put("userType", userType);
         extraClaims.put("userID", user.get().getUserID());
         extraClaims.put("userName", userDetails.getUsername());
+        extraClaims.put("profile", userDetailsRepository.findByUsers(user).getProfilePicture());
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
@@ -117,10 +118,5 @@ public class JWTService {
     public int extractID(String token) {
         Claims claims = extractAllClaims(token);
         return (int) claims.get("userID");
-    }
-
-    public int extractUserName(String token) {
-        Claims claims = extractAllClaims(token);
-        return (int) claims.get("userName");
     }
 }
