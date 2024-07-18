@@ -37,37 +37,34 @@ export class RequestsComponent {
       });
   }
 
-  pendingRequest(role : number) 
+  pendingRequest() 
   {
-    this.requestService.getPendingRequest(role).subscribe(
+    this.requestService.getPendingRequest().subscribe(
       (response: Request[]) => {
         this.listOfPending = response['body'];
       });
   }
 
-  acceptRequest(referentId: number) {
-    this.requestService.acceptRequest(referentId).subscribe(
+
+  updateRequest(userId: number,status:boolean) 
+  {
+    this.requestService.updateRequest(userId,status).subscribe(
       (response) => {
-        this.toastService.showSuccess('Request accepted successfully!');
-        this.pendingRequest(this.user.role)
+        if(status)
+        {
+          this.toastService.showSuccess('Request accepted successfully!');
+        }else{
+          this.toastService.showSuccess('Request rejected successfully!');
+        }
+        this.pendingRequest()
       },
       (error) => {
         this.toastService.showError('Sonething Went Wrong!');
       }
     );
-}
+  }
 
-requestRejected(referentId: number) {
-  this.requestService.requestRejected(referentId).subscribe(
-    (response) => {
-      this.toastService.showSuccess('Request rejected successfully!');
-      this.pendingRequest(this.user.role)
-    },
-    (error) => {
-      this.toastService.showError('Sonething Went Wrong!');
-    }
-  );
-}
+
 
 
   ngOnInit(): void {
@@ -76,6 +73,6 @@ requestRejected(referentId: number) {
       {
         this. acceptedRequest();
       }
-      this. pendingRequest(this.user.role);
+      this. pendingRequest();
   }
 }

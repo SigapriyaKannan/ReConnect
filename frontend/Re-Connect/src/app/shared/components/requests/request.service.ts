@@ -18,23 +18,21 @@ export class RequestService
 {
   constructor(private http: HttpClient) { }
 
-  getPendingRequest(role : number) 
+  getPendingRequest() 
   {
-    return this.http.get<Request[]>(`${environment.API}getPendingRequest/${role}`);
+    return this.http.get<Request[]>(`${environment.API}getPendingRequest`);
   }
 
   getAcceptedRequest() {
     return this.http.get<Request[]>(`${environment.API}getAcceptedConnections`);
   }
-
-  acceptRequest(referentId: number) 
+  
+  updateRequest(userId: number,status:boolean) 
   {
-    return this.http.post<undefined>(`${environment.API}requestAccepted/${referentId}`,null);
-  }
-
-  requestRejected(referentId: number) 
-  {
-    return this.http.post<undefined>(`${environment.API}requestRejected/${referentId}`,null);
+    const body = {
+      userId: userId, 
+      status: status };
+    return this.http.post<undefined>(`${environment.API}updateRequestStatus`,body);
   }
 
 }

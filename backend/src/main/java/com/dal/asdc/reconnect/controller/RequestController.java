@@ -2,6 +2,7 @@ package com.dal.asdc.reconnect.controller;
 
 
 import com.dal.asdc.reconnect.dto.Request.Requests;
+import com.dal.asdc.reconnect.dto.Request.UpdateRequest;
 import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.model.ReferralRequests;
 import com.dal.asdc.reconnect.model.Users;
@@ -33,14 +34,18 @@ public class RequestController
     @Autowired
     UserService userService;
 
-    @GetMapping("/getPendingRequest/{UserRole}")
-    public ResponseEntity<?> getPendingRequest(@PathVariable String UserRole)
+    @GetMapping("/getPendingRequest")
+    public ResponseEntity<?> getPendingRequest()
     {
-        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        var senderEmail =   users.getUserEmail();
+
+        int userRole = users.getUserType().getTypeID();
 
         List<Requests> requestDTO;
 
-        if(Integer.parseInt(UserRole) == 1)
+        if(userRole == 1)
         {
             requestDTO = requestService.getPendingRequestForReferent(senderEmail);
         }else
@@ -88,23 +93,19 @@ public class RequestController
     }
 
 
-    @PostMapping("/requestAccepted/{UserID}")
-    public ResponseEntity<?> requestAccepted(@PathVariable String UserID)
+    @PostMapping("/updateRequestStatus")
+    public ResponseEntity<?> updateRequestStatus(@RequestBody UpdateRequest updateRequest)
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        int referentID = Integer.parseInt(UserID);
-        requestService.acceptRequest(senderEmail,referentID);
-        Response<String> response = new Response<>(HttpStatus.OK.value(), "Request Accepted", null);
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/requestRejected/{UserID}")
-    public ResponseEntity<?> requestRejected(@PathVariable String UserID)
-    {
-        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        int referentID = Integer.parseInt(UserID);
-        requestService.requestRejected(senderEmail,referentID);
-        Response<String> response = new Response<>(HttpStatus.OK.value(), "Request Accepted", null);
+        int referentID = updateRequest.getUserId();
+        if(updateRequest.isStatus())
+        {
+            requestService.acceptRequest(senderEmail,referentID);
+        }else
+        {
+            requestService.requestRejected(senderEmail,referentID);
+        }
+        Response<String> response = new Response<>(HttpStatus.OK.value(), "Request Status Updated", null);
         return ResponseEntity.ok(response);
     }
 

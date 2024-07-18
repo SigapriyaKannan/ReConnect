@@ -30,6 +30,9 @@ public class JWTService {
     @Autowired
     UsersRepository usersRepository;
 
+    @Autowired
+    UserDetailsRepository userDetailsRepository;
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -48,10 +51,10 @@ public class JWTService {
         Optional<Users> user = usersRepository.findByUserEmail(userDetails.getUsername());
         int userType = user.get().getUserType().getTypeID();
 
-        extraClaims.put("email", userDetails.getUsername());
+        extraClaims.put("email", user.get().getUserEmail());
         extraClaims.put("userType", userType);
         extraClaims.put("userID", user.get().getUserID());
-
+        extraClaims.put("userName", userDetails.getUsername());
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
@@ -101,7 +104,7 @@ public class JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public int extractUserTypeFromToken(String token) {
+    public int extractUserType(String token) {
         Claims claims = extractAllClaims(token);
         return (int) claims.get("userType");
     }
@@ -114,5 +117,10 @@ public class JWTService {
     public int extractID(String token) {
         Claims claims = extractAllClaims(token);
         return (int) claims.get("userID");
+    }
+
+    public int extractUserName(String token) {
+        Claims claims = extractAllClaims(token);
+        return (int) claims.get("userName");
     }
 }

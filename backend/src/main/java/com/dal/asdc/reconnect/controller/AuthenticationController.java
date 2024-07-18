@@ -230,7 +230,7 @@ public class AuthenticationController {
         userDetails.setUserId(jwtService.extractID(token));
         userDetails.setUsername(jwtService.extractUsername(token));
         userDetails.setEmail(jwtService.extractEmail(token));
-        userDetails.setRole(jwtService.extractUserTypeFromToken(token));
+        userDetails.setRole(jwtService.extractUserType(token));
 
         return ResponseEntity.status(HttpStatus.OK).body(userDetails);
     }

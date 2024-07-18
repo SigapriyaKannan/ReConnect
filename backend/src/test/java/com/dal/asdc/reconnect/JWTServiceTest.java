@@ -73,10 +73,10 @@ class JWTServiceTest {
     }
 
     @Test
-    void testExtractUserTypeFromToken() {
+    void testExtractUserType() {
         String token = createSampleToken();
 
-        int userType = jwtService.extractUserTypeFromToken(token);
+        int userType = jwtService.extractUserType(token);
 
         assertEquals(1, userType);
     }

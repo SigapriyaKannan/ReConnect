@@ -27,12 +27,14 @@ public class ApplicationConfiguration
     @Bean
     UserDetailsService userDetailsService(  )
     {
-        return userEmail -> userRepository.findByUserEmail(userEmail)
-                .map(user -> User
-                        .withUsername(user.getUsername())
-                        .password(user.getPassword())
-                        .authorities(user.getAuthorities())
-                        .build())
+//        return userEmail -> userRepository.findByUserEmail(userEmail)
+//                .map(user -> User
+//                        .withUsername(user.getUsername())
+//                        .password(user.getPassword())
+//                        .authorities(user.getAuthorities())
+//                        .build())
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> userRepository.findByUserEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

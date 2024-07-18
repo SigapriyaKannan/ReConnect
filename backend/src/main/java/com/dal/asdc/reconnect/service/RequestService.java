@@ -29,7 +29,8 @@ public class RequestService {
     UsersRepository usersRepository;
 
 
-    public List<Requests> getPendingRequestForReferent(String Sender) {
+    public List<Requests> getPendingRequestForReferent(String Sender)
+    {
         Optional<Users> users = usersRepository.findByUserEmail(Sender);
         int userID = users.get().getUserID();
         List<Integer> pendingRequestsID = requestRepository.findReferrerIdsByReferentIdAndStatusPending(userID);

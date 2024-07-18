@@ -35,8 +35,8 @@
 							</div>
 							<p class="fs-5 fw-bold">{{ request.name }}</p>
 							<div class="d-flex justify-content-center gap-2">
-								<p-button *ngIf="user.role !== 1" severity="success" label="Accept" icon="pi pi-check" size="small" (onClick)="acceptRequest(request.userId); $event.stopPropagation()"></p-button>
-								<p-button *ngIf="user.role !== 1" severity="danger" label="Decline" icon="pi pi-times" size="small" (onClick)="requestRejected(request.userId); $event.stopPropagation()"></p-button>
+									<p-button *ngIf="user.role !== 1" severity="success" label="Accept" icon="pi pi-check" size="small" (onClick)="updateRequest(request.userId, true); $event.stopPropagation()"></p-button>
+								<p-button *ngIf="user.role !== 1" severity="danger" label="Decline" icon="pi pi-times" size="small" (onClick)="updateRequest(request.userId, false); $event.stopPropagation()"></p-button>
 							</div>
 						</div>
 					</div>
