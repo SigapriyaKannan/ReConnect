@@ -14,5 +14,5 @@ public class Requests
 {
     String name;
     String profile;
-    Integer id;
+    Integer userId;
 }
