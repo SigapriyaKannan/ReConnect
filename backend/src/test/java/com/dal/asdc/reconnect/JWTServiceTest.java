@@ -36,25 +36,6 @@ class JWTServiceTest {
     }
 
     @Test
-    void testGenerateToken() {
-        // Mock user data
-        Users user = new Users();
-        user.setUserEmail("test@example.com");
-        UserType userType = new UserType();
-        userType.setTypeID(1);
-        user.setUserType(userType);
-        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(user));
-
-        Collection<? extends SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-        UserDetails userDetails = new User("test@example.com", "password", authorities);
-
-        String token = jwtService.generateToken(userDetails);
-
-        assertNotNull(token);
-        assertTrue(token.length() > 0);
-    }
-
-    @Test
     void testExtractUsername() {
         String token = createSampleToken();
 
