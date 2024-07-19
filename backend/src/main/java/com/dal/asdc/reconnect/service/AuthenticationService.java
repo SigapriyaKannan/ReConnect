@@ -173,7 +173,7 @@ public class AuthenticationService {
         }
 
         UserDetails userDetails = new UserDetails();
-        userDetails.setUserName(signUpSecondPhaseRequest.getEmail());
+        userDetails.setUserName(signUpSecondPhaseRequest.getUserName());
         userDetails.setUsers(users.get());
         userDetails.setCompany(comapany.get());
         userDetails.setExperience(signUpSecondPhaseRequest.getExperience());
@@ -194,7 +194,8 @@ public class AuthenticationService {
     public boolean addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
-        if (userType.isEmpty()) {
+        if (userType.isEmpty())
+        {
             return false;
         }
 

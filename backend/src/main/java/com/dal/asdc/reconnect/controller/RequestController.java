@@ -2,6 +2,7 @@ package com.dal.asdc.reconnect.controller;
 
 
 import com.dal.asdc.reconnect.dto.Request.Requests;
+import com.dal.asdc.reconnect.dto.Request.UpdateRequest;
 import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.model.ReferralRequests;
 import com.dal.asdc.reconnect.model.Users;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,20 +34,37 @@ public class RequestController
     @Autowired
     UserService userService;
 
-    @GetMapping("/getPendingRequestForReferent")
-    public ResponseEntity<?> getPendingRequestForReferent()
+    @GetMapping("/getPendingRequest")
+    public ResponseEntity<?> getPendingRequest()
     {
-        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Requests> requestDTO = requestService.getPendingRequestForReferent(senderEmail);
+        Users users = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if(requestDTO != null) {
+        var senderEmail =   users.getUserEmail();
+
+        int userRole = users.getUserType().getTypeID();
+
+        List<Requests> requestDTO;
+
+        if(userRole == 1)
+        {
+            requestDTO = requestService.getPendingRequestForReferent(senderEmail);
+        }else
+        {
+            requestDTO =  requestService.getPendingRequestForReferrer(senderEmail);
+        }
+
+        if(requestDTO != null)
+        {
             Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
             return ResponseEntity.ok(response);
         } else {
             Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Request Not Found!", null);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
     }
+
+
 
     @GetMapping("/getAcceptedConnections")
     public ResponseEntity<?> getAcceptedRequestForReferent()
@@ -65,7 +81,7 @@ public class RequestController
                 List<Requests> requestDTO = new ArrayList<>();
                 for(ReferralRequests referralRequest: referralRequests) {
                     Requests tempRequest = new Requests();
-                    tempRequest.setId(referralRequest.getReferrer().getUserID());
+                    tempRequest.setUserId(referralRequest.getReferrer().getUserID());
                     tempRequest.setName(referralRequest.getReferrer().getUsername());
                     tempRequest.setProfile("profilePicture.png");
                     requestDTO.add(tempRequest);
@@ -77,19 +93,20 @@ public class RequestController
     }
 
 
-    @GetMapping("/getPendingRequestForReferrer")
-    public ResponseEntity<?> getPendingRequestForReferrer()
+    @PostMapping("/updateRequestStatus")
+    public ResponseEntity<?> updateRequestStatus(@RequestBody UpdateRequest updateRequest)
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Requests> requestDTO = requestService.getPendingRequestForReferrer(senderEmail);
-
-        if(requestDTO != null) {
-            Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
-            return ResponseEntity.ok(response);
-        } else {
-            Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "Request Not Found!", null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        int referentID = updateRequest.getUserId();
+        if(updateRequest.isStatus())
+        {
+            requestService.acceptRequest(senderEmail,referentID);
+        }else
+        {
+            requestService.requestRejected(senderEmail,referentID);
         }
+        Response<String> response = new Response<>(HttpStatus.OK.value(), "Request Status Updated", null);
+        return ResponseEntity.ok(response);
     }
 
 

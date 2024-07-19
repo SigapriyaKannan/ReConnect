@@ -3,9 +3,11 @@ package com.dal.asdc.reconnect.repository;
 import com.dal.asdc.reconnect.enums.RequestStatus;
 import com.dal.asdc.reconnect.model.ReferralRequests;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RequestRepository extends JpaRepository<ReferralRequests,Integer>
@@ -22,4 +24,12 @@ public interface RequestRepository extends JpaRepository<ReferralRequests,Intege
     List<Integer> findReferentIdsByReferrerIdAndStatusPending(@Param("referrerID") int referrerID);
 
     List<ReferralRequests> findByReferent_UserIDAndStatus(int referentId, RequestStatus status);
+
+    @Modifying
+    @Query("UPDATE ReferralRequests r SET r.status = :status, r.responseDate = :responseDate " +
+            "WHERE r.referent.userID = :referentId AND r.referrer.userID = :referrerId")
+    int updateStatusAndResponseDate(@Param("status") RequestStatus status,
+                                    @Param("responseDate") LocalDateTime responseDate,
+                                    @Param("referentId") int referentId,
+                                    @Param("referrerId") int referrerId);
 }

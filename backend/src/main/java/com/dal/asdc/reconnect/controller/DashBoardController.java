@@ -16,16 +16,16 @@ public class DashBoardController
     JWTService jwtService;
 
 
-    @GetMapping("/Manish")
-    public String signUp()
+    @GetMapping("/Test")
+    public String Test()
     {
         Users User = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        System.out.println(User.getUserType().getTypeID());
+        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
 
-        System.out.println(User.getUserEmail());
 
-        System.out.println(User.getUserID());
+        System.out.println(User.getUserType());
+
 
         var email =   SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println(email);
