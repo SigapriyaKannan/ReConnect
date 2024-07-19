@@ -17,7 +17,7 @@ export class RequestsComponent {
   user: any;
   currentList: any[] = [];
   initialTabIndex!: number | 0;
-  imagePath: string = environment.IMAGE_PATH;
+  imagePath: string = environment.SOCKET_SERVER;
 
   constructor(private activatedRoute: ActivatedRoute) {
     this.activatedRoute.parent?.data.subscribe(({ user }) => {

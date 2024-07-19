@@ -2,6 +2,7 @@ package com.dal.asdc.reconnect.service;
 
 
 import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
+import com.dal.asdc.reconnect.dto.Chat.Message;
 import com.dal.asdc.reconnect.model.Messages;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.MessagesRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,34 +25,37 @@ public class MessagesService
     @Autowired
     UsersRepository usersRepository;
 
-    public boolean saveMessage(String senderEmail, String to, String context)
+    public boolean saveMessage(String senderEmail, String receiverEmail, String messageContent)
     {
         Optional<Users> sender = usersRepository.findByUserEmail(senderEmail);
-        Optional<Users> receiver = usersRepository.findByUserEmail(to);
+        Optional<Users> receiver = usersRepository.findByUserEmail(receiverEmail);
         Messages message = new Messages();
         message.setSender(sender.get());
         message.setReceiver(receiver.get());
-        message.setMessageContent(context);
-        message.setTime(LocalDateTime.now());
+        message.setMessageContent(messageContent);
+        message.setTime(new Date());
         message.setRead(false);
         messagesRepository.save(message);
         return true;
     }
 
-    public List<ChatHistoryResponseBody> getChatHistory(String senderEmail, String receiverEmail)
+    public List<Message> getChatHistory(String senderEmail, String receiverEmail)
     {
         List<Messages> messages = messagesRepository.findChatHistory(senderEmail, receiverEmail);
 
-        List<ChatHistoryResponseBody> chatHistoryResponseBodyList = new ArrayList<>();
+        List<Message> chatHistoryResponseBodyList = new ArrayList<>();
 
         for(Messages message : messages)
         {
-            ChatHistoryResponseBody chatHistoryResponseBody = new ChatHistoryResponseBody();
+            Message messagetItem = new Message();
+            messagetItem.setMessage(message.getMessageContent());
+            messagetItem.setSenderEmail(message.getSender().getUserEmail());
+            messagetItem.setSenderId(message.getSender().getUserID());
+            messagetItem.setReceiverEmail(message.getReceiver().getUserEmail());
+            messagetItem.setReceiverId(message.getReceiver().getUserID());
+            messagetItem.setTimestamp(message.getTime());
 
-            chatHistoryResponseBody.setSender(message.getSender().getUserEmail().equals(senderEmail) ? true : false);
-            chatHistoryResponseBody.setMessage(message.getMessageContent());
-            chatHistoryResponseBody.setTimestamp(message.getTime());
-            chatHistoryResponseBodyList.add(chatHistoryResponseBody);
+            chatHistoryResponseBodyList.add(messagetItem);
         }
         return chatHistoryResponseBodyList;
     }

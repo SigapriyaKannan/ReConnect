@@ -68,6 +68,7 @@ export class SignupComponent {
 
   constructor(private router: Router, private toastService: ToastService, private signUpService: SignUpService, private authService: AuthService, private companyService: CompanyService, private experienceService: ExperienceService, private skillsService: SkillsService, private countryService: CountryService, private cityService: CityService) {
     this.userCredentialsForm = new FormGroup({
+      name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(50)]),
       password: new FormControl('', [Validators.required, Validators.minLength(5)]),
       confirmPassword: new FormControl('', [Validators.required, Validators.minLength(5)])
@@ -122,6 +123,7 @@ export class SignupComponent {
       this.verificationPending = true;
       const body = {
         userType: this.selectedRole,
+        name: form.get('name')?.value,
         email: form.get('email')?.value,
         password: form.get('password')?.value,
         reenteredPassword: form.get('confirmPassword')?.value
@@ -152,6 +154,7 @@ export class SignupComponent {
       const formData = new FormData();
 
       formData.append('userType', this.selectedRole.toString());
+      formData.append('name', this.userCredentialsForm.controls['name'].value);
       formData.append('email', this.userCredentialsForm.controls['email'].value);
       formData.append('password', this.userCredentialsForm.controls['password'].value);
       formData.append('reenteredPassword', this.userCredentialsForm.controls['confirmPassword'].value);

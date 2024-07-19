@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "Messages")
@@ -28,7 +29,7 @@ public class Messages {
 
     @Column(name = "Time", nullable = false, updatable = false, insertable = false,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime time;
+    private Date time;
 
     @Column(name = "IsRead", nullable = false)
     private boolean isRead = false;
