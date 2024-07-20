@@ -1,7 +1,6 @@
 package com.dal.asdc.reconnect.service;
 
 
-import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
 import com.dal.asdc.reconnect.dto.Chat.Message;
 import com.dal.asdc.reconnect.model.Messages;
 import com.dal.asdc.reconnect.model.Users;
@@ -10,7 +9,6 @@ import com.dal.asdc.reconnect.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,8 +25,8 @@ public class MessagesService
 
     public boolean saveMessage(String senderEmail, String receiverEmail, String messageContent)
     {
-        Optional<Users> sender = usersRepository.findByUserEmail(senderEmail);
-        Optional<Users> receiver = usersRepository.findByUserEmail(receiverEmail);
+        Optional<Users> sender = usersRepository.findByUserDetailsUserName(senderEmail);
+        Optional<Users> receiver = usersRepository.findByUserDetailsUserName(receiverEmail);
         Messages message = new Messages();
         message.setSender(sender.get());
         message.setReceiver(receiver.get());

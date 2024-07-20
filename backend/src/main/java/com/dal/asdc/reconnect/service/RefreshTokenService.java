@@ -6,7 +6,7 @@ import com.dal.asdc.reconnect.repository.RefreshTokenRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import lombok.Builder;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +21,7 @@ public class RefreshTokenService {
     UsersRepository userRepository;
 
     public RefreshToken createRefreshToken(String username){
-        Optional<Users> user = userRepository.findByUserEmail(username);
+        Optional<Users> user = userRepository.findByUserDetailsUserName(username);
 
             RefreshToken refreshToken = RefreshToken.builder()
                     .users(user.get())

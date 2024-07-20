@@ -2,7 +2,6 @@ package com.dal.asdc.reconnect.repository;
 
 import com.dal.asdc.reconnect.dto.Users.User;
 import com.dal.asdc.reconnect.model.Company;
-import com.dal.asdc.reconnect.model.UserDetails;
 import com.dal.asdc.reconnect.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsersRepository extends JpaRepository<Users, Integer> {
-    Optional<Users> findByUserEmail(String email);
+    Optional<Users> findByUserDetailsUserName(String username);
 
     Users findByResetToken(String resetToken);
 

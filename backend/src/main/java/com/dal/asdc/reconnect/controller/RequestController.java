@@ -70,7 +70,7 @@ public class RequestController
     public ResponseEntity<?> getAcceptedRequestForReferent()
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<Users> user = usersRepository.findByUserEmail(senderEmail);
+        Optional<Users> user = usersRepository.findByUserDetailsUserName(senderEmail);
         if(user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } else {

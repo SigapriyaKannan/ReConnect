@@ -90,7 +90,7 @@ public class AuthenticationService {
      * This method will verify if users already has a account
      */
     public Users getUserByEmail(String email) {
-        Optional<Users> user = usersRepository.findByUserEmail(email);
+        Optional<Users> user = usersRepository.findByUserDetailsUserName(email);
         return user.orElse(null);
     }
 
@@ -141,7 +141,7 @@ public class AuthenticationService {
      * This method will add the skills into the database. (UserSkills Table)
      */
     public boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
-        Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
+        Optional<Users> users = usersRepository.findByUserDetailsUserName(signUpSecondPhaseRequest.getEmail());
         if (users.isEmpty()) {
             return false;
         }
@@ -163,7 +163,7 @@ public class AuthenticationService {
      */
     public boolean addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
 
-        Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
+        Optional<Users> users = usersRepository.findByUserDetailsUserName(signUpSecondPhaseRequest.getEmail());
         Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
         Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
@@ -220,7 +220,7 @@ public class AuthenticationService {
      */
     public Optional<Users> authenticate(LoginRequest input) {
 
-        Optional<Users> user = usersRepository.findByUserEmail(input.getEmail());
+        Optional<Users> user = usersRepository.findByUserDetailsUserName(input.getEmail());
 
         if (user.isPresent() && passwordEncoder.matches(input.getPassword(), user.get().getPassword())) {
             return user;

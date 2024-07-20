@@ -43,7 +43,7 @@ public class ForgotPasswordService {
      * @param email the email address of the user who requested a password reset.
      */
     public void sendResetEmail(String email) {
-        Optional<Users> user = usersRepository.findByUserEmail(email);
+        Optional<Users> user = usersRepository.findByUserDetailsUserName(email);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }

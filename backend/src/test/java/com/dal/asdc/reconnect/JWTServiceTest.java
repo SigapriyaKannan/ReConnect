@@ -6,9 +6,6 @@ import com.dal.asdc.reconnect.repository.UserDetailsRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import com.dal.asdc.reconnect.service.JWTService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -61,28 +58,34 @@ public class JWTServiceTest {
     @Test
     public void testGenerateToken() {
         // Mock UserDetails
-        UserDetails userDetails = mock(UserDetails.class);
-        when(userDetails.getUsername()).thenReturn("testUser");
+        UserDetails userDetailsFromToken = mock(UserDetails.class);
+        when(userDetailsFromToken.getUsername()).thenReturn("testUser");
 
         // Mock Users
         Users user = new Users();
         user.setUserEmail("testUser@example.com");
         user.setUserID(1);
 
+        // Mock UserDetails
+        com.dal.asdc.reconnect.model.UserDetails userDetails = new com.dal.asdc.reconnect.model.UserDetails();
+        userDetails.setDetailId(1);
+
         // Mock UserType and set it to the user
         UserType userType = mock(UserType.class);
         when(userType.getTypeID()).thenReturn(1);
         user.setUserType(userType);
+        user.setUserDetails(userDetails);
 
         // Mock com.dal.asdc.reconnect.model.UserDetails
         com.dal.asdc.reconnect.model.UserDetails userDetailsModel = mock(com.dal.asdc.reconnect.model.UserDetails.class);
         when(userDetailsModel.getProfilePicture()).thenReturn("profilePictureUrl");
 
         // Mock repositories
-        when(usersRepository.findByUserEmail("testUser")).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserDetailsUserName("testUser")).thenReturn(Optional.of(user));
+        when(userDetailsRepository.findById(1)).thenReturn(Optional.of(userDetails));
 
         // Generate and return token
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(userDetailsFromToken);
 
         assertNotNull(token);
     }
@@ -171,22 +174,31 @@ public class JWTServiceTest {
         UserDetails userDetails = mock(UserDetails.class);
         when(userDetails.getUsername()).thenReturn(username);
 
+
         // Mock Users
         Users user = new Users();
         user.setUserEmail(username + "@example.com");
         user.setUserID(1);
 
+        // Mock User Details
+        com.dal.asdc.reconnect.model.UserDetails userDetails1 = new com.dal.asdc.reconnect.model.UserDetails();
+        userDetails1.setUserName(username);
+        userDetails1.setDetailId(1);
+
         // Mock UserType and set it to the user
         UserType userType = mock(UserType.class);
         when(userType.getTypeID()).thenReturn(1);
         user.setUserType(userType);
+        user.setUserDetails(userDetails1);
 
         // Mock UserDetailsRepository
         com.dal.asdc.reconnect.model.UserDetails userDetailsModel = mock(com.dal.asdc.reconnect.model.UserDetails.class);
         when(userDetailsModel.getProfilePicture()).thenReturn("profilePictureUrl");
+        when(userDetailsModel.getDetailId()).thenReturn(1);
 
         // Mock repositories
-        when(usersRepository.findByUserEmail(username)).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserDetailsUserName(username)).thenReturn(Optional.of(user));
+        when(userDetailsRepository.findById(userDetails1.getDetailId())).thenReturn(Optional.of(userDetails1));
 
         // Generate and return token
         return jwtService.generateToken(userDetails);

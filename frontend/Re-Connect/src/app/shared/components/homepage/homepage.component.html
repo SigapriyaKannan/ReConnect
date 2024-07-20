@@ -1,38 +1,33 @@
 <div class="row justify-content-center">
-    <div class="col-6">
-        <div class="d-flex">
-            <input type="text" pInputText placeholder="Search" [(ngModel)]="searchQuery" class="flex-grow-1" />
-            <p-dropdown 
-                [options]="searchTypes" 
-                [(ngModel)]="selectedSearchType" 
-                optionLabel="name" 
-                [style]="{'width':'150px'}"
-            ></p-dropdown>
-            <button type="button" pButton icon="pi pi-search" class="p-button-primary" (click)="onSearch()"></button>
-        </div>
-    </div>
+	<div class="col-6">
+		<div class="d-flex">
+			<input type="text" pInputText placeholder="Search" [(ngModel)]="searchQuery" class="flex-grow-1" />
+			<p-dropdown [options]="searchTypes" [(ngModel)]="selectedSearchType" optionLabel="name" [style]="{ width: '150px' }"></p-dropdown>
+			<button type="button" pButton icon="pi pi-search" class="p-button-primary" (click)="onSearch()"></button>
+		</div>
+	</div>
 </div>
 
 <div>
-    <h4>Search</h4>
-    <p-dataView [value]="searchResults">
-        <ng-template pTemplate="empty">
-            <div class="text-center p-4">
-                <p *ngIf="hasSearched">No results found</p>
-            </div>
-        </ng-template>
-        <ng-template pTemplate="list" let-results>
-            <div class="row text-center">
-                <div *ngFor="let result of results" class="col-2">
-                    <div class="p-2 shadow-sm border rounded">
-                        <div style="height: 100px">
-                            <img class="mh-100 rounded" [src]="imagePath + result.profile" />
-                        </div>
-                        <p class="fs-6 fw-bold">{{ result.name }}</p>
-                        <p class="fs-6">{{ result.companyName }}</p>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
-    </p-dataView>
+	<h4>Search</h4>
+	<p-dataView [value]="searchResults">
+		<ng-template pTemplate="empty">
+			<div class="text-center p-4">
+				<p *ngIf="hasSearched">No results found</p>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="list" let-results>
+			<div class="row text-center">
+				<div *ngFor="let result of results" class="col-2">
+					<div class="p-2 shadow-sm border rounded">
+						<div style="height: 100px">
+							<img class="mh-100 rounded" [src]="result.profile" />
+						</div>
+						<p class="fs-6 fw-bold">{{ result.name }}</p>
+						<p class="fs-6">{{ result.companyName }}</p>
+					</div>
+				</div>
+			</div>
+		</ng-template>
+	</p-dataView>
 </div>

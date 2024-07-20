@@ -1,6 +1,5 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
 import com.dal.asdc.reconnect.dto.Chat.Message;
 import com.dal.asdc.reconnect.model.Messages;
 import com.dal.asdc.reconnect.model.Users;
@@ -12,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,8 +45,8 @@ public class MessageServiceTest
         Users receiver = new Users();
         receiver.setUserEmail(receiverEmail);
 
-        when(usersRepository.findByUserEmail(senderEmail)).thenReturn(Optional.of(sender));
-        when(usersRepository.findByUserEmail(receiverEmail)).thenReturn(Optional.of(receiver));
+        when(usersRepository.findByUserDetailsUserName(senderEmail)).thenReturn(Optional.of(sender));
+        when(usersRepository.findByUserDetailsUserName(receiverEmail)).thenReturn(Optional.of(receiver));
 
         boolean result = messagesService.saveMessage(senderEmail, receiverEmail, messageContent);
 

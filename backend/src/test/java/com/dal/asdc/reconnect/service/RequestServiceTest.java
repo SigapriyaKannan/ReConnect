@@ -45,7 +45,7 @@ public class RequestServiceTest {
         String sender = "test@example.com";
         Users user = new Users();
         user.setUserID(1);
-        when(usersRepository.findByUserEmail(sender)).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserDetailsUserName(sender)).thenReturn(Optional.of(user));
 
         List<Integer> pendingRequestsID = Collections.singletonList(1);
         when(requestRepository.findReferrerIdsByReferentIdAndStatusPending(user.getUserID())).thenReturn(pendingRequestsID);
@@ -65,7 +65,7 @@ public class RequestServiceTest {
         String sender = "test@example.com";
         Users user = new Users();
         user.setUserID(1);
-        when(usersRepository.findByUserEmail(sender)).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserDetailsUserName(sender)).thenReturn(Optional.of(user));
 
         List<Integer> pendingRequestsID = Collections.singletonList(1);
         when(requestRepository.findReferentIdsByReferrerIdAndStatusPending(user.getUserID())).thenReturn(pendingRequestsID);
@@ -85,7 +85,7 @@ public class RequestServiceTest {
         String sender = "test@example.com";
         Users user = new Users();
         user.setUserID(1);
-        when(usersRepository.findByUserEmail(sender)).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserDetailsUserName(sender)).thenReturn(Optional.of(user));
 
         int referentID = 1;
         when(requestRepository.updateStatusAndResponseDate(RequestStatus.ACCEPTED, LocalDateTime.now(), referentID, user.getUserID())).thenReturn(1);
@@ -99,7 +99,7 @@ public class RequestServiceTest {
         String sender = "test@example.com";
         Users user = new Users();
         user.setUserID(1);
-        when(usersRepository.findByUserEmail(sender)).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserDetailsUserName(sender)).thenReturn(Optional.of(user));
         int referentID = 1;
         when(requestRepository.updateStatusAndResponseDate(RequestStatus.REJECTED, LocalDateTime.now(), referentID, user.getUserID())).thenReturn(1); // Assuming update returns affected rows count
 
