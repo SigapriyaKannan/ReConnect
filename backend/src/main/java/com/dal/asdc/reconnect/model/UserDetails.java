@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name="UserDetails")
+@Table(name = "UserDetails")
 @Data
-public class UserDetails
-{
+public class UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DetailID")
@@ -36,9 +36,4 @@ public class UserDetails
     @ManyToOne
     @JoinColumn(name = "CurrentCompany")
     private Company company;
-
-    @ManyToOne
-    @JoinColumn(name = "UserID", nullable = false)
-    private Users users;
-
 }

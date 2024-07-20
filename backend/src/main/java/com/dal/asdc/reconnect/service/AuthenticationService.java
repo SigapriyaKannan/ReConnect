@@ -172,9 +172,10 @@ public class AuthenticationService {
             return false;
         }
 
+        Users user = users.get();
+
         UserDetails userDetails = new UserDetails();
         userDetails.setUserName(signUpSecondPhaseRequest.getUserName());
-        userDetails.setUsers(users.get());
         userDetails.setCompany(comapany.get());
         userDetails.setExperience(signUpSecondPhaseRequest.getExperience());
         userDetails.setResume(signUpSecondPhaseRequest.getResume());
@@ -184,8 +185,10 @@ public class AuthenticationService {
         userDetails.setProfilePicture(fileNameAndPath);
         userDetailsRepository.save(userDetails);
 
-        return true;
+        user.setUserDetails(userDetails);
+        usersRepository.save(user);
 
+        return true;
     }
 
     /**

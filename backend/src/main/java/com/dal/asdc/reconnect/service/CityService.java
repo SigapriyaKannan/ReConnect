@@ -67,17 +67,6 @@ public class CityService {
     }
 
     /**
-     * Retrieves a city by its name.
-     *
-     * @param cityName The name of the city to retrieve.
-     * @return City object if found, otherwise null.
-     */
-    public City getCityByCityName(String cityName) {
-        Optional<City> city = cityRepository.findCityByCityName(cityName);
-        return city.orElse(null);
-    }
-
-    /**
      * Retrieves a city by its name and country ID.
      *
      * @param cityName The name of the city to retrieve.

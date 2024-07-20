@@ -15,11 +15,10 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Intege
     @Query("SELECT userName FROM UserDetails WHERE company = :company")
     List<String> findUsernamesByCompany(Company company);
 
-    @Query("SELECT new com.dal.asdc.reconnect.dto.Request.Requests(ud.userName, ud.profilePicture, ud.users.userID) " +
-            "FROM UserDetails ud " +
-            "WHERE ud.users.userID IN :referrerIds")
+    @Query("SELECT new com.dal.asdc.reconnect.dto.Request.Requests(ud.userName, ud.profilePicture, u.userID) " +
+            "FROM Users u JOIN UserDetails ud ON u.userDetails.detailId = ud.detailId " +
+            "WHERE u.userID IN :referrerIds")
     List<Requests> findRequestsByReferrerIds(@Param("referrerIds") List<Integer> referrerIds);
 
-    UserDetails findByUsers(Optional<Users> user);
 
 }
