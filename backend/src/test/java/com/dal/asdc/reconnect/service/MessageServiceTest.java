@@ -1,6 +1,6 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
+import com.dal.asdc.reconnect.dto.Chat.Message;
 import com.dal.asdc.reconnect.model.Messages;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.MessagesRepository;
@@ -11,10 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -48,8 +45,8 @@ public class MessageServiceTest
         Users receiver = new Users();
         receiver.setUserEmail(receiverEmail);
 
-        when(usersRepository.findByUserEmail(senderEmail)).thenReturn(Optional.of(sender));
-        when(usersRepository.findByUserEmail(receiverEmail)).thenReturn(Optional.of(receiver));
+        when(usersRepository.findByUserDetailsUserName(senderEmail)).thenReturn(Optional.of(sender));
+        when(usersRepository.findByUserDetailsUserName(receiverEmail)).thenReturn(Optional.of(receiver));
 
         boolean result = messagesService.saveMessage(senderEmail, receiverEmail, messageContent);
 
@@ -72,7 +69,7 @@ public class MessageServiceTest
         message1.setSender(sender);
         message1.setReceiver(receiver);
         message1.setMessageContent("Hello");
-        message1.setTime(LocalDateTime.now());
+        message1.setTime(new Date());
         message1.setRead(false);
 
         List<Messages> messages = new ArrayList<>();
@@ -81,12 +78,12 @@ public class MessageServiceTest
         when(messagesRepository.findChatHistory(senderEmail, receiverEmail)).thenReturn(messages);
 
         // Act
-        List<ChatHistoryResponseBody> chatHistory = messagesService.getChatHistory(senderEmail, receiverEmail);
+        List<Message> chatHistory = messagesService.getChatHistory(senderEmail, receiverEmail);
 
         // Assert
         assertEquals(1, chatHistory.size());
-        ChatHistoryResponseBody response = chatHistory.get(0);
-        assertTrue(response.isSender());
+        Message response = chatHistory.get(0);
+        assertTrue(Objects.equals(response.getSenderEmail(), sender.getUserEmail()));
         assertEquals("Hello", response.getMessage());
         assertNotNull(response.getTimestamp());
     }

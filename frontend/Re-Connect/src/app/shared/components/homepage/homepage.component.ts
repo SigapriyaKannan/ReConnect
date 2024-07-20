@@ -24,10 +24,9 @@ export class HomepageComponent {
     { name: 'Company', value: 'company' }
   ];
   searchResults: any[] = [];
-  imagePath: string = environment.IMAGE_PATH;
   hasSearched: boolean = false;
 
-  constructor(private searchService: HomepageService) {}
+  constructor(private searchService: HomepageService) { }
 
   onSearch() {
     this.hasSearched = true;
@@ -64,7 +63,7 @@ export class HomepageComponent {
       this.searchResults = [];
     }
   }
-  
+
   private processSearchResults(response: any) {
     if (response && response.data && Array.isArray(response.data)) {
       this.searchResults = response.data.map((email: string) => ({

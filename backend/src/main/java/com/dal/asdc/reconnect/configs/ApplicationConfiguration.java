@@ -3,8 +3,6 @@ package com.dal.asdc.reconnect.configs;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +32,7 @@ public class ApplicationConfiguration
 //                        .authorities(user.getAuthorities())
 //                        .build())
 //                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return username -> userRepository.findByUserEmail(username)
+        return username -> userRepository.findByUserDetailsUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

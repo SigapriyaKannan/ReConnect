@@ -19,6 +19,4 @@ public class UserService {
     public void deleteUser(int userId) {
         usersRepository.deleteById(userId);
     }
-
-    public void getUserByEmail(){}
 }

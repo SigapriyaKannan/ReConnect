@@ -48,14 +48,22 @@ public class JWTService {
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails)
     {
-        Optional<Users> user = usersRepository.findByUserEmail(userDetails.getUsername());
-        int userType = user.get().getUserType().getTypeID();
+        Optional<Users> user = usersRepository.findByUserDetailsUserName(userDetails.getUsername());
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        Users currentUser = user.get();
+        int userType = currentUser.getUserType().getTypeID();
+
+        com.dal.asdc.reconnect.model.UserDetails userDetailsEntity = userDetailsRepository.findById(currentUser.getUserDetails().getDetailId())
+                .orElseThrow(() -> new RuntimeException("UserDetails not found"));
 
         extraClaims.put("email", user.get().getUserEmail());
         extraClaims.put("userType", userType);
         extraClaims.put("userID", user.get().getUserID());
         extraClaims.put("userName", userDetails.getUsername());
-        extraClaims.put("profile", userDetailsRepository.findByUsers(user).getProfilePicture());
+        extraClaims.put("profile", userDetailsEntity.getProfilePicture());
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 

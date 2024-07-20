@@ -12,6 +12,7 @@ import java.util.List;
 @Table(name = "Users")
 @Data
 public class Users implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UserID")
@@ -29,6 +30,10 @@ public class Users implements UserDetails {
 
     @Column(name = "ResetToken")
     private String resetToken;
+
+    @OneToOne
+    @JoinColumn(name = "UserDetailID", nullable = false)
+    private com.dal.asdc.reconnect.model.UserDetails userDetails;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
