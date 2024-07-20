@@ -22,10 +22,10 @@ import java.util.Optional;
 @Service
 public class JWTService {
     @Value("${security.jwt.secret-key}")
-    private String secretKey;
+    public String secretKey;
 
     @Value("${security.jwt.expiration-time}")
-    private long jwtExpiration;
+    public long jwtExpiration;
 
     @Autowired
     UsersRepository usersRepository;
@@ -95,11 +95,11 @@ public class JWTService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
+    public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -108,7 +108,7 @@ public class JWTService {
                 .getBody();
     }
 
-    private Key getSignInKey() {
+    public Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
