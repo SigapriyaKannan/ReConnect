@@ -21,7 +21,7 @@ export class RequestsComponent {
   listOfAccepted: any[] = [];
   listOfPending: any[] = [];
   initialTabIndex!: number | 0;
-  imagePath: string = environment.IMAGE_PATH;
+  imagePath: string = environment.SOCKET_SERVER;
 
   constructor(private activatedRoute: ActivatedRoute,private requestService: RequestService,private toastService: ToastService) {
     this.activatedRoute.parent?.data.subscribe(({ user }) => {

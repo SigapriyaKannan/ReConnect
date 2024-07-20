@@ -5,6 +5,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ROLES } from '../constants/roles';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'rc-header',
@@ -17,6 +18,7 @@ export class HeaderComponent {
   items: MenuItem[] | undefined = [];
   loggedUser: any;
   roles = ROLES;
+  imagePath: string = environment.SOCKET_SERVER;
   constructor(private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {

@@ -1,6 +1,6 @@
 <div class="container-fluid h-100 login-container">
 	<div class="row h-100 d-flex align-items-center">
-		<div class="col-6 col-offset-3">
+		<div class="col-md-6 col-xxl-4 offset-md-3 offset-xxl-4">
 			<p-card styleClass="position-relative shadow-lg border-dark border rounded">
 				<ng-template pTemplate="title">
 					<h1 class="fw-bold">Login</h1>
@@ -21,8 +21,6 @@
 							<input id="email" formControlName="email" type="email" pInputText [required]="true" class="w-100" />
 							@if(userCredentialsForm.controls['email'].dirty && userCredentialsForm.controls['email'].hasError('required')) {
 							<small class="invalid-form-control">Email is required</small>
-							} @if(userCredentialsForm.controls['email'].dirty && userCredentialsForm.controls['email'].hasError('maxlength')) {
-							<small class="invalid-form-control">Email cannot be more than 50 characters</small>
 							} @if(userCredentialsForm.controls['email'].dirty && userCredentialsForm.controls['email'].hasError('email')) {
 							<small class="invalid-form-control">Enter a valid email</small>
 							}
@@ -39,8 +37,6 @@
 							></p-password>
 							@if(userCredentialsForm.controls['password'].dirty && userCredentialsForm.controls['password'].hasError('required')) {
 							<small class="invalid-form-control">Password is required</small>
-							} @if(userCredentialsForm.controls['password'].dirty && userCredentialsForm.controls['password'].hasError('minlength')) {
-							<small class="invalid-form-control">Enter a valid password</small>
 							}
 						</div>
 					</div>
