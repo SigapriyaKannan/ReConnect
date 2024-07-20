@@ -6,8 +6,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoginResponseBody
-{
+public class LoginResponseBody {
 
     private String token;
 

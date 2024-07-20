@@ -15,16 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MessagesService
-{
+public class MessagesService {
     @Autowired
     MessagesRepository messagesRepository;
 
     @Autowired
     UsersRepository usersRepository;
 
-    public boolean saveMessage(String senderEmail, String receiverEmail, String messageContent)
-    {
+    public boolean saveMessage(String senderEmail, String receiverEmail, String messageContent) {
         Optional<Users> sender = usersRepository.findByUserDetailsUserName(senderEmail);
         Optional<Users> receiver = usersRepository.findByUserDetailsUserName(receiverEmail);
         Messages message = new Messages();
@@ -37,14 +35,12 @@ public class MessagesService
         return true;
     }
 
-    public List<Message> getChatHistory(String senderEmail, String receiverEmail)
-    {
+    public List<Message> getChatHistory(String senderEmail, String receiverEmail) {
         List<Messages> messages = messagesRepository.findChatHistory(senderEmail, receiverEmail);
 
         List<Message> chatHistoryResponseBodyList = new ArrayList<>();
 
-        for(Messages message : messages)
-        {
+        for (Messages message : messages) {
             Message messagetItem = new Message();
             messagetItem.setMessage(message.getMessageContent());
             messagetItem.setSenderEmail(message.getSender().getUserEmail());

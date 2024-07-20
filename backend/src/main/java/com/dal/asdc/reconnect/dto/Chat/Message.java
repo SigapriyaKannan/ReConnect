@@ -1,6 +1,5 @@
 package com.dal.asdc.reconnect.dto.Chat;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Message {

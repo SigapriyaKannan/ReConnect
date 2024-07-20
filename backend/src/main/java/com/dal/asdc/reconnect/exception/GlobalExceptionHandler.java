@@ -1,14 +1,14 @@
 package com.dal.asdc.reconnect.exception;
 
 import com.dal.asdc.reconnect.dto.Response;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         } else if (exception instanceof ExpiredJwtException) {
             response = new Response<>(403, "The JWT token has expired", null);
             status = HttpStatus.FORBIDDEN;
-        }  else if (exception instanceof EmailSendingException emailException) {
+        } else if (exception instanceof EmailSendingException emailException) {
             response = new Response<>(emailException.getStatus().value(), emailException.getMessage(), null);
             status = emailException.getStatus();
         } else {

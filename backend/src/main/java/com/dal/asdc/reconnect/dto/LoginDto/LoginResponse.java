@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LoginResponse
-{
+public class LoginResponse {
 
 
     private int status;

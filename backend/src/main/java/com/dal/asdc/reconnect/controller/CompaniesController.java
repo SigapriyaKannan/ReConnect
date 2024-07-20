@@ -40,7 +40,7 @@ public class CompaniesController {
     @GetMapping("/getCompany/{companyId}")
     public ResponseEntity<?> getCompanyById(@PathVariable int companyId) {
         Company company = companyService.getCompanyById(companyId);
-        if(company != null) {
+        if (company != null) {
             CompanyDTO companyDTO = companyMapper.mapCompanyToDTO(company);
             Response<CompanyDTO> response = new Response<>(HttpStatus.OK.value(), "Fetched company", companyDTO);
             return ResponseEntity.ok(response);
@@ -57,7 +57,7 @@ public class CompaniesController {
      * @return ResponseEntity containing the response for adding the company.
      */
     @PostMapping("/addCompany")
-    public ResponseEntity<?> addCompany(@RequestBody CompanyDTO companyDTO){
+    public ResponseEntity<?> addCompany(@RequestBody CompanyDTO companyDTO) {
         Company existingCompany = companyService.getCompanyById(companyDTO.getCompanyId());
         if (existingCompany != null) {
             Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Company already exists", null);
@@ -82,7 +82,7 @@ public class CompaniesController {
         Company existingCompany = companyService.getCompanyById(companyDTO.getCompanyId());
         if (existingCompany != null) {
             Company existingCompanyName = companyService.getCompanyByName(companyDTO.getCompanyName());
-            if(existingCompanyName != null) {
+            if (existingCompanyName != null) {
                 Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Company name already exists", null);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             }
@@ -106,7 +106,7 @@ public class CompaniesController {
         Company existingCompany = companyService.getCompanyById(companyId);
         if (existingCompany != null) {
             boolean isCompanyDeleted = companyService.deleteCompany(companyId);
-            if(isCompanyDeleted) {
+            if (isCompanyDeleted) {
                 Response<?> response = new Response<>(HttpStatus.NO_CONTENT.value(), "Company deleted successfully", null);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
             } else {

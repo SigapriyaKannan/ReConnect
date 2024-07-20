@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "ReferralRequests")
 @Data
-public class ReferralRequests
-{
+public class ReferralRequests {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RequestID")

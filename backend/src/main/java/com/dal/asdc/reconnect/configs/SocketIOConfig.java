@@ -41,8 +41,9 @@ public class SocketIOConfig {
         server.addDisconnectListener(new DisconnectListener() {
             @Override
             public void onDisconnect(SocketIOClient client) {
-                client.getNamespace().getAllClients().stream().forEach(data-> {
-                    log.info("user disconnected "+data.getSessionId().toString());});
+                client.getNamespace().getAllClients().stream().forEach(data -> {
+                    log.info("user disconnected " + data.getSessionId().toString());
+                });
             }
         });
         return server;

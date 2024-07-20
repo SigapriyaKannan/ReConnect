@@ -3,7 +3,6 @@ package com.dal.asdc.reconnect.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
