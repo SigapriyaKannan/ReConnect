@@ -80,7 +80,6 @@ public class JWTServiceTest {
 
         // Mock repositories
         when(usersRepository.findByUserEmail("testUser")).thenReturn(Optional.of(user));
-        when(userDetailsRepository.findByUsers(Optional.of(user))).thenReturn(userDetailsModel);
 
         // Generate and return token
         String token = jwtService.generateToken(userDetails);
@@ -188,7 +187,6 @@ public class JWTServiceTest {
 
         // Mock repositories
         when(usersRepository.findByUserEmail(username)).thenReturn(Optional.of(user));
-        when(userDetailsRepository.findByUsers(Optional.of(user))).thenReturn(userDetailsModel);
 
         // Generate and return token
         return jwtService.generateToken(userDetails);
