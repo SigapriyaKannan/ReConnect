@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -221,8 +224,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/getUserDetails")
-    public  ResponseEntity<?> getUserDetails(@RequestParam String token) {
-        if(jwtService.isTokenExpired(token)) {
+    public ResponseEntity<?> getUserDetails(@RequestParam String token) {
+        if (jwtService.isTokenExpired(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Expired token");
         }
 

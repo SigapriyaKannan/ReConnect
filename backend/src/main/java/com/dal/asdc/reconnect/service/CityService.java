@@ -27,13 +27,14 @@ public class CityService {
 
     /**
      * Retrieves the cities associated with a given country ID.
+     *
      * @param country the country for which cities are to be retrieved.
      * @return a list of CityDTO objects containing for the specified country.
      */
     public List<CityDTO> getAllCitiesByCountry(Country country) {
         List<CityDTO> listOfCities = new ArrayList<>();
         List<City> listOfCitiesFromDatabase = cityRepository.findCitiesByCountryCountryId(country.getCountryId());
-        for(City city: listOfCitiesFromDatabase) {
+        for (City city : listOfCitiesFromDatabase) {
             CityDTO cityDTO = new CityDTO(city.getCityId(), city.getCityName(), country);
             listOfCities.add(cityDTO);
         }
@@ -48,11 +49,11 @@ public class CityService {
     public List<CityDTO> getAllCities() {
         List<CityDTO> listOfCities = new ArrayList<>();
         List<City> listOfCitiesFromDatabase = cityRepository.findAll();
-        for(City city: listOfCitiesFromDatabase) {
+        for (City city : listOfCitiesFromDatabase) {
             CityDTO cityDTO = new CityDTO(city.getCityId(), city.getCityName(), city.getCountry());
             listOfCities.add(cityDTO);
         }
-        return  listOfCities;
+        return listOfCities;
     }
 
     /**
@@ -69,7 +70,7 @@ public class CityService {
     /**
      * Retrieves a city by its name and country ID.
      *
-     * @param cityName The name of the city to retrieve.
+     * @param cityName  The name of the city to retrieve.
      * @param countryId The ID of the country the city belongs to.
      * @return City object if found, otherwise null.
      */
@@ -81,7 +82,7 @@ public class CityService {
      * Adds a new city to the database.
      *
      * @param cityName The name of the city to add.
-     * @param country The Country object representing the country the city belongs to.
+     * @param country  The Country object representing the country the city belongs to.
      * @return The newly added City object.
      */
     public City addCity(String cityName, Country country) {
@@ -107,6 +108,7 @@ public class CityService {
         existingCity.setCountry(newCountry);
         cityRepository.save(existingCity);
     }
+
     /**
      * Deletes a city by its ID.
      *
@@ -115,7 +117,7 @@ public class CityService {
      */
     public boolean deleteCity(int cityId) {
         Optional<City> cityFromDatabase = cityRepository.findById(cityId);
-        if(cityFromDatabase.isPresent()) {
+        if (cityFromDatabase.isPresent()) {
             cityRepository.deleteById(cityId);
             return true;
         } else {

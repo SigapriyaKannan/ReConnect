@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatMessageRequest
-{
+public class ChatMessageRequest {
     String to;
     String context;
 }

@@ -22,8 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class RequestController
-{
+public class RequestController {
 
     @Autowired
     RequestService requestService;
@@ -35,26 +34,22 @@ public class RequestController
     UserService userService;
 
     @GetMapping("/getPendingRequest")
-    public ResponseEntity<?> getPendingRequest()
-    {
+    public ResponseEntity<?> getPendingRequest() {
         Users users = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        var senderEmail =   users.getUserEmail();
+        var senderEmail = users.getUserEmail();
 
         int userRole = users.getUserType().getTypeID();
 
         List<Requests> requestDTO;
 
-        if(userRole == 1)
-        {
+        if (userRole == 1) {
             requestDTO = requestService.getPendingRequestForReferent(senderEmail);
-        }else
-        {
-            requestDTO =  requestService.getPendingRequestForReferrer(senderEmail);
+        } else {
+            requestDTO = requestService.getPendingRequestForReferrer(senderEmail);
         }
 
-        if(requestDTO != null)
-        {
+        if (requestDTO != null) {
             Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);
             return ResponseEntity.ok(response);
         } else {
@@ -65,7 +60,6 @@ public class RequestController
     }
 
 
-
     @GetMapping("/getAcceptedConnections")
     public ResponseEntity<?> getAcceptedRequestForReferent()
     {
@@ -74,12 +68,12 @@ public class RequestController
         if(user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } else {
-        List<ReferralRequests> referralRequests = requestService.getAcceptedRequestForReferent(user.get().getUserID());
+            List<ReferralRequests> referralRequests = requestService.getAcceptedRequestForReferent(user.get().getUserID());
             if (referralRequests.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ArrayList<>());
             } else {
                 List<Requests> requestDTO = new ArrayList<>();
-                for(ReferralRequests referralRequest: referralRequests) {
+                for (ReferralRequests referralRequest : referralRequests) {
                     Requests tempRequest = new Requests();
                     tempRequest.setUserId(referralRequest.getReferrer().getUserID());
                     tempRequest.setName(referralRequest.getReferrer().getUsername());
@@ -94,22 +88,17 @@ public class RequestController
 
 
     @PostMapping("/updateRequestStatus")
-    public ResponseEntity<?> updateRequestStatus(@RequestBody UpdateRequest updateRequest)
-    {
-        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity<?> updateRequestStatus(@RequestBody UpdateRequest updateRequest) {
+        var senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         int referentID = updateRequest.getUserId();
-        if(updateRequest.isStatus())
-        {
-            requestService.acceptRequest(senderEmail,referentID);
-        }else
-        {
-            requestService.requestRejected(senderEmail,referentID);
+        if (updateRequest.isStatus()) {
+            requestService.acceptRequest(senderEmail, referentID);
+        } else {
+            requestService.requestRejected(senderEmail, referentID);
         }
         Response<String> response = new Response<>(HttpStatus.OK.value(), "Request Status Updated", null);
         return ResponseEntity.ok(response);
     }
-
-
 
 
 }

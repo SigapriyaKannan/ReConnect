@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatHistoryResponseBody
-{
+public class ChatHistoryResponseBody {
     private boolean sender;
     private String message;
     private LocalDateTime timestamp;

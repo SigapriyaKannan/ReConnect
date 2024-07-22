@@ -7,8 +7,7 @@ import java.util.List;
 
 
 @Data
-public class CityResponseBody
-{
+public class CityResponseBody {
     private List<City> listOfCities;
     private City city;
 }

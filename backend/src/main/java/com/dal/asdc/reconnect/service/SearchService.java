@@ -4,7 +4,6 @@ import com.dal.asdc.reconnect.dto.Users.User;
 import com.dal.asdc.reconnect.model.Company;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.CompanyRepository;
-import com.dal.asdc.reconnect.repository.UserDetailsRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

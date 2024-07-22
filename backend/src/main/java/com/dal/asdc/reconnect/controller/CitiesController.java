@@ -26,9 +26,9 @@ public class CitiesController {
     @Autowired
     CityService cityService;
     @Autowired
-    private CityMapper cityMapper;
-    @Autowired
     CountryService countryService;
+    @Autowired
+    private CityMapper cityMapper;
 
     /**
      * Retrieves all cities or cities by a specific country ID.
@@ -38,13 +38,13 @@ public class CitiesController {
      */
     @GetMapping("/getAllCities")
     public ResponseEntity<?> getAllCitiesByCountryId(@RequestParam(value = "countryId", required = false) String countryId) {
-        if(countryId == null || countryId.isEmpty()) {
+        if (countryId == null || countryId.isEmpty()) {
             List<CityDTO> listOfAllCities = cityService.getAllCities();
             Response<List<CityDTO>> response = new Response<>(HttpStatus.OK.value(), "Fetched all cities", listOfAllCities);
             return ResponseEntity.ok(response);
         } else {
             Country country = countryService.getCountryById(Integer.parseInt(countryId));
-            if(country == null){
+            if (country == null) {
                 Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Country not found", null);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             } else {
@@ -64,7 +64,7 @@ public class CitiesController {
     @GetMapping("/getCity/{cityId}")
     public ResponseEntity<?> getCityByCityId(@PathVariable int cityId) {
         City city = cityService.getCityById(cityId);
-        if(city != null) {
+        if (city != null) {
             CityDTO cityDTO = cityMapper.mapCityToDTO(city);
             Response<CityDTO> response = new Response<>(HttpStatus.OK.value(), "Fetched City", cityDTO);
             return ResponseEntity.ok(response);
@@ -81,13 +81,13 @@ public class CitiesController {
      * @return ResponseEntity containing the result of the city addition operation.
      */
     @PostMapping("/addCity")
-    public ResponseEntity<?> addCity(@RequestBody CityRequestDTO cityRequestDTO){
+    public ResponseEntity<?> addCity(@RequestBody CityRequestDTO cityRequestDTO) {
         City existingCity = cityService.getCityByCityNameAndCountryId(cityRequestDTO.getCityName(), cityRequestDTO.getCountryId());
         Country country = countryService.getCountryById(cityRequestDTO.getCountryId());
         if (existingCity != null) {
             Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "City already exists in the country", null);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-        } else if(country == null){
+        } else if (country == null) {
             Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Country not found", null);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         } else {
@@ -137,7 +137,7 @@ public class CitiesController {
         City existingCity = cityService.getCityById(cityId);
         if (existingCity != null) {
             boolean isCityDeleted = cityService.deleteCity(cityId);
-            if(isCityDeleted) {
+            if (isCityDeleted) {
                 Response<?> response = new Response<>(HttpStatus.NO_CONTENT.value(), "City deleted successfully", null);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
             } else {

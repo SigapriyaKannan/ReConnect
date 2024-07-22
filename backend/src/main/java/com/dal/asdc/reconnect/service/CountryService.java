@@ -19,13 +19,13 @@ public class CountryService {
 
     /**
      * Retrieves the list of all countries.
+     *
      * @return a CountryResponseBody object containing the list of all countries.
      */
-    public List<CountryDTO> getCountryList()
-    {
+    public List<CountryDTO> getCountryList() {
         List<CountryDTO> listOfCountries = new ArrayList<>();
         List<Country> listOfCountriesFromDatabase = countryRepository.findAll();
-        for(Country country: listOfCountriesFromDatabase) {
+        for (Country country : listOfCountriesFromDatabase) {
             CountryDTO countryDTO = new CountryDTO(country.getCountryId(), country.getCountryName());
             listOfCountries.add(countryDTO);
         }
@@ -53,7 +53,7 @@ public class CountryService {
      */
     public Country modifyCountry(CountryDTO country) {
         Optional<Country> countryFromDatabase = countryRepository.findById(country.getCountryId());
-        if(countryFromDatabase.isPresent()) {
+        if (countryFromDatabase.isPresent()) {
             Country existingCountry = countryFromDatabase.get();
             existingCountry.setCountryName(country.getCountryName());
             countryRepository.save(existingCountry);
@@ -71,7 +71,7 @@ public class CountryService {
      */
     public boolean deleteCountry(int countryId) {
         Optional<Country> countryFromDatabase = countryRepository.findById(countryId);
-        if(countryFromDatabase.isPresent()) {
+        if (countryFromDatabase.isPresent()) {
             countryRepository.deleteById(countryId);
             return true;
         } else {

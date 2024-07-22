@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Requests
-{
+public class Requests {
     String name;
     String profile;
     Integer userId;
