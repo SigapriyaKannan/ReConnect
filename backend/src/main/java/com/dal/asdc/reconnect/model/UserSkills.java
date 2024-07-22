@@ -3,7 +3,7 @@ package com.dal.asdc.reconnect.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Table(name="UserSkills")
+@Table(name = "UserSkills")
 @Entity
 @Data
 public class UserSkills {

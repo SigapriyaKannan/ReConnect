@@ -6,7 +6,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.dal.asdc.reconnect.dto.Chat.ChatHistoryResponseBody;
 import com.dal.asdc.reconnect.dto.Chat.Message;
 import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.service.MessagesService;
@@ -28,6 +27,18 @@ import java.util.List;
 @RequestMapping("/api")
 public class ChatController {
 
+    public ConnectListener onUserConnectWithSocket = new ConnectListener() {
+        @Override
+        public void onConnect(SocketIOClient client) {
+            log.info("Perform operation on user connect in controller");
+        }
+    };
+    public DisconnectListener onUserDisconnectWithSocket = new DisconnectListener() {
+        @Override
+        public void onDisconnect(SocketIOClient client) {
+            log.info("Perform operation on user disconnect in controller");
+        }
+    };
     /*
     Socket.IO
      */
@@ -43,7 +54,7 @@ public class ChatController {
              * Sending message to target user
              * Send the same payload to user
              */
-            messagesService.saveMessage(message.getSenderEmail(),message.getReceiverEmail(),message.getMessage());
+            messagesService.saveMessage(message.getSenderEmail(), message.getReceiverEmail(), message.getMessage());
             log.info(message.getSenderEmail() + " user send message to user " + message.getReceiverEmail() + " and message is " + message.getMessage());
             socketServer.getBroadcastOperations().sendEvent(message.getReceiverEmail(), client, message);
 
@@ -54,7 +65,6 @@ public class ChatController {
             acknowledge.sendAckData("Message send to target user successfully");
         }
     };
-
 
     ChatController(SocketIOServer socketServer) {
         this.socketServer = socketServer;
@@ -70,20 +80,6 @@ public class ChatController {
         this.socketServer.addEventListener("messageSendToUser", Message.class, onSendMessage);
 
     }
-
-    public ConnectListener onUserConnectWithSocket = new ConnectListener() {
-        @Override
-        public void onConnect(SocketIOClient client) {
-            log.info("Perform operation on user connect in controller");
-        }
-    };
-
-    public DisconnectListener onUserDisconnectWithSocket = new DisconnectListener() {
-        @Override
-        public void onDisconnect(SocketIOClient client) {
-            log.info("Perform operation on user disconnect in controller");
-        }
-    };
 
     @GetMapping("/getChatHistory")
     public ResponseEntity<?> getChatHistory(@RequestParam("email") String receiverEmail) {

@@ -22,6 +22,7 @@ public class SkillsService {
 
     /**
      * Retrieves the list of all skills.
+     *
      * @return a list of SkillsDTO containing the list of all skills.
      */
     public List<SkillsDto> getSkills() {

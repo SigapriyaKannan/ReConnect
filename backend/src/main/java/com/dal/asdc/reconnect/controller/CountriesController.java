@@ -27,6 +27,7 @@ public class CountriesController {
     /**
      * Retrieves the list of all countries.
      * Returns a response containing the list of countries along with status and message.
+     *
      * @return Response object containing the list of countries.
      */
     @GetMapping("/getAllCountries")
@@ -45,7 +46,7 @@ public class CountriesController {
     @GetMapping("/getCountry/{countryId}")
     public ResponseEntity<?> getAllCountries(@PathVariable int countryId) {
         Country country = countryService.getCountryById(countryId);
-        if(country != null) {
+        if (country != null) {
             CountryDTO countryDTO = countryMapper.mapCountryToDTO(country);
             Response<CountryDTO> response = new Response<>(HttpStatus.OK.value(), "Fetched country", countryDTO);
             return ResponseEntity.ok(response);
@@ -62,7 +63,7 @@ public class CountriesController {
      * @return ResponseEntity containing the response for adding the country.
      */
     @PostMapping("/addCountry")
-    public ResponseEntity<?> addCountry(@RequestBody CountryDTO countryDTO){
+    public ResponseEntity<?> addCountry(@RequestBody CountryDTO countryDTO) {
         Country existingCountry = countryService.getCountryById(countryDTO.getCountryId());
         if (existingCountry != null) {
             Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Country already exists", null);
@@ -87,7 +88,7 @@ public class CountriesController {
         Country existingCountry = countryService.getCountryById(countryDTO.getCountryId());
         if (existingCountry != null) {
             Country existingCountryName = countryService.getCountryByName(countryDTO.getCountryName());
-            if(existingCountryName != null) {
+            if (existingCountryName != null) {
                 Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Country name already exists", null);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             }
@@ -111,7 +112,7 @@ public class CountriesController {
         Country existingCountry = countryService.getCountryById(countryId);
         if (existingCountry != null) {
             boolean isCountryDeleted = countryService.deleteCountry(countryId);
-            if(isCountryDeleted) {
+            if (isCountryDeleted) {
                 Response<?> response = new Response<>(HttpStatus.NO_CONTENT.value(), "Country deleted successfully", null);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
             } else {

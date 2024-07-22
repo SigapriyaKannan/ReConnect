@@ -197,8 +197,7 @@ public class AuthenticationService {
     public boolean addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
-        if (userType.isEmpty())
-        {
+        if (userType.isEmpty()) {
             return false;
         }
 

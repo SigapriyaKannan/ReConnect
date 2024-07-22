@@ -29,8 +29,7 @@ public class RequestService {
     UsersRepository usersRepository;
 
 
-    public List<Requests> getPendingRequestForReferent(String Sender)
-    {
+    public List<Requests> getPendingRequestForReferent(String Sender) {
         Optional<Users> users = usersRepository.findByUserDetailsUserName(Sender);
         int userID = users.get().getUserID();
         List<Integer> pendingRequestsID = requestRepository.findReferrerIdsByReferentIdAndStatusPending(userID);
@@ -39,8 +38,7 @@ public class RequestService {
     }
 
 
-    public List<ReferralRequests> getAcceptedRequestForReferent(int userId)
-    {
+    public List<ReferralRequests> getAcceptedRequestForReferent(int userId) {
         return requestRepository.findByReferent_UserIDAndStatus(userId, RequestStatus.ACCEPTED);
     }
 
@@ -55,16 +53,14 @@ public class RequestService {
 
 
     @Transactional
-    public void acceptRequest(String Sender, int referentID)
-    {
+    public void acceptRequest(String Sender, int referentID) {
         Optional<Users> users = usersRepository.findByUserDetailsUserName(Sender);
         int refereeID = users.get().getUserID();
         requestRepository.updateStatusAndResponseDate(RequestStatus.ACCEPTED, LocalDateTime.now(), referentID, refereeID);
     }
 
     @Transactional
-    public void requestRejected(String Sender, int referentID)
-    {
+    public void requestRejected(String Sender, int referentID) {
         Optional<Users> users = usersRepository.findByUserDetailsUserName(Sender);
         int refereeID = users.get().getUserID();
         requestRepository.updateStatusAndResponseDate(RequestStatus.REJECTED, LocalDateTime.now(), referentID, refereeID);

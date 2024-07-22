@@ -10,8 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface RequestRepository extends JpaRepository<ReferralRequests,Integer>
-{
+public interface RequestRepository extends JpaRepository<ReferralRequests, Integer> {
 
     @Query("SELECT r.referrer.userID FROM ReferralRequests r WHERE r.referent.userID = :referentId AND r.status = 'PENDING'")
     List<Integer> findReferrerIdsByReferentIdAndStatusPending(@Param("referentId") int referentId);

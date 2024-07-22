@@ -1,10 +1,8 @@
 package com.dal.asdc.reconnect.configs;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,8 +18,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration 
-{
+public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -34,28 +31,27 @@ public class SecurityConfiguration
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-    {
-            http.cors(Customizer.withDefaults())
-                    .csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers("/auth/**").permitAll()
-                            .requestMatchers("/swagger-ui.html","/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                            .requestMatchers("/api/countries/**").permitAll()
-                            .requestMatchers("/api/cities/**").permitAll()
-                            .requestMatchers("/api/skills/**").permitAll()
-                            .requestMatchers("/api/companies/**").permitAll()
-                            .requestMatchers("/api/skillDomains/**").permitAll()
-                            .requestMatchers("/api/users/**").permitAll()
-                            .requestMatchers("/uploads/**").permitAll()
-                            .anyRequest().authenticated()
-                    )
-                    .sessionManagement(session -> session
-                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    )
-                    .authenticationProvider(authenticationProvider)
-                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-            return http.build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/countries/**").permitAll()
+                        .requestMatchers("/api/cities/**").permitAll()
+                        .requestMatchers("/api/skills/**").permitAll()
+                        .requestMatchers("/api/companies/**").permitAll()
+                        .requestMatchers("/api/skillDomains/**").permitAll()
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
 

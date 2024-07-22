@@ -6,8 +6,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = false)
-public class SignUpFirstPhaseRequest
-{
+public class SignUpFirstPhaseRequest {
     private int userType;
     private String email;
     private String password;

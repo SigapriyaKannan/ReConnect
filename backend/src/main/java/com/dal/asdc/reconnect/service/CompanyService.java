@@ -24,7 +24,7 @@ public class CompanyService {
         List<CompanyDTO> listOfCompanies = new ArrayList<>();
         List<Company> listOfSkillsFromDatabase = companyRepository.findAll();
 
-        for(Company company: listOfSkillsFromDatabase) {
+        for (Company company : listOfSkillsFromDatabase) {
             CompanyDTO companyDTO = new CompanyDTO(company.getCompanyId(), company.getCompanyName());
             listOfCompanies.add(companyDTO);
         }
@@ -53,7 +53,7 @@ public class CompanyService {
      */
     public Company modifyCompany(CompanyDTO company) {
         Optional<Company> companyFromDatabase = companyRepository.findById(company.getCompanyId());
-        if(companyFromDatabase.isPresent()) {
+        if (companyFromDatabase.isPresent()) {
             Company existingCompany = companyFromDatabase.get();
             existingCompany.setCompanyName(company.getCompanyName());
             companyRepository.save(existingCompany);
@@ -71,7 +71,7 @@ public class CompanyService {
      */
     public boolean deleteCompany(int companyId) {
         Optional<Company> companyFromDatabase = companyRepository.findById(companyId);
-        if(companyFromDatabase.isPresent()) {
+        if (companyFromDatabase.isPresent()) {
             companyRepository.deleteById(companyId);
             return true;
         } else {

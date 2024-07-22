@@ -7,8 +7,7 @@ import java.util.List;
 
 
 @Data
-public class CountryResponseBody
-{
+public class CountryResponseBody {
     private List<Country> listOfCountries;
     private Country country;
 }

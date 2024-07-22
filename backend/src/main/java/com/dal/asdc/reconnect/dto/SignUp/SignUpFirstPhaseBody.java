@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SignUpFirstPhaseBody
-{
+public class SignUpFirstPhaseBody {
     //
     private Boolean emailIncorrect;
     private Boolean passwordError;

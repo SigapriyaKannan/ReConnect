@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,8 +47,7 @@ public class JWTService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails)
-    {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         Optional<Users> user = usersRepository.findByUserDetailsUserName(userDetails.getUsername());
         if (user.isEmpty()) {
             throw new RuntimeException("User not found");

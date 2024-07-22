@@ -20,16 +20,12 @@ import java.util.UUID;
 @Service
 public class ForgotPasswordService {
 
-    private final UsersRepository usersRepository;
-
-    private final JavaMailSender mailSender;
-
+    private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
     final PasswordEncoder passwordEncoder;
-
+    private final UsersRepository usersRepository;
+    private final JavaMailSender mailSender;
     @Value("${reset.password.url}")
     private String resetPasswordUrl;
-
-    private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
 
     public ForgotPasswordService(UsersRepository usersRepository, JavaMailSender mailSender, PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
@@ -62,7 +58,7 @@ public class ForgotPasswordService {
     /**
      * Resets the password for the user with the specified reset token.
      *
-     * @param token the reset token that was sent to the user's email.
+     * @param token       the reset token that was sent to the user's email.
      * @param newPassword the new password to set for the user.
      * @return true if the password was successfully reset, false otherwise.
      */
