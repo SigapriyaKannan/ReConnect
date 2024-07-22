@@ -70,13 +70,13 @@ public class RequestController
     public ResponseEntity<?> getAcceptedRequestForReferent()
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<Users> user = usersRepository.findByUserDetailsUserName(senderEmail);
+        Optional<Users> user = usersRepository.findByUserEmail(senderEmail);
         if(user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } else {
         List<ReferralRequests> referralRequests = requestService.getAcceptedRequestForReferent(user.get().getUserID());
             if (referralRequests.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ArrayList<>());
             } else {
                 List<Requests> requestDTO = new ArrayList<>();
                 for(ReferralRequests referralRequest: referralRequests) {

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 public class AuthenticationServiceTest
@@ -55,6 +57,7 @@ public class AuthenticationServiceTest
     @Mock
     AuthenticationManager authenticationManager;
 
+    @Spy
     @InjectMocks
     private AuthenticationService authenticationService;
 
@@ -129,8 +132,7 @@ public class AuthenticationServiceTest
 
 
     @Test
-    void testAddNewUser_Success()
-    {
+    void testAddNewUser_Success() {
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
         request.setEmail("test@example.com");
         request.setPassword("Password1!");
@@ -138,18 +140,30 @@ public class AuthenticationServiceTest
         request.setCompany(1);
         request.setCity(1);
         request.setCountry(1);
-        request.setSkills(List.of(new Integer[]{1, 2}));
+        request.setSkills(List.of(1, 2));
 
+        // Mock the repositories and service methods
         when(userTypeRepository.findById(anyInt())).thenReturn(Optional.of(new UserType()));
         when(companyRepository.findById(anyInt())).thenReturn(Optional.of(new Company()));
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(new City()));
         when(countryRepository.findById(anyInt())).thenReturn(Optional.of(new Country()));
         when(skillsRepository.findById(anyInt())).thenReturn(Optional.of(new Skills()));
-        when(usersRepository.findByUserDetailsUserName(anyString())).thenReturn(Optional.of(new Users()));
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(usersRepository.findByUserDetailsUserName(anyString())).thenReturn(Optional.empty());
 
-        assertTrue(authenticationService.addNewUser(request, ""));
+        doReturn(new UserDetails()).when(authenticationService).addDetails(any(SignUpSecondPhaseRequest.class), anyString());
+        doReturn(new Users()).when(authenticationService).addUser(any(SignUpSecondPhaseRequest.class), any(UserDetails.class));
+        doReturn(true).when(authenticationService).addSkills(any(SignUpSecondPhaseRequest.class));
+
+        // Execute the method under test
+        boolean result = authenticationService.addNewUser(request, "");
+
+        // Assert the result
+        assertTrue(result);
     }
+
+
 
 
 
@@ -208,7 +222,7 @@ public class AuthenticationServiceTest
         user.setUserEmail("test@example.com");
         user.setPassword("encodedPassword");
 
-        when(usersRepository.findByUserDetailsUserName(anyString())).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 
         Optional<Users> result = authenticationService.authenticate(request);
@@ -264,9 +278,9 @@ public class AuthenticationServiceTest
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(new City()));
         when(countryRepository.findById(anyInt())).thenReturn(Optional.of(new Country()));
 
-        boolean result = authenticationService.addDetails(request, "file/path");
+        UserDetails result = authenticationService.addDetails(request, "file/path");
 
-        assertFalse(result);
+        assertNull(result);
     }
 
     @Test
@@ -282,9 +296,9 @@ public class AuthenticationServiceTest
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(new City()));
         when(countryRepository.findById(anyInt())).thenReturn(Optional.of(new Country()));
 
-        boolean result = authenticationService.addDetails(request, "file/path");
+        UserDetails result = authenticationService.addDetails(request, "file/path");
 
-        assertFalse(result);
+        assertNull(result);
     }
 
     @Test
@@ -300,9 +314,9 @@ public class AuthenticationServiceTest
         when(cityRepository.findById(anyInt())).thenReturn(Optional.empty());
         when(countryRepository.findById(anyInt())).thenReturn(Optional.of(new Country()));
 
-        boolean result = authenticationService.addDetails(request, "file/path");
+        UserDetails result = authenticationService.addDetails(request, "file/path");
 
-        assertFalse(result);
+        assertNull(result);
     }
 
     @Test
@@ -318,9 +332,9 @@ public class AuthenticationServiceTest
         when(cityRepository.findById(anyInt())).thenReturn(Optional.of(new City()));
         when(countryRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        boolean result = authenticationService.addDetails(request, "file/path");
+        UserDetails result = authenticationService.addDetails(request, "file/path");
 
-        assertFalse(result);
+        assertNull(result);
     }
 
 
@@ -363,9 +377,9 @@ public class AuthenticationServiceTest
         request.setUserType(1);
         when(userTypeRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        boolean result = authenticationService.addUser(request);
+        Users result = authenticationService.addUser(request, null);
 
-        assertFalse(result);
+        assertNull(result);
     }
 
 

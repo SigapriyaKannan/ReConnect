@@ -154,7 +154,7 @@ export class SignupComponent {
       const formData = new FormData();
 
       formData.append('userType', this.selectedRole.toString());
-      formData.append('name', this.userCredentialsForm.controls['name'].value);
+      formData.append('userName', this.userCredentialsForm.controls['name'].value);
       formData.append('email', this.userCredentialsForm.controls['email'].value);
       formData.append('password', this.userCredentialsForm.controls['password'].value);
       formData.append('reenteredPassword', this.userCredentialsForm.controls['confirmPassword'].value);

@@ -15,6 +15,8 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     Users findByResetToken(String resetToken);
 
+    Optional<Users> findByUserEmail(String email);
+
     List<Users> findAllUsersByUserTypeTypeID(int typeId);
 
 

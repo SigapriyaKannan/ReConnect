@@ -20,5 +20,5 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Intege
             "WHERE u.userID IN :referrerIds")
     List<Requests> findRequestsByReferrerIds(@Param("referrerIds") List<Integer> referrerIds);
 
-
+    UserDetails findByUserName(String userName);
 }

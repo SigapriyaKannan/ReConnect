@@ -1,0 +1,89 @@
+<div class="container my-4">
+    <div class="row">
+        <!-- Profile Info Section -->
+        <div class="col-md-4 d-flex flex-column align-items-center mb-4">
+            <!-- Profile Picture -->
+            <div class="profile-picture-container mb-3">
+                <img [src]="profilePictureUrl" alt="Profile Picture" class="profile-picture img-fluid rounded-circle">
+            </div>
+            <h2>{{ userDetails.userName }}</h2>
+            <ul class="list-unstyled">
+                <li><strong>Experience:</strong> {{ userDetails.experience }} years</li>
+                <li><strong>Current Company:</strong> {{ userDetails.companyName || 'N/A' }}</li>
+                <li><strong>City:</strong> {{ userDetails.cityName || 'N/A' }}</li>
+                <li><strong>Country:</strong> {{ userDetails.countryName || 'N/A' }}</li>
+                <li><strong>Skills:</strong>
+                    <ul *ngIf="userDetails.skills && userDetails.skills.length; else noSkills">
+                        <li *ngFor="let skill of userDetails.skills">{{ skill.skillName }}</li>
+                    </ul>
+                    <ng-template #noSkills>
+                        <span>N/A</span>
+                    </ng-template>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center mb-3">
+                <button *ngIf="showUser" type="button" class="btn btn-primary me-2" (click)="editMode = true">Edit Profile</button>
+                <button type="button" class="btn btn-primary me-2" (click)="getResume()">Download Resume</button>
+            </div>
+        </div>
+
+        <!-- Edit Form Section -->
+        <div class="col-md-8">
+            <div *ngIf="showUser && editMode" class="edit-form scrollable-container">
+                <form [formGroup]="profileForm" (ngSubmit)="updateUserDetails()">
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Username</label>
+                        <input type="text" id="userName" formControlName="userName" class="w-100">
+                    </div>
+                    <div class="mb-3">
+                        <label for="experience" class="form-label">Experience</label>
+                        <p-dropdown id="experience" formControlName="experience" [options]="listOfExperiences" optionLabel="experienceName" placeholder="Select Experience" styleClass="w-100"></p-dropdown>
+                    </div>
+                    <div class="mb-3">
+                        <label for="company" class="form-label">Company</label>
+                        <p-dropdown id="company" formControlName="company" [options]="listOfCompanies" optionLabel="companyName" placeholder="Select Company" styleClass="w-100"></p-dropdown>
+                    </div>
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country</label>
+                        <p-dropdown id="country" formControlName="country" [options]="listOfCountries" optionLabel="countryName" placeholder="Select Country" styleClass="w-100"></p-dropdown>
+                    </div>
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <p-dropdown id="city" formControlName="city" [options]="listOfCities" optionLabel="cityName" placeholder="Select City" styleClass="w-100"></p-dropdown>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Skills</label>
+                        <p-multiSelect
+                                id="skills"
+                                formControlName="skills"
+                                [options]="listOfSkills"
+                                display="chip"
+                                [showClear]="true"
+                                styleClass="w-100"
+                                [maxlength]="5"
+                                [maxSelectedLabels]="5"
+                                optionLabel="skillName"
+                                optionValue="skillId"
+                        ></p-multiSelect>
+                        <div *ngIf="profileForm.controls['skills'].dirty && profileForm.controls['skills'].hasError('required')">
+                            <small class="invalid-form-control">Skills are required</small>
+                        </div>
+                        <div *ngIf="profileForm.controls['skills'].dirty && profileForm.controls['skills'].hasError('maxlength')">
+                            <small class="invalid-form-control">Cannot select more than 5 skills</small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="profilePicture" class="form-label">Profile Picture</label>
+                        <p-fileUpload id="profilePicture" name="profilePicture" accept="image/*" (onUpload)="uploadProfilePicture($event)"></p-fileUpload>
+                    </div>
+                    <div class="mb-3">
+                        <label for="resume" class="form-label">Resume</label>
+                        <p-fileUpload id="resume" name="resume" accept=".pdf" (onUpload)="uploadResume($event)"></p-fileUpload>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" (click)="editMode = false">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

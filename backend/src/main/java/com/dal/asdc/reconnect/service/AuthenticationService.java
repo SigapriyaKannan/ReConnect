@@ -6,11 +6,13 @@ import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest;
 import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -97,19 +99,36 @@ public class AuthenticationService {
     /**
      * This method will add the user,user's details and skill details in the database.
      */
+    @Transactional
     public boolean addNewUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
-        if (validateSecondPhase(signUpSecondPhaseRequest)) {
-            try {
-                if (!addUser(signUpSecondPhaseRequest) || !addDetails(signUpSecondPhaseRequest, fileNameAndPath) || !addSkills(signUpSecondPhaseRequest)) {
-                    return false;
-                }
-
-            } catch (Exception e) {
+        try {
+            UserDetails userDetails = addDetails(signUpSecondPhaseRequest, fileNameAndPath);
+            if (userDetails == null) {
                 return false;
             }
-            return true;
+
+            Users user = addUser(signUpSecondPhaseRequest, userDetails);
+            if (user == null) {
+                return false;
+            }
+
+            if (!addSkills(signUpSecondPhaseRequest)) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return false;
+            }
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return false;
         }
-        return false;
+
+        return true;
+    }
+
+    public boolean linkUserDetailsToUser(Users user, UserDetails userDetails) {
+        user.setUserDetails(userDetails);
+        usersRepository.save(user); // Save the user with linked user details
+
+        return true;
     }
 
     /**
@@ -141,7 +160,7 @@ public class AuthenticationService {
      * This method will add the skills into the database. (UserSkills Table)
      */
     public boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
-        Optional<Users> users = usersRepository.findByUserDetailsUserName(signUpSecondPhaseRequest.getEmail());
+        Optional<Users> users = usersRepository.findByUserDetailsUserName(signUpSecondPhaseRequest.getUserName());
         if (users.isEmpty()) {
             return false;
         }
@@ -161,54 +180,48 @@ public class AuthenticationService {
     /**
      * This method will add user's details into database. (UserDetails Table)
      */
-    public boolean addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
+    public UserDetails addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
 
-        Optional<Users> users = usersRepository.findByUserDetailsUserName(signUpSecondPhaseRequest.getEmail());
-        Optional<Company> comapany = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
+        Optional<Company> company = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
         Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
-        if (users.isEmpty() || comapany.isEmpty() || city.isEmpty() || country.isEmpty()) {
-            return false;
+        if (company.isEmpty() || city.isEmpty() || country.isEmpty()) {
+            return null;
         }
-
-        Users user = users.get();
 
         UserDetails userDetails = new UserDetails();
         userDetails.setUserName(signUpSecondPhaseRequest.getUserName());
-        userDetails.setCompany(comapany.get());
+        userDetails.setCompany(company.get());
         userDetails.setExperience(signUpSecondPhaseRequest.getExperience());
         userDetails.setResume(signUpSecondPhaseRequest.getResume());
         userDetails.setProfilePicture(fileNameAndPath);
         userDetails.setCity(city.get());
         userDetails.setCountry(country.get());
         userDetails.setProfilePicture(fileNameAndPath);
-        userDetailsRepository.save(userDetails);
 
-        user.setUserDetails(userDetails);
-        usersRepository.save(user);
 
-        return true;
+        return userDetailsRepository.save(userDetails);
     }
 
     /**
      * This method will add the data into user table.
      */
-    public boolean addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
+    public Users addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest, UserDetails userDetails) {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
         if (userType.isEmpty())
         {
-            return false;
+            return null;
         }
 
         Users user = new Users();
         user.setUserEmail(signUpSecondPhaseRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpSecondPhaseRequest.getPassword()));
         user.setUserType(userType.get());
-        usersRepository.save(user);
+        user.setUserDetails(userDetails);
 
-        return true;
+        return usersRepository.save(user);
     }
 
 
@@ -220,7 +233,7 @@ public class AuthenticationService {
      */
     public Optional<Users> authenticate(LoginRequest input) {
 
-        Optional<Users> user = usersRepository.findByUserDetailsUserName(input.getEmail());
+        Optional<Users> user = usersRepository.findByUserEmail(input.getEmail());
 
         if (user.isPresent() && passwordEncoder.matches(input.getPassword(), user.get().getPassword())) {
             return user;
