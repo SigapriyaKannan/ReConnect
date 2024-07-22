@@ -29,7 +29,7 @@ public class ApplicationConfiguration {
 //                        .authorities(user.getAuthorities())
 //                        .build())
 //                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return username -> userRepository.findByUserDetailsUserName(username)
+        return username -> userRepository.findByUserEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

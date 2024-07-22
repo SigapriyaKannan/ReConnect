@@ -20,8 +20,8 @@ public class RefreshTokenService {
     @Autowired
     UsersRepository userRepository;
 
-    public RefreshToken createRefreshToken(String username) {
-        Optional<Users> user = userRepository.findByUserDetailsUserName(username);
+    public RefreshToken createRefreshToken(String email){
+        Optional<Users> user = userRepository.findByUserEmail(email);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .users(user.get())

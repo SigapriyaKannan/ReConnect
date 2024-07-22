@@ -47,8 +47,9 @@ public class JWTService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        Optional<Users> user = usersRepository.findByUserDetailsUserName(userDetails.getUsername());
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails)
+    {
+        Optional<Users> user = usersRepository.findByUserEmail(userDetails.getUsername());
         if (user.isEmpty()) {
             throw new RuntimeException("User not found");
         }

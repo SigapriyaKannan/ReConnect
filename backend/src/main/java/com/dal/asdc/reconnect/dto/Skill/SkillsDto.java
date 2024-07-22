@@ -10,4 +10,8 @@ public class SkillsDto {
     private String skillName;
     private int domainId;
     private String domainName;
+
+    public SkillsDto() {
+
+    }
 }

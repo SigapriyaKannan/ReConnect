@@ -81,7 +81,7 @@ public class JWTServiceTest {
         when(userDetailsModel.getProfilePicture()).thenReturn("profilePictureUrl");
 
         // Mock repositories
-        when(usersRepository.findByUserDetailsUserName("testUser")).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserEmail("testUser")).thenReturn(Optional.of(user));
         when(userDetailsRepository.findById(1)).thenReturn(Optional.of(userDetails));
 
         // Generate and return token
@@ -197,7 +197,7 @@ public class JWTServiceTest {
         when(userDetailsModel.getDetailId()).thenReturn(1);
 
         // Mock repositories
-        when(usersRepository.findByUserDetailsUserName(username)).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserEmail(username)).thenReturn(Optional.of(user));
         when(userDetailsRepository.findById(userDetails1.getDetailId())).thenReturn(Optional.of(userDetails1));
 
         // Generate and return token

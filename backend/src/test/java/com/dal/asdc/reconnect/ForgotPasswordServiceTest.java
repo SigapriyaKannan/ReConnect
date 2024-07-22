@@ -47,7 +47,7 @@ class ForgotPasswordServiceTest {
     @Test
     void testSendResetEmail_UserExists() {
         Users user = mock(Users.class);
-        when(usersRepository.findByUserDetailsUserName(TestConstants.TEST_EMAIL)).thenReturn(Optional.ofNullable(user));
+        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(Optional.ofNullable(user));
 
         forgotPasswordService.sendResetEmail(TestConstants.TEST_EMAIL);
 
@@ -83,7 +83,7 @@ class ForgotPasswordServiceTest {
     @Test
     void testSendEmail_Success() {
         Users user = mock(Users.class);
-        when(usersRepository.findByUserDetailsUserName(TestConstants.TEST_EMAIL)).thenReturn(Optional.ofNullable(user));
+        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(Optional.ofNullable(user));
         doNothing().when(mailSender).send(any(SimpleMailMessage.class));
 
         forgotPasswordService.sendResetEmail(TestConstants.TEST_EMAIL);
@@ -112,7 +112,7 @@ class ForgotPasswordServiceTest {
     void testSendEmail_EmailSendingFailure() {
         Users user = new Users();
         user.setUserEmail(TestConstants.TEST_EMAIL);
-        when(usersRepository.findByUserDetailsUserName(TestConstants.TEST_EMAIL)).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserEmail(TestConstants.TEST_EMAIL)).thenReturn(Optional.of(user));
 
         // Simulate email sending failure
         doThrow(new EmailSendingException(TestConstants.FAILED_TO_SEND_EMAIL, HttpStatus.EXPECTATION_FAILED)).when(mailSender).send(any(SimpleMailMessage.class));
@@ -125,7 +125,7 @@ class ForgotPasswordServiceTest {
         assertEquals(HttpStatus.EXPECTATION_FAILED, exception.getStatus());
 
         // Verify user repository interactions
-        verify(usersRepository).findByUserDetailsUserName(TestConstants.TEST_EMAIL);
+        verify(usersRepository).findByUserEmail(TestConstants.TEST_EMAIL);
         verify(usersRepository).save(user);
 
         // Verify email sending attempt
