@@ -68,12 +68,12 @@ export const routes: Routes = [
                 component: MessagingComponent
             },
             {
-                path: "profile",
+                path: "profile/:id",
                 component: ProfileComponent,
                 data: { showEdit: true }
             },
             {
-                path: "other-profile",
+                path: "other-profile/:id",
                 component: ProfileComponent,
                 data: { showEdit: false }
             },

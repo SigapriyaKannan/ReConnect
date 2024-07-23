@@ -7,7 +7,6 @@ import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +39,8 @@ public class ProfileService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    public UserDetailsResponse getUserDetailsByEmail(String email) {
-        Optional<Users> userOptional = usersRepository.findByUserEmail(email);
+    public UserDetailsResponse getUserDetailsByUserID(int userID) {
+        Optional<Users> userOptional = usersRepository.findByUserID(userID);
         if (userOptional.isPresent()) {
             Users user = userOptional.get();
             UserDetails userDetails = user.getUserDetails();
@@ -49,7 +48,7 @@ public class ProfileService {
 
             return getUserDetailsResponse(userDetails, skills.stream());
         } else {
-            throw new UsernameNotFoundException("User not found with email: " + email);
+            throw new UsernameNotFoundException("User not found with ID: " + userID);
         }
     }
 
@@ -74,23 +73,9 @@ public class ProfileService {
         return response;
     }
 
-
-    public int getUserIdByEmail(String email) {
-        Optional<Users> user = usersRepository.findByUserEmail(email);
-        if (user.isPresent()) {
-            return user.get().getUserID();
-        } else {
-            throw new UsernameNotFoundException("User not found with email: " + email);
-        }
-    }
-
-
     @Transactional
     public UserDetailsResponse updateUserDetails(UserDetailsRequest request) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        int userId = getUserIdByEmail(email);
-
-        Users user = usersRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Users user = usersRepository.findById(Integer.valueOf(request.getUserId())).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserDetails userDetails = user.getUserDetails();
 
         userDetails.setUserName(request.getUserName());
@@ -111,7 +96,6 @@ public class ProfileService {
 
         usersSkillsRepository.deleteByUsers(user);
 
-        // Update Skills
         List<UserSkills> skills = request.getSkillIds().stream().map(skillId -> {
             UserSkills userSkill = new UserSkills();
             userSkill.setUsers(user);
@@ -123,10 +107,8 @@ public class ProfileService {
 
         usersSkillsRepository.saveAll(skills);
 
-        // Map entities to DTOs
         return getUserDetailsResponse(userDetails, skills.stream());
     }
-
 
     public void updateResumePath(int userId, String resumePath) {
         Optional<Users> user = usersRepository.findById(userId);

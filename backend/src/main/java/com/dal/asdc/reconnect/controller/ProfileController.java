@@ -7,6 +7,7 @@ import com.dal.asdc.reconnect.dto.userdetails.UserDetailsResponse;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.FileService;
 import com.dal.asdc.reconnect.service.ProfileService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dal.asdc.reconnect.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,47 +33,42 @@ public class ProfileController {
     private RequestService requestService;
 
     @GetMapping
-    public ResponseEntity<UserDetailsResponse> getUserDetails() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDetailsResponse userDetails = profileService.getUserDetailsByEmail(email);
+    public ResponseEntity<UserDetailsResponse> getUserDetails(@RequestParam String userId) {
+        UserDetailsResponse userDetails = profileService.getUserDetailsByUserID(Integer.parseInt(userId));
         return ResponseEntity.ok(userDetails);
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<UserDetailsResponse> updateUserDetails(@RequestBody UserDetailsRequest userDetails) {
-        UserDetailsResponse updatedUserDetails = profileService.updateUserDetails(userDetails);
+    @PostMapping("/updateUserDetails")
+    public ResponseEntity<UserDetailsResponse> updateUserDetails(
+            @RequestPart("userDetails") String userDetailsJson,
+            @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture,
+            @RequestPart(value = "resume", required = false) MultipartFile resume) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserDetailsRequest userDetailsRequest = objectMapper.readValue(userDetailsJson, UserDetailsRequest.class);
+        int userId = Integer.parseInt(userDetailsRequest.getUserId());
+
+        UserDetailsResponse updatedUserDetails = profileService.updateUserDetails(userDetailsRequest);
+
+        if (profilePicture != null) {
+            fileService.uploadProfilePicture(userId, profilePicture);
+        }
+        if (resume != null) {
+            fileService.uploadResume(userId, resume);
+        }
+
         return ResponseEntity.ok(updatedUserDetails);
     }
 
-    @PostMapping("/uploadResume")
-    public ResponseEntity<String> uploadResume(@RequestParam("file") MultipartFile file) throws IOException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        int userId = profileService.getUserIdByEmail(username);
-        fileService.uploadResume(userId, file);
-        return ResponseEntity.ok("Resume uploaded successfully.");
-    }
-
-    @PostMapping("/uploadProfilePicture")
-    public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) throws IOException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        int userId = profileService.getUserIdByEmail(username);
-        fileService.uploadProfilePicture(userId, file);
-        return ResponseEntity.ok("Profile picture uploaded successfully.");
-    }
-
     @GetMapping("/resume")
-    public ResponseEntity<byte[]> getResume() throws IOException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        int userId = profileService.getUserIdByEmail(username);
-        byte[] resume = fileService.getResume(userId);
+    public ResponseEntity<byte[]> getResume(@RequestParam String userId) throws IOException {
+        byte[] resume = fileService.getResume(Integer.parseInt(userId));
         return ResponseEntity.ok(resume);
     }
 
     @GetMapping("/profilePicture")
-    public ResponseEntity<byte[]> getProfilePicture() throws IOException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        int userId = profileService.getUserIdByEmail(username);
-        byte[] profilePicture = fileService.getProfilePicture(userId);
+    public ResponseEntity<byte[]> getProfilePicture(@RequestParam String userId) throws IOException {
+        byte[] profilePicture = fileService.getProfilePicture(Integer.parseInt(userId));
         return ResponseEntity.ok(profilePicture);
     }
 
