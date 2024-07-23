@@ -35,9 +35,18 @@ public class RequestServiceTest {
     @InjectMocks
     private RequestService requestService;
 
+    private Users referent;
+    private Users referrer;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        referent = new Users();
+        referent.setUserID(1);
+
+        referrer = new Users();
+        referrer.setUserID(2);
     }
 
     @Test
@@ -91,7 +100,6 @@ public class RequestServiceTest {
         when(requestRepository.updateStatusAndResponseDate(RequestStatus.ACCEPTED, LocalDateTime.now(), referentID, user.getUserID())).thenReturn(1);
 
         requestService.acceptRequest(sender, referentID);
-
     }
 
     @Test
@@ -101,15 +109,13 @@ public class RequestServiceTest {
         user.setUserID(1);
         when(usersRepository.findByUserDetailsUserName(sender)).thenReturn(Optional.of(user));
         int referentID = 1;
-        when(requestRepository.updateStatusAndResponseDate(RequestStatus.REJECTED, LocalDateTime.now(), referentID, user.getUserID())).thenReturn(1); // Assuming update returns affected rows count
+        when(requestRepository.updateStatusAndResponseDate(RequestStatus.REJECTED, LocalDateTime.now(), referentID, user.getUserID())).thenReturn(1);
 
         requestService.requestRejected(sender, referentID);
-
     }
 
     @Test
     public void testGetAcceptedRequestForReferent() {
-
         int userId = 1;
         ReferralRequests request1 = new ReferralRequests();
         request1.setRequestId(1);
@@ -139,5 +145,69 @@ public class RequestServiceTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
-}
 
+    @Test
+    public void testSendRequestInvalidReferentId() {
+        when(usersRepository.findById(1)).thenReturn(Optional.empty());
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            requestService.sendRequest(1, 2);
+        });
+
+        assertEquals("Invalid referent ID", thrown.getMessage());
+        verify(usersRepository, times(1)).findById(1);
+        verifyNoInteractions(requestRepository);
+    }
+
+    @Test
+    public void testSendRequestInvalidReferrerId() {
+        when(usersRepository.findById(1)).thenReturn(Optional.of(referent));
+        when(usersRepository.findById(2)).thenReturn(Optional.empty());
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            requestService.sendRequest(1, 2);
+        });
+
+        assertEquals("Invalid referrer ID", thrown.getMessage());
+        verify(usersRepository, times(1)).findById(1);
+        verify(usersRepository, times(1)).findById(2);
+        verifyNoInteractions(requestRepository);
+    }
+
+    @Test
+    public void testSendRequestAlreadyExists() {
+        when(usersRepository.findById(1)).thenReturn(Optional.of(referent));
+        when(usersRepository.findById(2)).thenReturn(Optional.of(referrer));
+        ReferralRequests existingRequest = new ReferralRequests();
+        when(requestRepository.findByReferrerAndReferent(referrer, referent)).thenReturn(Optional.of(existingRequest));
+
+        boolean result = requestService.sendRequest(1, 2);
+
+        assertFalse(result);
+        verify(usersRepository, times(1)).findById(1);
+        verify(usersRepository, times(1)).findById(2);
+        verify(requestRepository, times(1)).findByReferrerAndReferent(referrer, referent);
+        verify(requestRepository, never()).save(any(ReferralRequests.class));
+    }
+
+    @Test
+    public void testSendRequestSuccess() {
+        when(usersRepository.findById(1)).thenReturn(Optional.of(referent));
+        when(usersRepository.findById(2)).thenReturn(Optional.of(referrer));
+        when(requestRepository.findByReferrerAndReferent(referrer, referent)).thenReturn(Optional.empty());
+        ReferralRequests referralRequest = new ReferralRequests();
+        referralRequest.setReferent(referent);
+        referralRequest.setReferrer(referrer);
+        referralRequest.setStatus(RequestStatus.PENDING);
+        referralRequest.setRequestDate(LocalDateTime.now());
+        when(requestRepository.save(any(ReferralRequests.class))).thenReturn(referralRequest);
+
+        boolean result = requestService.sendRequest(1, 2);
+
+        assertTrue(result);
+        verify(usersRepository, times(1)).findById(1);
+        verify(usersRepository, times(1)).findById(2);
+        verify(requestRepository, times(1)).findByReferrerAndReferent(referrer, referent);
+        verify(requestRepository, times(1)).save(any(ReferralRequests.class));
+    }
+}

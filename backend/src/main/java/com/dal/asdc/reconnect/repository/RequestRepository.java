@@ -2,6 +2,7 @@ package com.dal.asdc.reconnect.repository;
 
 import com.dal.asdc.reconnect.enums.RequestStatus;
 import com.dal.asdc.reconnect.model.ReferralRequests;
+import com.dal.asdc.reconnect.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<ReferralRequests, Integer> {
 
@@ -31,4 +33,6 @@ public interface RequestRepository extends JpaRepository<ReferralRequests, Integ
                                     @Param("responseDate") LocalDateTime responseDate,
                                     @Param("referentId") int referentId,
                                     @Param("referrerId") int referrerId);
+
+    Optional<ReferralRequests> findByReferrerAndReferent(Users referrer, Users referent);
 }

@@ -37,7 +37,7 @@ export class SignupComponent {
   uploadForm: FormGroup;
   loading: boolean = false;
   activeStep: number = 0;
-  roles = [{ roleId: 0, role: "Admin" }, { roleId: 1, role: "Referrer" }, { roleId: 2, role: "Referent" }];
+  roles = [{ roleId: 0, role: "Admin" }, { roleId: 1, role: "Referent" }, { roleId: 2, role: "Referrer" }];
   selectedRole = 1;
   verificationPending: boolean = false;
   isCreatingUser: boolean = false;

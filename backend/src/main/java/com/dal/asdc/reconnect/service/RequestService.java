@@ -65,4 +65,27 @@ public class RequestService {
         int refereeID = users.get().getUserID();
         requestRepository.updateStatusAndResponseDate(RequestStatus.REJECTED, LocalDateTime.now(), referentID, refereeID);
     }
+
+    @Transactional
+    public boolean sendRequest(Integer referentId, Integer referrerId)
+    {
+        Users referent = usersRepository.findById(referentId).orElseThrow(() -> new IllegalArgumentException("Invalid referent ID"));
+        Users referrer = usersRepository.findById(referrerId).orElseThrow(() -> new IllegalArgumentException("Invalid referrer ID"));
+
+        Optional<ReferralRequests> existingRequest = requestRepository.findByReferrerAndReferent(referrer, referent);
+        if (existingRequest.isPresent())
+        {
+            return false;
+        }
+
+        ReferralRequests referralRequest = new ReferralRequests();
+        referralRequest.setReferent(referent);
+        referralRequest.setReferrer(referrer);
+        referralRequest.setStatus(RequestStatus.PENDING);
+        referralRequest.setRequestDate(LocalDateTime.now());
+        ReferralRequests savedRequest = requestRepository.save(referralRequest);
+
+        return savedRequest != null;
+    }
+
 }
