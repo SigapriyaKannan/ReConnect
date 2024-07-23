@@ -19,13 +19,14 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     List<Users> findAllUsersByUserTypeTypeID(int typeId);
 
-
-    @Query("SELECT ud.userName FROM Users u JOIN UserDetails ud WHERE ud.company = :company AND u.userType.typeID = :userTypeId")
+    @Query("SELECT ud.userName FROM Users u JOIN u.userDetails ud WHERE ud.company = :company AND u.userType.typeID = :userTypeId")
     List<String> findUsernamesByCompanyAndUserType(@Param("company") Company company, @Param("userTypeId") int userTypeId);
 
-    @Query("SELECT new com.dal.asdc.reconnect.dto.Users.User(ud.userName, ud.company.companyName) " + "FROM UserDetails ud " + "JOIN Users u " + "WHERE LOWER(ud.userName) LIKE LOWER(CONCAT('%', :username, '%')) AND u.userType.typeID = :userTypeId")
+    @Query("SELECT new com.dal.asdc.reconnect.dto.Users.User(ud.userName, ud.company.companyName) " +
+            "FROM Users u " +
+            "JOIN u.userDetails ud " +
+            "WHERE LOWER(ud.userName) LIKE LOWER(CONCAT('%', :username, '%')) AND u.userType.typeID = :userTypeId")
     List<User> findUsernamesByUsernameAndUserType(@Param("username") String username, @Param("userTypeId") int userTypeId);
-
-
+    
     Optional<Users> findByUserID(int userID);
 }

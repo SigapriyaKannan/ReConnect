@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api/menuitem';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+import { AuthService } from '../../../../app/shared/services/auth.service';
 
 @Component({
   selector: 'rc-admin-sidebar',
@@ -13,8 +14,14 @@ import { MenuModule } from 'primeng/menu';
 })
 export class AdminSidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
+  user: any;
 
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  constructor(private authService: AuthService,private router: Router, private route: ActivatedRoute, private activatedRoute: ActivatedRoute) 
+  {
+    this.activatedRoute.data.subscribe(({ user }) => {
+      this.user = user;
+    })
+   }
 
   ngOnInit() {
     this.items = [
@@ -49,5 +56,9 @@ export class AdminSidebarComponent implements OnInit {
         route: "/admin/companies",
       }
     ]
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }
