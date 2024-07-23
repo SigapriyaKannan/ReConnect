@@ -1,6 +1,7 @@
 package com.dal.asdc.reconnect.repository;
 
 import com.dal.asdc.reconnect.dto.Users.User;
+import com.dal.asdc.reconnect.dto.Users.UserCompanySearch;
 import com.dal.asdc.reconnect.model.Company;
 import com.dal.asdc.reconnect.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,14 +20,25 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     List<Users> findAllUsersByUserTypeTypeID(int typeId);
 
-    @Query("SELECT ud.userName FROM Users u JOIN u.userDetails ud WHERE ud.company = :company AND u.userType.typeID = :userTypeId")
-    List<String> findUsernamesByCompanyAndUserType(@Param("company") Company company, @Param("userTypeId") int userTypeId);
-
-    @Query("SELECT new com.dal.asdc.reconnect.dto.Users.User(ud.userName, ud.company.companyName) " +
+    @Query("SELECT new com.dal.asdc.reconnect.dto.Users.UserCompanySearch(u.userID, ud.userName, ud.profilePicture, " +
+            "(SELECT rr.status FROM ReferralRequests rr WHERE rr.referrer = u AND rr.referent = :currentUser)) " +
             "FROM Users u " +
             "JOIN u.userDetails ud " +
-            "WHERE LOWER(ud.userName) LIKE LOWER(CONCAT('%', :username, '%')) AND u.userType.typeID = :userTypeId")
-    List<User> findUsernamesByUsernameAndUserType(@Param("username") String username, @Param("userTypeId") int userTypeId);
+            "WHERE LOWER(ud.company.companyName) LIKE LOWER(CONCAT('%', :company, '%')) " +
+            "AND u.userType.typeID = :userTypeId")
+    List<UserCompanySearch> findUsernamesByCompanyAndUserType(@Param("company") String company,
+                                                              @Param("userTypeId") int userTypeId,
+                                                              @Param("currentUser") Users currentUser);
+
+    @Query("SELECT new com.dal.asdc.reconnect.dto.Users.User(u.userID, ud.userName, ud.company.companyName, ud.profilePicture, " +
+            "(SELECT rr.status FROM ReferralRequests rr WHERE rr.referrer = u AND rr.referent = :currentUser)) " +
+            "FROM Users u " +
+            "JOIN u.userDetails ud " +
+            "WHERE LOWER(ud.userName) LIKE LOWER(CONCAT('%', :username, '%')) " +
+            "AND u.userType.typeID = :userTypeId")
+    List<User> findUsernamesByUsernameAndUserType(@Param("username") String username,
+                                                  @Param("userTypeId") int userTypeId,
+                                                  @Param("currentUser") Users currentUser);
     
     Optional<Users> findByUserID(int userID);
 }
