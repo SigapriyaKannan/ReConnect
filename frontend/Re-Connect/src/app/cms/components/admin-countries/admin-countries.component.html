@@ -1,26 +1,44 @@
 <div class="container">
 	<div class="countries">
 		<h2>Countries</h2>
-		<button pButton (click)="showAddCountryDialog()">Add Country</button>
-		<table class="table">
-			<thead>
+		<p-table
+			[value]="countries"
+			dataKey="countryId"
+			[globalFilterFields]="['countryName']"
+			[paginator]="true"
+			[rows]="10"
+			[rowsPerPageOptions]="[5, 10, 20]"
+			[showCurrentPageReport]="true"
+		>
+			<ng-template pTemplate="caption">
+				<div class="flex justify-space-between">
+					<button pButton (click)="showAddCountryDialog()">Add Country</button>
+					<p-iconField iconPosition="left" class="ml-auto">
+						<p-inputIcon>
+							<i class="pi pi-search"></i>
+						</p-inputIcon>
+						<input pInputText type="text" (input)="filterCountries($event)" placeholder="Search Country" />
+					</p-iconField>
+				</div>
+			</ng-template>
+			<ng-template pTemplate="header">
 				<tr>
 					<th>Country ID</th>
 					<th>Country Name</th>
 					<th>Actions</th>
 				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let country of countries" (click)="onCountrySelect(country)">
+			</ng-template>
+			<ng-template pTemplate="body" let-country>
+				<tr>
 					<td role="button">{{ country.countryId }}</td>
-					<td>{{ country.countryName }}</td>
+					<td role="button" (click)="onCountrySelect(country)" class="text-decoration-underline">{{ country.countryName }}</td>
 					<td>
 						<button class="mx-1" pButton severity="info" size="small" (click)="showEditCountryDialog(country)">Edit</button>
 						<button class="mx-1" pButton severity="danger" size="small" (click)="onDeleteCountry(country.countryId)">Delete</button>
 					</td>
 				</tr>
-			</tbody>
-		</table>
+			</ng-template>
+		</p-table>
 	</div>
 
 	<div class="cities">

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ROLES } from '../constants/roles';
 import { environment } from '../../../../environments/environment';
-import {ProfileService} from "../profile/profile.service";
+import { ProfileService } from "../profile/profile.service";
 
 @Component({
   selector: 'rc-header',
@@ -20,20 +20,12 @@ export class HeaderComponent implements OnInit {
   loggedUser: any;
   profilePictureUrl: any;
   roles = ROLES;
-  imagePath: string = environment.SOCKET_SERVER;
-  constructor(private activatedRoute: ActivatedRoute, private profileService: ProfileService) { }
+  serverPath: string = environment.SERVER;
+  constructor(private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ user }) => {
       this.loggedUser = user;
     })
-
-    this.getProfilePicture();
-  }
-
-  getProfilePicture() {
-    this.profileService.getProfilePicture(this.loggedUser.userId).subscribe((blob: Blob) => {
-      this.profilePictureUrl = URL.createObjectURL(blob);
-    });
   }
 }

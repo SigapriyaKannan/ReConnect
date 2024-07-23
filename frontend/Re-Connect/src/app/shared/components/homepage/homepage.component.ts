@@ -8,6 +8,9 @@ import { ButtonModule } from 'primeng/button';
 import { TabViewModule } from 'primeng/tabview';
 import { DataViewModule } from 'primeng/dataview';
 import { environment } from '../../../../environments/environment';
+import { ActivatedRoute } from '@angular/router';
+import { finalize } from 'rxjs';
+import { OverlayService } from '../../services/overlay.service';
 
 @Component({
   selector: 'rc-homepage',
@@ -25,31 +28,40 @@ export class HomepageComponent {
   ];
   searchResults: any[] = [];
   hasSearched: boolean = false;
+  user: any;
+  searching: boolean = false;
 
-  constructor(private searchService: HomepageService) { }
+  constructor(private activatedRoute: ActivatedRoute, private searchService: HomepageService, private overlayService: OverlayService) {
+    this.activatedRoute.data.subscribe(({ user }) => { this.user = user });
+  }
+
 
   onSearch() {
     this.hasSearched = true;
+    this.searching = true;
+    this.overlayService.showOverlay("Searching users");
     if (this.selectedSearchType.value === 'user') {
-      this.searchService.searchUsers(this.searchQuery).subscribe(
-        (response) => {
-          this.processUserSearchResults(response);
-        },
-        (error) => {
-          console.error('Error searching users', error);
-          this.searchResults = [];
-        }
-      );
+      this.searchService.searchUsers(this.searchQuery)
+        .pipe(finalize(() => { this.searching = false; this.overlayService.hideOverlay(); }))
+        .subscribe(
+          (response) => {
+            this.processUserSearchResults(response);
+          },
+          (error) => {
+            this.searchResults = [];
+          }
+        );
     } else {
-      this.searchService.searchCompanyUsers(this.searchQuery).subscribe(
-        (response) => {
-          this.processSearchResults(response);
-        },
-        (error) => {
-          console.error('Error searching company users', error);
-          this.searchResults = [];
-        }
-      );
+      this.searchService.searchCompanyUsers(this.searchQuery)
+        .pipe(finalize(() => { this.searching = false; this.overlayService.hideOverlay(); }))
+        .subscribe(
+          (response) => {
+            this.processSearchResults(response);
+          },
+          (error) => {
+            this.searchResults = [];
+          }
+        );
     }
   }
   private processUserSearchResults(response: any) {

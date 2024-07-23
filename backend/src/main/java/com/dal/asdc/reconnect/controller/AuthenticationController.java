@@ -234,6 +234,7 @@ public class AuthenticationController {
         userDetails.setUsername(jwtService.extractUsername(token));
         userDetails.setEmail(jwtService.extractEmail(token));
         userDetails.setRole(jwtService.extractUserType(token));
+        userDetails.setProfile(jwtService.extrachProfilePicture(token));
 
         return ResponseEntity.status(HttpStatus.OK).body(userDetails);
     }

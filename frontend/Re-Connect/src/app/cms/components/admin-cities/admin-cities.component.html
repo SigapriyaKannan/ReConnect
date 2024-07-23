@@ -1,27 +1,47 @@
+@if(!selectedCountry) {
+<div class="d-flex h-100 justify-content-betwee align-items-center">Please select a country</div>
+}
+
 <div class="cities">
 	<h2>Cities for {{ selectedCountry.countryName }}</h2>
-	<button pButton (click)="showAddCityDialog()">Add City</button>
-	<table class="table">
-		<thead>
+	<p-table
+		[value]="cities"
+		dataKey="cityId"
+		[globalFilterFields]="['cityName']"
+		[paginator]="true"
+		[rows]="10"
+		[rowsPerPageOptions]="[5, 10, 20]"
+		[showCurrentPageReport]="true"
+	>
+		<ng-template pTemplate="caption">
+			<div class="flex justify-space-between">
+				<button pButton (click)="showAddCityDialog()">Add City</button>
+				<p-iconField iconPosition="left" class="ml-auto">
+					<p-inputIcon>
+						<i class="pi pi-search"></i>
+					</p-inputIcon>
+					<input pInputText type="text" (input)="filterCities($event)" placeholder="Search City" />
+				</p-iconField>
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header">
 			<tr>
 				<th>City ID</th>
 				<th>City Name</th>
-				<th>Country ID</th>
 				<th>Actions</th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let city of cities">
+		</ng-template>
+		<ng-template pTemplate="body" let-city>
+			<tr>
 				<td>{{ city.cityId }}</td>
 				<td>{{ city.cityName }}</td>
-				<td>{{ city.countryId }}</td>
 				<td>
 					<button class="mx-1" pButton severity="info" size="small" (click)="showEditCityDialog(city)">Edit</button>
 					<button class="mx-1" pButton severity="danger" size="small" (click)="onDeleteCity(city.cityId)">Delete</button>
 				</td>
 			</tr>
-		</tbody>
-	</table>
+		</ng-template>
+	</p-table>
 
 	<p-dialog header="Add City" [(visible)]="displayAddDialog" modal="true" [closable]="false">
 		<form [formGroup]="addCityForm" (ngSubmit)="onAddCitySubmit()">

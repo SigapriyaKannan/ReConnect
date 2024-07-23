@@ -95,6 +95,7 @@
 											optionLabel="companyName"
 											optionValue="companyId"
 											styleClass="w-100"
+											[filter]="true"
 										></p-dropdown>
 										@if(userDetailsForm.controls['company'].dirty && userDetailsForm.controls['company'].hasError('required')) {
 										<small class="invalid-form-control">Company is required</small>
@@ -127,6 +128,7 @@
 											[maxSelectedLabels]="5"
 											optionLabel="skillName"
 											optionValue="skillId"
+											[filter]="true"
 										></p-multiSelect>
 										@if(userDetailsForm.controls['skills'].dirty && userDetailsForm.controls['skills'].hasError('required')) {
 										<small class="invalid-form-control">Skills are required</small>
@@ -143,6 +145,7 @@
 											optionLabel="countryName"
 											optionValue="countryId"
 											styleClass="w-100"
+											[filter]="true"
 										></p-dropdown>
 										@if(userDetailsForm.controls['country'].dirty && userDetailsForm.controls['country'].hasError('required')) {
 										<small class="invalid-form-control">Country is required</small>
@@ -157,6 +160,8 @@
 											optionLabel="cityName"
 											optionValue="cityId"
 											styleClass="w-100"
+											[filter]="true"
+											[disabled]="userDetailsForm.controls['country'].value"
 										></p-dropdown>
 										@if(userDetailsForm.controls['city'].dirty && userDetailsForm.controls['city'].hasError('required')) {
 										<small class="invalid-form-control">City is required</small>

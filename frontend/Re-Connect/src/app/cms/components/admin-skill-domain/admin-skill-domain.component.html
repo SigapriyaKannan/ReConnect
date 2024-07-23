@@ -1,7 +1,24 @@
 <!-- Table to Display Skill Domains -->
-<p-table [value]="listOfSkillDomains">
+<p-table
+	#dt
+	[value]="listOfSkillDomains"
+	dataKey="domainId"
+	[globalFilterFields]="['domainName']"
+	[paginator]="true"
+	[rows]="10"
+	[rowsPerPageOptions]="[5, 10, 20]"
+	[showCurrentPageReport]="true"
+>
 	<ng-template pTemplate="caption">
-		<button pButton (click)="showAddDialog()">Add Skill Domain</button>
+		<div class="flex justify-space-between">
+			<button pButton (click)="showAddDialog()">Add Skill Domain</button>
+			<p-iconField iconPosition="left" class="ml-auto">
+				<p-inputIcon>
+					<i class="pi pi-search"></i>
+				</p-inputIcon>
+				<input pInputText type="text" (input)="filterDomains($event)" placeholder="Search Domain" />
+			</p-iconField>
+		</div>
 	</ng-template>
 	<ng-template pTemplate="header">
 		<tr>

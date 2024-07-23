@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Country, CountryService } from '../../../shared/services/country.service';
 import { NgForOf, NgIf } from "@angular/common";
 import { AdminCitiesComponent } from "../admin-cities/admin-cities.component";
 import { DialogModule } from "primeng/dialog";
 import { ButtonModule } from 'primeng/button';
+import { Table, TableModule } from 'primeng/table';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-admin-countries',
@@ -16,11 +20,16 @@ import { ButtonModule } from 'primeng/button';
     NgIf,
     ReactiveFormsModule,
     DialogModule,
-    ButtonModule
+    ButtonModule,
+    TableModule,
+    InputIconModule,
+    IconFieldModule,
+    InputTextModule
   ],
   styleUrls: ['./admin-countries.component.scss']
 })
 export class AdminCountriesComponent implements OnInit {
+  @ViewChild('dt') table!: Table;
   countries: Country[] = [];
   selectedCountry: Country | null = null;
   displayAddDialog: boolean = false;
@@ -115,6 +124,10 @@ export class AdminCountriesComponent implements OnInit {
 
   onCountrySelect(country: Country) {
     this.selectedCountry = country;
+  }
+
+  filterCountries(event: any) {
+    this.table.filterGlobal(event.target.value, 'contains')
   }
 
 }

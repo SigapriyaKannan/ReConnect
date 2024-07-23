@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Company, CompanyService } from '../../../shared/services/company.service';
 import { DialogModule } from "primeng/dialog";
 import { NgForOf, NgIf } from "@angular/common";
+import { ButtonModule } from 'primeng/button';
+import { Table, TableModule } from 'primeng/table';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'rc-admin-companies',
@@ -12,14 +17,19 @@ import { NgForOf, NgIf } from "@angular/common";
     DialogModule,
     ReactiveFormsModule,
     NgIf,
-    NgForOf
+    NgForOf,
+    ButtonModule,
+    TableModule,
+    InputIconModule,
+    IconFieldModule,
+    InputTextModule
   ],
   styleUrls: ['./admin-companies.component.scss']
 })
 export class AdminCompaniesComponent implements OnInit {
-  companies: Company[] = [];
-  displayAddDialog: boolean = false;
-  displayEditDialog: boolean = false;
+  @ViewChild('dt') table!: Table;
+  listOfCompanies: Company[] = [];
+  showDialog: boolean = false;
   addCompanyForm: FormGroup;
   editCompanyForm: FormGroup;
   selectedCompany: Company | null = null;
@@ -42,7 +52,7 @@ export class AdminCompaniesComponent implements OnInit {
   loadCompanies() {
     this.companyService.getAllCompanies().subscribe(
       (response: any) => {
-        this.companies = response.body;
+        this.listOfCompanies = response.body;
       },
       error => {
         console.error('Error loading companies:', error);
@@ -51,11 +61,11 @@ export class AdminCompaniesComponent implements OnInit {
   }
 
   showAddCompanyDialog() {
-    this.displayAddDialog = true;
+    this.showDialog = true;
   }
 
   hideAddDialog() {
-    this.displayAddDialog = false;
+    this.showDialog = false;
   }
 
   onAddCompanySubmit() {
@@ -80,11 +90,11 @@ export class AdminCompaniesComponent implements OnInit {
       companyId: company.companyId,
       companyName: company.companyName
     });
-    this.displayEditDialog = true;
+    this.showDialog = true;
   }
 
   hideEditDialog() {
-    this.displayEditDialog = false;
+    this.showDialog = false;
     this.selectedCompany = null;
   }
 
@@ -113,5 +123,9 @@ export class AdminCompaniesComponent implements OnInit {
         }
       );
     }
+  }
+
+  filterCompanies(event: any) {
+    this.table.filterGlobal(event.target.value, 'contains')
   }
 }

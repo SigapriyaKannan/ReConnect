@@ -13,4 +13,5 @@ public class UserDetailsResponse {
     private int city;
     private int country;
     private List<SkillsDto> skills;
+    private String profilePicture;
 }

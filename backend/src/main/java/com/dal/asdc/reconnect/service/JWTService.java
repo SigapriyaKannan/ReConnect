@@ -128,4 +128,9 @@ public class JWTService {
         Claims claims = extractAllClaims(token);
         return (int) claims.get("userID");
     }
+
+    public String extrachProfilePicture(String token) {
+        Claims claims = extractAllClaims(token);
+        return (String) claims.get("profile");
+    }
 }

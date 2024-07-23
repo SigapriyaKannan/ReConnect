@@ -8,4 +8,5 @@ public class UserDetails {
     String email;
     int userId;
     int role;
+    String profile;
 }
