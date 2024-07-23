@@ -63,7 +63,7 @@ export class RequestsComponent {
 
 
   redirectToProfile(requestId: number): void {
-    this.router.navigate(['other-profile', requestId], { queryParams: { showUser: false } });
+    this.router.navigate(['other-profile', requestId], { state: { editUser: false } });
   }
 
 

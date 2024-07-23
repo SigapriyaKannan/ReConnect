@@ -79,7 +79,7 @@ export class SignupComponent {
       experience: new FormControl(null, [Validators.required]),
       skills: new FormControl([], [Validators.required, Validators.minLength(1), Validators.maxLength(5)]),
       country: new FormControl(null, [Validators.required]),
-      city: new FormControl(null, [Validators.required]),
+      city: new FormControl({ value: null, disabled: true }, [Validators.required]),
     });
 
     this.uploadForm = new FormGroup({
@@ -104,6 +104,7 @@ export class SignupComponent {
       switchMap(countryId => this.cityService.getAllCities(countryId))
     ).subscribe((response: City[]) => {
       this.listOfCities = response['body'];
+      this.userDetailsForm.get('city')?.enable();
     })
   }
 
