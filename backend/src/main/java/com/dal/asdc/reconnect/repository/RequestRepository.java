@@ -26,6 +26,8 @@ public interface RequestRepository extends JpaRepository<ReferralRequests, Integ
 
     List<ReferralRequests> findByReferent_UserIDAndStatus(int referentId, RequestStatus status);
 
+    List<ReferralRequests> findByReferrer_UserIDAndStatus(int referentId, RequestStatus status);
+
     @Modifying
     @Query("UPDATE ReferralRequests r SET r.status = :status, r.responseDate = :responseDate " +
             "WHERE r.referent.userID = :referentId AND r.referrer.userID = :referrerId")
