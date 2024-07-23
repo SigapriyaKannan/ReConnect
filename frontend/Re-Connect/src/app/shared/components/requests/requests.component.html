@@ -5,7 +5,7 @@
 			<ng-template pTemplate="list" let-requests>
 				<div class="row text-center">
 					@for(request of requests; track request.requestId) {
-					<div class="col-2">
+					<div class="col-2" (click)="redirectToProfile(request.userId)">
 						<div class="p-2 shadow-sm border rounded">
 							<div style="height: 100px">
 								<img class="mh-100 rounded" [src]="imagePath + request.profile" />
@@ -28,7 +28,7 @@
 			<ng-template pTemplate="list" let-requests>
 				<div class="row text-center">
 					@for(request of requests; track request.requestId) {
-					<div class="col-2">
+					<div class="col-2" (click)="redirectToProfile(request.userId)">
 						<div class="p-2 shadow-sm border rounded">
 							<div style="height: 100px">
 								<img class="mh-100 rounded" [src]="imagePath + request.profile" />

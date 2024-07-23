@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 import { DataViewModule } from 'primeng/dataview';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { environment } from '../../../../environments/environment';
 import { Request, RequestService } from '../requests/request.service';
@@ -23,7 +23,7 @@ export class RequestsComponent {
   initialTabIndex!: number | 0;
   imagePath: string = environment.SERVER;
 
-  constructor(private activatedRoute: ActivatedRoute, private requestService: RequestService, private toastService: ToastService) {
+  constructor(private activatedRoute: ActivatedRoute, private requestService: RequestService, private toastService: ToastService, private router: Router) {
     this.activatedRoute.parent?.data.subscribe(({ user }) => {
       this.user = user;
 
@@ -62,6 +62,9 @@ export class RequestsComponent {
   }
 
 
+  redirectToProfile(requestId: number): void {
+    this.router.navigate(['other-profile', requestId], { queryParams: { showUser: false } });
+  }
 
 
   ngOnInit(): void {
