@@ -16,7 +16,6 @@ import { MessagingComponent } from './shared/components/messaging/messaging.comp
 import { ForgotPasswordComponent } from "./shared/components/forgot-password/forgot-password.component";
 import { ResetPasswordComponent } from "./shared/components/reset-password/reset-password.component";
 import { AdminSkillDomainComponent } from "./cms/components/admin-skill-domain/admin-skill-domain.component";
-import { AdminLoginComponent } from "./cms/components/admin-login/admin-login.component";
 import { canActivateChildPage, canActivatePage } from "./shared/guards/auth-guard.service";
 import { UserResolver } from './shared/resolvers/user-resolver.service';
 import { ProfileComponent } from "./shared/components/profile/profile.component";
