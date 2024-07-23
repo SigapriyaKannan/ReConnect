@@ -34,9 +34,9 @@
 					</td>
 				</tr>
 			</table>
-			<div class="d-flex align-items-center mb-3">
-				<p-button *ngIf="showEdit" severity="primary" type="button" class="me-2" (click)="editMode = true">Edit Profile </p-button>
-				<p-button type="button" severity="primary" class="me-2" (click)="getResume()">Download Resume</p-button>
+			<div class="d-flex align-items-center gap-3 my-3">
+				<p-button *ngIf="showEdit" severity="primary" type="button" (click)="editMode = true">Edit Profile </p-button>
+				<p-button type="button" severity="info" (click)="getResume()">Download Resume</p-button>
 			</div>
 		</div>
 

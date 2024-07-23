@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 import { DataViewModule } from 'primeng/dataview';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { environment } from '../../../../environments/environment';
 import { Request, RequestService } from '../requests/request.service';
@@ -12,7 +12,7 @@ import { ToastModule } from "primeng/toast";
 @Component({
   selector: 'rc-requests',
   standalone: true,
-  imports: [CommonModule, ButtonModule, TabViewModule, DataViewModule,ToastModule],
+  imports: [CommonModule, ButtonModule, TabViewModule, DataViewModule, ToastModule, RouterLink],
   templateUrl: './requests.component.html',
   styleUrl: './requests.component.scss'
 })
@@ -21,12 +21,12 @@ export class RequestsComponent {
   listOfAccepted: any[] = [];
   listOfPending: any[] = [];
   initialTabIndex!: number | 0;
-  imagePath: string = environment.SOCKET_SERVER;
+  imagePath: string = environment.SERVER;
 
-  constructor(private activatedRoute: ActivatedRoute,private requestService: RequestService,private toastService: ToastService) {
+  constructor(private activatedRoute: ActivatedRoute, private requestService: RequestService, private toastService: ToastService) {
     this.activatedRoute.parent?.data.subscribe(({ user }) => {
       this.user = user;
-      
+
     })
   }
 
@@ -37,8 +37,7 @@ export class RequestsComponent {
       });
   }
 
-  pendingRequest() 
-  {
+  pendingRequest() {
     this.requestService.getPendingRequest().subscribe(
       (response: Request[]) => {
         this.listOfPending = response['body'];
@@ -46,14 +45,12 @@ export class RequestsComponent {
   }
 
 
-  updateRequest(userId: number,status:boolean) 
-  {
-    this.requestService.updateRequest(userId,status).subscribe(
+  updateRequest(userId: number, status: boolean) {
+    this.requestService.updateRequest(userId, status).subscribe(
       (response) => {
-        if(status)
-        {
+        if (status) {
           this.toastService.showSuccess('Request accepted successfully!');
-        }else{
+        } else {
           this.toastService.showSuccess('Request rejected successfully!');
         }
         this.pendingRequest()
@@ -69,10 +66,9 @@ export class RequestsComponent {
 
   ngOnInit(): void {
     this.initialTabIndex = 0;
-    if(this.user.role == 1)
-      {
-        this. acceptedRequest();
-      }
-      this. pendingRequest();
+    if (this.user.role == 1) {
+      this.acceptedRequest();
+    }
+    this.pendingRequest();
   }
 }

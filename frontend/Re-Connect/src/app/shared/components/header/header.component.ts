@@ -25,7 +25,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ user }) => {
-      console.log(user);
       this.loggedUser = user;
     })
   }
