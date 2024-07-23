@@ -210,4 +210,38 @@ public class RequestServiceTest {
         verify(requestRepository, times(1)).findByReferrerAndReferent(referrer, referent);
         verify(requestRepository, times(1)).save(any(ReferralRequests.class));
     }
+
+
+    @Test
+    public void testGetAcceptedRequestForReferrer() {
+        int userId = 1;
+        ReferralRequests request1 = new ReferralRequests();
+        request1.setRequestId(1);
+        ReferralRequests request2 = new ReferralRequests();
+        request2.setRequestId(2);
+
+        when(requestRepository.findByReferrer_UserIDAndStatus(userId, RequestStatus.ACCEPTED))
+                .thenReturn(List.of(request1, request2));
+
+        List<ReferralRequests> result = requestService.getAcceptedRequestForReferrer(userId);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(request1.getRequestId(), result.get(0).getRequestId());
+        assertEquals(request2.getRequestId(), result.get(1).getRequestId());
+    }
+
+    @Test
+    public void testGetAcceptedRequestForReferrer_NoRequests() {
+        int userId = 1;
+
+        when(requestRepository.findByReferrer_UserIDAndStatus(userId, RequestStatus.ACCEPTED))
+                .thenReturn(Collections.emptyList());
+
+        List<ReferralRequests> result = requestService.getAcceptedRequestForReferrer(userId);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
 }
