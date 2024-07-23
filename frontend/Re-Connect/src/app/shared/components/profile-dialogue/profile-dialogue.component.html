@@ -1,0 +1,30 @@
+<div class="container my-4">
+    <div class="row">
+      <!-- Profile Info Section -->
+      <div class="col-md-4 d-flex flex-column align-items-center mb-4">
+        <!-- Profile Picture -->
+        <div class="profile-picture-container mb-3">
+          <img [src]="profilePictureUrl" alt="Profile Picture" class="profile-picture img-fluid rounded-circle">
+        </div>
+        <h2>{{ userDetails.userName }}</h2>
+        <ul class="list-unstyled">
+          <li><strong>Experience:</strong> {{ userDetails.experience }} years</li>
+          <li><strong>Current Company:</strong> {{ userDetails.companyName || 'N/A' }}</li>
+          <li><strong>City:</strong> {{ userDetails.cityName || 'N/A' }}</li>
+          <li><strong>Country:</strong> {{ userDetails.countryName || 'N/A' }}</li>
+          <li><strong>Skills:</strong>
+            <ul *ngIf="userDetails.skills && userDetails.skills.length; else noSkills">
+              <li *ngFor="let skill of userDetails.skills">{{ skill.skillName }}</li>
+            </ul>
+            <ng-template #noSkills>
+              <span>N/A</span>
+            </ng-template>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center mb-3">
+          <button *ngIf="showUser" type="button" class="btn btn-primary me-2" (click)="showProfileDialog()">View Profile</button>
+          <button type="button" class="btn btn-primary me-2" (click)="getResume()">Download Resume</button>
+        </div>
+      </div>
+    </div>
+</div>
