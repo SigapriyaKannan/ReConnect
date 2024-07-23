@@ -2,28 +2,28 @@
 	<div class="row">
 		<div class="col-md-4 d-flex flex-column align-items-center mb-4">
 			<div class="profile-picture-container mb-3">
-				<img [src]="serverPath + userDetails.profilePicture" alt="Profile Picture" class="profile-picture img-fluid rounded-circle" />
+				<img [src]="serverPath + userDetails.profilePicture" alt="Profile Picture" class="profile-picture img-fluid rounded" />
 			</div>
 			<h2>{{ userDetails.userName }}</h2>
 			<table class="user-details-table">
 				<tr>
-					<td class="label"><strong>Experience:</strong></td>
+					<td class="label"><strong>Experience</strong></td>
 					<td>{{ userDetails.experience }} years</td>
 				</tr>
 				<tr>
-					<td class="label"><strong>Current Company:</strong></td>
+					<td class="label"><strong>Current Company</strong></td>
 					<td>{{ userDetails.companyName || "N/A" }}</td>
 				</tr>
 				<tr>
-					<td class="label"><strong>City:</strong></td>
+					<td class="label"><strong>City</strong></td>
 					<td>{{ userDetails.cityName || "N/A" }}</td>
 				</tr>
 				<tr>
-					<td class="label"><strong>Country:</strong></td>
+					<td class="label"><strong>Country</strong></td>
 					<td>{{ userDetails.countryName || "N/A" }}</td>
 				</tr>
 				<tr>
-					<td class="label"><strong>Skills:</strong></td>
+					<td class="label"><strong>Skills</strong></td>
 					<td>
 						<ng-container *ngIf="userDetails.skills && userDetails.skills.length; else noSkills">
 							<p-chip *ngFor="let skill of userDetails.skills" [label]="skill.skillName"></p-chip>

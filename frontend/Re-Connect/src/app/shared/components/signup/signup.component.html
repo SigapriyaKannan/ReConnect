@@ -161,7 +161,6 @@
 											optionValue="cityId"
 											styleClass="w-100"
 											[filter]="true"
-											[disabled]="userDetailsForm.controls['country'].value"
 										></p-dropdown>
 										@if(userDetailsForm.controls['city'].dirty && userDetailsForm.controls['city'].hasError('required')) {
 										<small class="invalid-form-control">City is required</small>

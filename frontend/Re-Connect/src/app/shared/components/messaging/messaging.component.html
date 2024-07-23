@@ -18,17 +18,20 @@
 				</ng-template>
 			</p-listbox>
 		</div>
-		<div class="col-8 messages-container h-100">
+		<div class="col-8 messages-container overflow-hidden rounded h-100">
 			@if(selectedUser) {
 			<div class="row h-100 overflow-auto messages-row w-100">
-				<div class="col">
+				<div class="col messages-wrapper rounded">
 					@if(listOfMessages.length === 0) { <span>No messages. </span>} @for (message of listOfMessages; track $index) {
 					<div
 						class="row m-4"
-						[ngClass]="{ 'me-0 justify-content-end': message.senderId === user.userId, 'ms-0 justify-content-start': message.receiverId === user.userId }"
+						[ngClass]="{
+							'me-0 justify-content-end sender': message.senderId === user.userId,
+							'ms-0 justify-content-start receiver': message.receiverId === user.userId
+						}"
 					>
 						<div class="d-flex flex-column" style="width: 30%; max-width: 75%">
-							<span class="p-2 shadow-sm border rounded">
+							<span class="p-2 shadow-sm border rounded message-box">
 								{{ message.message }}
 							</span>
 							<small class="fst-italic">{{ message.timestamp | date : "short" }}</small>
