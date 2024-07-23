@@ -10,8 +10,8 @@ import { MessageService } from 'primeng/api';
 import { RouterLink } from '@angular/router';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { tap } from 'rxjs';
+import { AuthService, LoginResponse } from '../../services/auth.service';
+import { finalize, tap } from 'rxjs';
 
 @Component({
   selector: 'rc-login',
@@ -47,9 +47,6 @@ export class LoginComponent {
     });
   }
 
-
-
-
   onSubmit() {
     this.userCredentialsForm.markAllAsDirty();
     this.userCredentialsForm.markAllAsTouched();
@@ -66,19 +63,22 @@ export class LoginComponent {
         password: this.userCredentialsForm.controls['password'].value
       };
 
-      this.authService.login(body).pipe(tap(() => this.loading = false)).subscribe(
-        (response: any) => {
+      this.authService.login(body).pipe(finalize(() => this.loading = false)).subscribe(
+        (response) => {
           // Handle successful login response
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Login successful'
           });
-          this.router.navigate(['/']);
+          if (response.body.role == 0) {
+            this.router.navigate(["/", "admin"]);
+          } else {
+            this.router.navigate(['/', "homepage"]);
+          }
         },
         (error: any) => {
           // Handle login error
-          console.error('Login failed:', error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

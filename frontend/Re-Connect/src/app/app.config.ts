@@ -6,7 +6,8 @@ import { provideRouter, withHashLocation } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { authInterceptor } from './shared/services/auth-interceptor.service';
+import { JWTInterceptor } from "./shared/services/jwt-interceptor.service";
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideAnimationsAsync(), provideRouter(routes, withHashLocation()), provideHttpClient(withInterceptors([authInterceptor]))]
+  providers: [provideAnimationsAsync(), provideRouter(routes, withHashLocation()), provideHttpClient(withInterceptors([authInterceptor, JWTInterceptor]))]
 };

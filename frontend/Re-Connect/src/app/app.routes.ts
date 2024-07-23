@@ -19,7 +19,7 @@ import { AdminSkillDomainComponent } from "./cms/components/admin-skill-domain/a
 import { AdminLoginComponent } from "./cms/components/admin-login/admin-login.component";
 import { canActivateChildPage, canActivatePage } from "./shared/guards/auth-guard.service";
 import { UserResolver } from './shared/resolvers/user-resolver.service';
-import {ProfileComponent} from "./shared/components/profile/profile.component";
+import { ProfileComponent } from "./shared/components/profile/profile.component";
 
 export const routes: Routes = [
     {
@@ -70,12 +70,12 @@ export const routes: Routes = [
             {
                 path: "profile",
                 component: ProfileComponent,
-                data :{showUser: true}
+                data: { showEdit: true }
             },
             {
                 path: "other-profile",
                 component: ProfileComponent,
-                data :{showUser: false}
+                data: { showEdit: false }
             },
             {
                 path: "",

@@ -1,21 +1,24 @@
-import {City, Company, Country, Skill, UserDetails} from "./user-details.model";
-import {ActivatedRoute} from "@angular/router";
-import {ProfileService} from "./profile.service";
-import {MessageService} from "primeng/api";
-import {CompanyService} from "../../services/company.service";
-import {SkillsService} from "../../services/skills.service";
-import {CountryService} from "../../services/country.service";
-import {CityService} from "../../services/city.service";
-import {Experience} from "../../services/experience.service";
-import {Button} from "primeng/button";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
-import {CardModule} from "primeng/card";
-import {FileUploadModule} from "primeng/fileupload";
-import {DropdownModule} from "primeng/dropdown";
-import {MultiSelectModule} from "primeng/multiselect";
-import {Component, OnInit} from "@angular/core";
-import {forkJoin, Observable} from "rxjs";
+import { City, Company, Country, Skill, UserDetails } from "./user-details.model";
+import { ActivatedRoute } from "@angular/router";
+import { ProfileService } from "./profile.service";
+import { MessageService } from "primeng/api";
+import { CompanyService } from "../../services/company.service";
+import { SkillsService } from "../../services/skills.service";
+import { CountryService } from "../../services/country.service";
+import { CityService } from "../../services/city.service";
+import { Experience } from "../../services/experience.service";
+import { Button } from "primeng/button";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { NgForOf, NgIf } from "@angular/common";
+import { CardModule } from "primeng/card";
+import { FileUploadModule } from "primeng/fileupload";
+import { DropdownModule } from "primeng/dropdown";
+import { MultiSelectModule } from "primeng/multiselect";
+import { Component, OnInit } from "@angular/core";
+import { finalize, forkJoin, Observable } from "rxjs";
+import { InputTextModule } from "primeng/inputtext";
+import { OverlayService } from "../../services/overlay.service";
+import { environment } from "../../../../environments/environment";
 
 @Component({
     selector: 'app-profile',
@@ -31,7 +34,8 @@ import {forkJoin, Observable} from "rxjs";
         DropdownModule,
         ReactiveFormsModule,
         NgForOf,
-        MultiSelectModule
+        MultiSelectModule,
+        InputTextModule
     ],
     providers: [MessageService]
 })
@@ -52,16 +56,16 @@ export class ProfileComponent implements OnInit {
         skills: []
     };
 
-    profilePictureUrl: any;
+    serverPath: String = environment.SERVER;
     resumeUrl: any;
     editMode: boolean = false;
-    showUser: boolean = false;
+    showEdit: boolean = false;
 
     listOfExperiences: Experience[] = [
-        {"experienceId": 1, "experienceName": "Entry Level"},
-        {"experienceId": 2, "experienceName": "Mid Level"},
-        {"experienceId": 3, "experienceName": "Senior Level"},
-        {"experienceId": 4, "experienceName": "Executive Level"}
+        { "experienceId": 1, "experienceName": "Entry Level" },
+        { "experienceId": 2, "experienceName": "Mid Level" },
+        { "experienceId": 3, "experienceName": "Senior Level" },
+        { "experienceId": 4, "experienceName": "Executive Level" }
     ];
     listOfCompanies: Company[] = [];
     listOfCountries: Country[] = [];
@@ -75,13 +79,14 @@ export class ProfileComponent implements OnInit {
         private companyService: CompanyService,
         private skillsService: SkillsService,
         private countryService: CountryService,
-        private cityService: CityService
+        private cityService: CityService,
+        private overlayService: OverlayService
     ) {
     }
 
     ngOnInit(): void {
-        this.activatedRoute.data.subscribe(({ showUser }) => {
-            this.showUser = showUser;
+        this.activatedRoute.data.subscribe(({ showEdit }) => {
+            this.showEdit = showEdit;
         });
 
         this.profileForm = new FormGroup({
@@ -100,13 +105,14 @@ export class ProfileComponent implements OnInit {
 
 
     fetchDropdownOptionsAndUserDetails() {
+        this.overlayService.showOverlay("Fetching user details");
         forkJoin({
             companies: this.companyService.getAllCompanies(),
             countries: this.countryService.getAllCountries(),
             skills: this.skillsService.getAllSkills(),
             cities: this.cityService.getAllCities(),
             userDetails: this.profileService.getUserDetails()
-        }).subscribe(({companies, countries, skills, cities, userDetails}) => {
+        }).pipe(finalize(() => this.overlayService.hideOverlay())).subscribe(({ companies, countries, skills, cities, userDetails }) => {
             this.listOfCompanies = companies['body'];
             this.listOfCountries = countries['body'];
             this.listOfSkills = skills['body'];
@@ -125,12 +131,12 @@ export class ProfileComponent implements OnInit {
                 userName: userDetails.userName,
                 company: company ? company : null,
                 experience: userDetails.experience,
-                country: country ? country: null,
+                profilePicture: userDetails.profilePicture,
+                country: country ? country : null,
                 city: city ? city : null,
                 skills: userDetails.skills?.map(skill => skill.skillId) || []
             });
 
-            this.getProfilePicture();
 
             // Load cities based on the initial country value
             if (userDetails.country) {
@@ -138,7 +144,7 @@ export class ProfileComponent implements OnInit {
             }
 
             // Listen for country changes to load cities dynamically
-            this.profileForm.get('country')?.valueChanges.subscribe(({countryId}) => {
+            this.profileForm.get('country')?.valueChanges.subscribe(({ countryId }) => {
                 this.loadCities(countryId);
             });
         });
@@ -210,8 +216,6 @@ export class ProfileComponent implements OnInit {
                 skills: data.skills?.map(skill => skill.skillId) || []
             });
 
-            this.getProfilePicture();
-
             // Load cities based on the updated country value
             if (data.country) {
                 this.loadCities(data.country);
@@ -226,7 +230,7 @@ export class ProfileComponent implements OnInit {
         const file: File = event.files[0];
         this.profileService.uploadResume(file).subscribe(response => {
             const message = 'Resume uploaded successfully';
-            this.messageService.add({severity: 'success', summary: 'Success', detail: message});
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: message });
         });
     }
 
@@ -234,8 +238,7 @@ export class ProfileComponent implements OnInit {
         const file: File = event.files[0];
         this.profileService.uploadProfilePicture(file).subscribe(response => {
             const message = 'Profile picture uploaded successfully';
-            this.messageService.add({severity: 'success', summary: 'Success', detail: message});
-            this.getProfilePicture();
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: message });
         });
     }
 
@@ -250,9 +253,4 @@ export class ProfileComponent implements OnInit {
         });
     }
 
-    getProfilePicture() {
-        this.profileService.getProfilePicture().subscribe((blob: Blob) => {
-            this.profilePictureUrl = URL.createObjectURL(blob);
-        });
-    }
 }

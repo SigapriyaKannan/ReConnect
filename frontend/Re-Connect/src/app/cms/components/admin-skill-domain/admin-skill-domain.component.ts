@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SkillDomainService } from '../../../shared/services/skilldomain.service';
 import { MessageService } from 'primeng/api';
-import { TableModule } from "primeng/table";
+import { Table, TableModule } from "primeng/table";
 import { DialogModule } from "primeng/dialog";
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 
 interface SkillDomain {
   domainId: number;
@@ -18,11 +21,15 @@ interface SkillDomain {
     TableModule,
     DialogModule,
     ReactiveFormsModule,
-    ButtonModule
+    ButtonModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule
   ],
   styleUrls: ['./admin-skill-domain.component.scss']
 })
 export class AdminSkillDomainComponent implements OnInit {
+  @ViewChild('dt') table!: Table;
   listOfSkillDomains: SkillDomain[] = [];
   skillDomainForm: FormGroup;
   selectedSkillDomain: any = null;
@@ -131,5 +138,9 @@ export class AdminSkillDomainComponent implements OnInit {
   hideDialog(): void {
     this.skillDomainForm.reset();
     this.displayDialog = false;
+  }
+
+  filterDomains(event: any) {
+    this.table.filterGlobal(event.target.value, 'contains')
   }
 }

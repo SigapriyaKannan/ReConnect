@@ -18,11 +18,12 @@ export class HeaderComponent {
   items: MenuItem[] | undefined = [];
   loggedUser: any;
   roles = ROLES;
-  imagePath: string = environment.SOCKET_SERVER;
+  serverPath: string = environment.SERVER;
   constructor(private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ user }) => {
+      console.log(user);
       this.loggedUser = user;
     })
   }

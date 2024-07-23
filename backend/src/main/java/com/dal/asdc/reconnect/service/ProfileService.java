@@ -60,6 +60,7 @@ public class ProfileService {
         response.setCompany(userDetails.getCompany().getCompanyId());
         response.setCity(userDetails.getCity().getCityId());
         response.setCountry(userDetails.getCountry().getCountryId());
+        response.setProfilePicture(userDetails.getProfilePicture());
 
         List<SkillsDto> skillDtos = stream.map(skill -> {
             SkillsDto dto = new SkillsDto();

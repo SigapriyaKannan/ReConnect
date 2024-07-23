@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { City } from '../../../shared/services/city.service';
 import { Country } from '../../../shared/services/country.service';
@@ -7,6 +7,10 @@ import { CountryService } from '../../../shared/services/country.service';
 import { DialogModule } from "primeng/dialog";
 import { NgForOf } from "@angular/common"; // Import CountryService if not already imported
 import { ButtonModule } from 'primeng/button';
+import { Table, TableModule } from 'primeng/table';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-admin-cities',
@@ -16,11 +20,16 @@ import { ButtonModule } from 'primeng/button';
     ReactiveFormsModule,
     DialogModule,
     NgForOf,
-    ButtonModule
+    ButtonModule,
+    TableModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule
   ],
   styleUrls: ['./admin-cities.component.scss']
 })
 export class AdminCitiesComponent implements OnInit {
+  @ViewChild('dt') table!: Table;
   @Input() selectedCountry!: Country;
   cities: City[] = [];
   countries: Country[] = []; // Array to store list of countries
@@ -145,5 +154,9 @@ export class AdminCitiesComponent implements OnInit {
         console.error('Error deleting city:', error);
       }
     );
+  }
+
+  filterCities(event: any) {
+    this.table.filterGlobal(event.target.value, 'contains')
   }
 }

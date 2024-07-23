@@ -6,6 +6,14 @@ import { environment } from '../../../environments/environment';
 import { addMilliseconds, isBefore } from 'date-fns';
 import { Router } from '@angular/router';
 
+export interface LoginResponse {
+    token: string,
+    expiresIn: number,
+    refreshToken: string,
+    role: number,
+    userEmail: string
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -25,7 +33,7 @@ export class AuthService {
     }
 
     login({ email, password }) {
-        return this.http.post<any>(environment.AUTH_API + 'login', { email, password }).pipe(
+        return this.http.post<{ status: number, message: string, body: LoginResponse }>(environment.AUTH_API + 'login', { email, password }).pipe(
             tap({
                 next: (response) => this.setSession(response), // Corrected to use response directly
                 error: (error) => console.error('Login error:', error)

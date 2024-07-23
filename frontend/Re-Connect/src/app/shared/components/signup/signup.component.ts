@@ -77,7 +77,7 @@ export class SignupComponent {
     this.userDetailsForm = new FormGroup({
       company: new FormControl(null, [Validators.required]),
       experience: new FormControl(null, [Validators.required]),
-      skills: new FormControl([], [Validators.required, Validators.min(1), Validators.max(5)]),
+      skills: new FormControl([], [Validators.required, Validators.minLength(1), Validators.maxLength(5)]),
       country: new FormControl(null, [Validators.required]),
       city: new FormControl(null, [Validators.required]),
     });

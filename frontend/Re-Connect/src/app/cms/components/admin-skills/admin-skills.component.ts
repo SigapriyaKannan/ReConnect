@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";
 import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 interface Skill {
@@ -36,11 +37,13 @@ interface SkillDomain {
     ButtonModule,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
+    InputTextModule,
+    DropdownModule
   ],
   styleUrls: ['./admin-skills.component.scss']
 })
 export class AdminSkillsComponent implements OnInit {
+  @ViewChild('dt') table!: Table;
   listOfSkills: Skill[] = [];
   selectedSkill: Skill | null = null;
   listOfSkillDomains: SkillDomain[] = [];
@@ -48,7 +51,6 @@ export class AdminSkillsComponent implements OnInit {
   editSkillForm: FormGroup;
   displayAddDialog: boolean = false;
   displayEditDialog: boolean = false;
-  @ViewChild('dt') table!: Table;
 
   constructor(
     private skillsService: SkillsService,
