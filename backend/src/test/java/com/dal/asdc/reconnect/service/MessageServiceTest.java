@@ -45,8 +45,8 @@ public class MessageServiceTest
         Users receiver = new Users();
         receiver.setUserEmail(receiverEmail);
 
-        when(usersRepository.findByUserDetailsUserName(senderEmail)).thenReturn(Optional.of(sender));
-        when(usersRepository.findByUserDetailsUserName(receiverEmail)).thenReturn(Optional.of(receiver));
+        when(usersRepository.findByUserEmail(senderEmail)).thenReturn(Optional.of(sender));
+        when(usersRepository.findByUserEmail(receiverEmail)).thenReturn(Optional.of(receiver));
 
         boolean result = messagesService.saveMessage(senderEmail, receiverEmail, messageContent);
 

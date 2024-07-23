@@ -23,8 +23,8 @@ public class MessagesService {
     UsersRepository usersRepository;
 
     public boolean saveMessage(String senderEmail, String receiverEmail, String messageContent) {
-        Optional<Users> sender = usersRepository.findByUserDetailsUserName(senderEmail);
-        Optional<Users> receiver = usersRepository.findByUserDetailsUserName(receiverEmail);
+        Optional<Users> sender = usersRepository.findByUserEmail(senderEmail);
+        Optional<Users> receiver = usersRepository.findByUserEmail(receiverEmail);
         Messages message = new Messages();
         message.setSender(sender.get());
         message.setReceiver(receiver.get());

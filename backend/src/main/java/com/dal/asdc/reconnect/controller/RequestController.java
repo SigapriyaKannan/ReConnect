@@ -65,18 +65,32 @@ public class RequestController {
     {
         var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Users> user = usersRepository.findByUserEmail(senderEmail);
+        int typeID = user.get().getUserType().getTypeID();
         if(user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } else {
-            List<ReferralRequests> referralRequests = requestService.getAcceptedRequestForReferent(user.get().getUserID());
+            List<ReferralRequests> referralRequests = new ArrayList<>();
+            if(typeID == 1)
+            {
+                referralRequests = requestService.getAcceptedRequestForReferent(user.get().getUserID());
+            }else {
+                referralRequests = requestService.getAcceptedRequestForReferrer(user.get().getUserID());
+            }
+
             if (referralRequests.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ArrayList<>());
             } else {
                 List<Requests> requestDTO = new ArrayList<>();
                 for (ReferralRequests referralRequest : referralRequests) {
                     Requests tempRequest = new Requests();
-                    tempRequest.setUserId(referralRequest.getReferrer().getUserID());
-                    tempRequest.setName(referralRequest.getReferrer().getUsername());
+                    if(typeID == 1)
+                    {
+                        tempRequest.setUserId(referralRequest.getReferrer().getUserID());
+                        tempRequest.setName(referralRequest.getReferrer().getUsername());
+                    }else {
+                        tempRequest.setUserId(referralRequest.getReferent().getUserID());
+                        tempRequest.setName(referralRequest.getReferent().getUsername());
+                    }
                     tempRequest.setProfile("profilePicture.png");
                     requestDTO.add(tempRequest);
                 }
