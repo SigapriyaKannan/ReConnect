@@ -8,4 +8,19 @@
 	.row.textbox-row {
 		flex: 1 1 auto;
 	}
+
+	.messages-wrapper {
+		background: aliceblue;
+		.sender {
+			.message-box {
+				background: oldlace;
+			}
+		}
+
+		.receiver {
+			.message-box {
+				background: deepskyblue;
+			}
+		}
+	}
 }
