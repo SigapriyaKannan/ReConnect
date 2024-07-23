@@ -19,7 +19,6 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 
     List<Users> findAllUsersByUserTypeTypeID(int typeId);
 
-
     @Query("SELECT ud.userName FROM Users u JOIN u.userDetails ud WHERE ud.company = :company AND u.userType.typeID = :userTypeId")
     List<String> findUsernamesByCompanyAndUserType(@Param("company") Company company, @Param("userTypeId") int userTypeId);
 
@@ -28,4 +27,6 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
             "JOIN u.userDetails ud " +
             "WHERE LOWER(ud.userName) LIKE LOWER(CONCAT('%', :username, '%')) AND u.userType.typeID = :userTypeId")
     List<User> findUsernamesByUsernameAndUserType(@Param("username") String username, @Param("userTypeId") int userTypeId);
+    
+    Optional<Users> findByUserID(int userID);
 }

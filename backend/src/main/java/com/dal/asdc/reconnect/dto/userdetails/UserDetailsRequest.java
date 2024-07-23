@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class UserDetailsRequest {
+    private String userId;
     private String userName;
     private int experience;
     private int company;
