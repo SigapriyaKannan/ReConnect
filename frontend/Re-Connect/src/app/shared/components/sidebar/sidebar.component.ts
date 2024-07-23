@@ -33,7 +33,7 @@ export class SidebarComponent {
       {
         label: "Notifications",
         icon: "pi pi-bell",
-        route: "/profile"
+        route: "/notifications"
       },
       {
         label: "Messages",

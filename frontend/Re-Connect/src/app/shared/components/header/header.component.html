@@ -7,8 +7,10 @@
 		</div>
 		<div class="d-flex flex-grow-1 align-items-center justify-content-between gap-2">
 			<div class="ms-auto">
-				<img [src]="imagePath + loggedUser.profile" [alt]="loggedUser.username" height="25" width="25" class="rounded-circle me-2" />
-				<span>Hi,&nbsp;{{ loggedUser.username }}</span>
+                <a [routerLink]="['/profile', loggedUser.userId]" class="d-flex align-items-center">
+                    <img [src]="profilePictureUrl" [alt]="loggedUser.username" height="25" width="25" class="rounded-circle me-2" />
+                    <span>Hi,&nbsp;{{ loggedUser.username }}</span>
+                </a>
 			</div>
 		</div>
 	</div>

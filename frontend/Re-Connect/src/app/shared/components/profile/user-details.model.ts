@@ -16,7 +16,7 @@ export interface Company {
 
 export interface Skill {
     skillId: number,
-    skillName: String
+    skillName: string
 }
 
 export interface UserDetails {
