@@ -1,4 +1,4 @@
-const URL = "https://reconnect-dal-asdc-reconnect.onrender.com"
+const URL = "https://reconnect-dal-asdc-reconnect.onrender.com/"
 export const environment = {
     production: true,
     AUTH_API: URL + "auth/",
