@@ -1,4 +1,4 @@
-const URL = "http://csci5308-vm4.research.cs.dal.ca:8080"
+const URL = "http://csci5308-vm4.research.cs.dal.ca:8080/"
 export const environment = {
     production: true,
     AUTH_API: URL + "auth/",

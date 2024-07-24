@@ -51,29 +51,29 @@ export const routes: Routes = [
         children: [
             {
                 path: "homepage",
-                loadChildren: () => import("./shared/components/homepage/homepage.component").then(m => m.HomepageComponent)
+                component: HomepageComponent
 
             },
             {
                 path: "notifications",
-                loadChildren: () => import("./shared/components/notifications/notifications.component").then(m => m.NotificationsComponent)
+                component: NotificationsComponent
             },
             {
                 path: "requests",
-                loadChildren: () => import("./shared/components/requests/requests.component").then(m => m.RequestsComponent)
+                component: RequestsComponent
             },
             {
                 path: "messages",
-                loadChildren: () => import("./shared/components/messaging/messaging.component").then(m => m.MessagingComponent)
+                component: MessagingComponent
             },
             {
                 path: "profile/:id",
-                loadChildren: () => import("./shared/components/profile/profile.component").then(m => m.ProfileComponent),
+                component: ProfileComponent,
                 data: { showEdit: true }
             },
             {
                 path: "other-profile/:id",
-                loadChildren: () => import("./shared/components/profile/profile.component").then(m => m.ProfileComponent),
+                component: ProfileComponent,
                 data: { showEdit: false }
             },
             {
@@ -89,38 +89,35 @@ export const routes: Routes = [
         children: [
             {
                 path: "dashboard",
-                loadChildren: () => import("./cms/components/admin-dashboard/admin-dashboard.component").then(m => m.AdminDashboardComponent),
                 component: AdminDashboardComponent
             },
             {
                 path: "users",
-                loadChildren: () => import("./cms/components/admin-users/admin-users.component").then(m => m.AdminUsersComponent),
                 component: AdminUsersComponent
             },
             {
                 path: "countries",
-                loadChildren: () => import("./cms/components/admin-countries/admin-countries.component").then(m => m.AdminCountriesComponent),
                 component: AdminCountriesComponent
             },
             {
                 path: "cities",
-                loadChildren: () => import("./cms/components/admin-cities/admin-cities.component").then(m => m.AdminCitiesComponent),
                 component: AdminCitiesComponent
             },
             {
                 path: "skills",
-                loadChildren: () => import("./cms/components/admin-skills/admin-skills.component").then(m => m.AdminSkillsComponent),
                 component: AdminSkillsComponent
             },
             {
                 path: "skill-domain",
-                loadChildren: () => import("./cms/components/admin-skill-domain/admin-skill-domain.component").then(m => m.AdminSkillDomainComponent),
                 component: AdminSkillDomainComponent
             },
             {
                 path: "companies",
-                loadChildren: () => import("./cms/components/admin-companies/admin-companies.component").then(m => m.AdminCompaniesComponent),
                 component: AdminCompaniesComponent
+            },
+            {
+                path: "users",
+                component: AdminUsersComponent
             },
             {
                 path: "",
