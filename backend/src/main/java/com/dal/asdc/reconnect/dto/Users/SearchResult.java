@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
-public class User {
+public class SearchResult {
     private int userId;
     private String userName;
     private String companyName;
+    private Integer experience;
     private String profilePicture;
     private RequestStatus status;
 }
