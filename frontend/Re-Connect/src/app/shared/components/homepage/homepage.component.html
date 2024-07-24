@@ -25,6 +25,7 @@
 					<p *ngIf="!hasSearched && !searching" class="d-flex flex-column gap-3"><i class="pi pi-search" style="font-size: 5em"></i> Search for users</p>
 					<p *ngIf="searching" class="d-flex flex-column gap-3">Searching...</p>
 				</div>
+
 			</ng-template>
 			<ng-template pTemplate="list" let-results>
 				<div class="row text-center">
@@ -33,7 +34,7 @@
 							<div style="height: 100px">
 								<img class="mh-100 rounded" [src]="result.profilePicture" />
 							</div>
-							<!-- <img [src]="result.profilePicture" alt="Profile Picture"> -->
+						
 							<p class="fs-6 fw-bold">{{ result.name }}</p>
 							<!-- <p class="fs-6">{{ result.experience }}</p> -->
 							<p class="fs-6">
