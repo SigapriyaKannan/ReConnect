@@ -1,7 +1,8 @@
+const URL = "http://localhost:8080"
 export const environment = {
-    production: true,
-    AUTH_API: "http://localhost:8080/auth/",
-    API: "http://localhost:8080/api/",
+    production: false,
+    AUTH_API: URL + "auth/",
+    API: URL + "api/",
     SOCKET_SERVER: "http://localhost:8081/",
-    SERVER: "http://localhost:8080/"
+    SERVER: URL
 };

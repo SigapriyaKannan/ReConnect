@@ -111,8 +111,12 @@ push_frontend:
     - docker tag $APP_NAME_FRONTEND:$CI_COMMIT_REF_NAME docker.io/$APP_NAME_FRONTEND:$CI_COMMIT_REF_NAME
     - docker push docker.io/$APP_NAME_FRONTEND:$CI_COMMIT_REF_NAME
   only:
-    - main
-    - dev
+    changes:
+      - frontend/**/*
+      - .gitlab-ci.yml
+    refs:
+      - main
+      - dev
 
 # push stage
 push_backend:
@@ -138,8 +142,12 @@ push_backend:
     - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
     - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
   only:
-    - main
-    - dev
+    changes:
+      - backend/**/*
+      - .gitlab-ci.yml
+    refs:
+      - main
+      - dev
 
 deploy_local_frontend:
   stage: deploy

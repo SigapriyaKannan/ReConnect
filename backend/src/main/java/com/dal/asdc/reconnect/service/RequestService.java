@@ -42,6 +42,7 @@ public class RequestService {
         return requestRepository.findByReferent_UserIDAndStatus(userId, RequestStatus.ACCEPTED);
     }
 
+
     public List<Requests> getPendingRequestForReferrer(String Sender) {
         Optional<Users> users = usersRepository.findByUserEmail(Sender);
         int userID = users.get().getUserID();
@@ -88,4 +89,7 @@ public class RequestService {
         return savedRequest != null;
     }
 
+    public List<ReferralRequests> getAcceptedRequestForReferrer(int userID) {
+        return requestRepository.findByReferrer_UserIDAndStatus(userID, RequestStatus.ACCEPTED);
+    }
 }

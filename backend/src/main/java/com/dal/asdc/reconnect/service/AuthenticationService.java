@@ -92,7 +92,7 @@ public class AuthenticationService {
      * This method will verify if users already has a account
      */
     public Users getUserByEmail(String email) {
-        Optional<Users> user = usersRepository.findByUserDetailsUserName(email);
+        Optional<Users> user = usersRepository.findByUserEmail(email);
         return user.orElse(null);
     }
 
@@ -120,13 +120,6 @@ public class AuthenticationService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return false;
         }
-
-        return true;
-    }
-
-    public boolean linkUserDetailsToUser(Users user, UserDetails userDetails) {
-        user.setUserDetails(userDetails);
-        usersRepository.save(user); // Save the user with linked user details
 
         return true;
     }
@@ -160,7 +153,7 @@ public class AuthenticationService {
      * This method will add the skills into the database. (UserSkills Table)
      */
     public boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
-        Optional<Users> users = usersRepository.findByUserDetailsUserName(signUpSecondPhaseRequest.getUserName());
+        Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
         if (users.isEmpty()) {
             return false;
         }
@@ -241,4 +234,6 @@ public class AuthenticationService {
             return Optional.empty();
         }
     }
+
+
 }

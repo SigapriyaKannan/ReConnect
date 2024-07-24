@@ -35,7 +35,8 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
-		"build:development": "ng build  --extract-licenses=false --verbose=true --configuration=development",
+		"build:development": "ng build  --extract-licenses=false --verbose=true --configuration=development --base-href=",
+		"build:staging": "ng build  --extract-licenses=false --verbose=true --configuration=staging",
 		"build:production": "ng build  --extract-licenses=false --verbose=true --configuration=production",
 		"watch": "ng build --watch --configuration development"
 	},

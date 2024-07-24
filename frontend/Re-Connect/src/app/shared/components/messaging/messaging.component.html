@@ -14,7 +14,7 @@
 			>
 				<ng-template pTemplate="item" let-user>
 					<img [src]="imagePath + user.profile" [alt]="user.name" height="40" width="40" class="me-2" />
-					<span>{{ user.name }}</span>
+					<span class="text-truncate">{{ user.name }}</span>
 				</ng-template>
 			</p-listbox>
 		</div>
