@@ -1,8 +1,9 @@
+
+
 package com.dal.asdc.reconnect.controller;
 
 import com.dal.asdc.reconnect.dto.Response;
-import com.dal.asdc.reconnect.dto.Users.User;
-import com.dal.asdc.reconnect.dto.Users.UserCompanySearch;
+import com.dal.asdc.reconnect.dto.Users.SearchResult;
 import com.dal.asdc.reconnect.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,14 +23,17 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/companies/users")
-    public ResponseEntity<?> getUsernamesByCompany(@RequestParam String companyName) {
-        try {
-            List<UserCompanySearch> users = searchService.findUsernamesByCompanyName(companyName);
-            if (users.isEmpty()) {
+    public ResponseEntity<?> getUsernamesByCompany(@RequestParam String companyName)
+    {
+        try
+        {
+            List<SearchResult> users = searchService.findUsernamesByCompanyName(companyName);
+            if (users.isEmpty())
+            {
                 Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "No users found for the given company", null);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             } else {
-                Response<List<UserCompanySearch>> response = new Response<>(HttpStatus.OK.value(), "Users fetched successfully", users);
+                Response<List<SearchResult>> response = new Response<>(HttpStatus.OK.value(), "Users fetched successfully", users);
                 return ResponseEntity.ok(response);
             }
         } catch (Exception e) {
@@ -41,19 +45,16 @@ public class SearchController {
 
     @GetMapping("/users")
     public ResponseEntity<?> searchUsernames(@RequestParam(required = false) String username) {
-        try {
-            if (username == null || username.trim().isEmpty()) {
-                Response<?> response = new Response<>(HttpStatus.BAD_REQUEST.value(), "Username parameter is required", null);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
 
-            List<User> users = searchService.findAllUsernames(username);
-
-            if (users.isEmpty()) {
-                Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "No users found", null);
+        try
+        {
+            List<SearchResult> users = searchService.findAllUsernames(username);
+            if (users.isEmpty())
+            {
+                Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "No users found for the given company", null);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             } else {
-                Response<List<User>> response = new Response<>(HttpStatus.OK.value(), "Users fetched successfully", users);
+                Response<List<SearchResult>> response = new Response<>(HttpStatus.OK.value(), "Users fetched successfully", users);
                 return ResponseEntity.ok(response);
             }
         } catch (Exception e) {
