@@ -8,10 +8,11 @@ import { ButtonModule } from 'primeng/button';
 import { TabViewModule } from 'primeng/tabview';
 import { DataViewModule } from 'primeng/dataview';
 import { environment } from '../../../../environments/environment';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { TagModule } from 'primeng/tag';
 import { OverlayService } from '../../services/overlay.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'rc-homepage',
@@ -41,7 +42,7 @@ export class HomepageComponent {
   user: any;
   searching: boolean = false;
 
-  constructor(private activatedRoute: ActivatedRoute, private searchService: HomepageService, private overlayService: OverlayService) {
+  constructor(private activatedRoute: ActivatedRoute, private searchService: HomepageService, private overlayService: OverlayService, private router: Router,private toastService: ToastService) {
     this.activatedRoute.data.subscribe(({ user }) => { this.user = user });
   }
 
@@ -105,6 +106,7 @@ export class HomepageComponent {
       this.searchResults = response.data.map((user: any) => ({
         profilePicture: user.profilePicture,
         name: user.userName,
+        userId:user.userId,
         companyName: user.companyName,
         experience: {
           years: user.experience,
@@ -136,5 +138,22 @@ export class HomepageComponent {
       console.error('Unexpected response format', response);
       this.searchResults = [];
     }
+  }
+
+  redirectToProfile(requestId: number): void {
+    this.router.navigate(['other-profile', requestId], { state: { editUser: false } });
+  }
+
+  sendRequest(userID: number): void {
+    this.searchService.sendRequest(userID).subscribe(
+      response => {
+        this.toastService.showSuccess('Request sent successfully!');
+        console.log('Request sent successfully', response);
+      },
+      error => {
+        this.toastService.showError('Failed to send request.');
+        console.error('Error sending request', error);
+      }
+    );
   }
 }

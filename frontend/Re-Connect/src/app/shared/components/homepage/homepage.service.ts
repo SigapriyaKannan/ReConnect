@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
@@ -48,5 +48,10 @@ export class HomepageService {
       console.error('Unexpected API response format', response);
       return { statusCode: 404, message: 'No results found', data: [] };
     }
+  }
+
+  sendRequest(userID: number): Observable<any> {
+    let params = new HttpParams().set('userID', userID.toString());
+    return this.http.get<any>(`${this.apiUrl}profile/sendRequest`, { params });
   }
 }
