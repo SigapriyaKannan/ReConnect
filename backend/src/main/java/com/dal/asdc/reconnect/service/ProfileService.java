@@ -38,7 +38,11 @@ public class ProfileService {
 
     @Autowired
     private CompanyRepository companyRepository;
-
+    /**
+     * Get user details by ID
+     * @param userID
+     * @return UserDetailsResponse
+     */
     public UserDetailsResponse getUserDetailsByUserID(int userID) {
         Optional<Users> userOptional = usersRepository.findByUserID(userID);
         if (userOptional.isPresent()) {
@@ -51,7 +55,17 @@ public class ProfileService {
             throw new UsernameNotFoundException("User not found with ID: " + userID);
         }
     }
-
+    /**
+     * Converts UserDetails and a stream of UserSkills into a UserDetailsResponse object.
+     *
+     * This method maps various fields from UserDetails to a UserDetailsResponse object.
+     * It also processes a stream of UserSkills, converting each skill into a SkillsDto
+     * and adding it to the response.
+     *
+     * @param userDetails The UserDetails object containing the user's information.
+     * @param stream A Stream of UserSkills objects representing the user's skills.
+     * @return A UserDetailsResponse object populated with the user's details and skills.
+     */
     private UserDetailsResponse getUserDetailsResponse(UserDetails userDetails, Stream<UserSkills> stream) {
         UserDetailsResponse response = new UserDetailsResponse();
         response.setUserName(userDetails.getUserName());
@@ -73,6 +87,20 @@ public class ProfileService {
         return response;
     }
 
+    /**
+     * Updates user details and skills based on the provided request.
+     *
+     * This method performs the following operations within a transaction:
+     * 1. Updates the user's basic details (name, experience, company, city, country).
+     * 2. Deletes all existing skills for the user.
+     * 3. Adds new skills based on the provided skill IDs.
+     * 4. Saves all changes to the database.
+     *
+     * @param request A UserDetailsRequest object containing the updated user information and skill IDs.
+     * @return A UserDetailsResponse object containing the updated user details and skills.
+     * @throws UsernameNotFoundException if the user is not found.
+     * @throws RuntimeException if the specified company, city, country, or any skill is not found.
+     */
         @Transactional
         public UserDetailsResponse updateUserDetails(UserDetailsRequest request) {
             Users user = usersRepository.findById(Integer.valueOf(request.getUserId())).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -109,7 +137,15 @@ public class ProfileService {
 
             return getUserDetailsResponse(userDetails, skills.stream());
         }
-
+    /**
+     * Updates the resume path for a user.
+     *
+     * This method updates the resume path for the user with the specified ID.
+     *
+     * @param userId The ID of the user.
+     * @param resumePath The new resume path.
+     * @throws UsernameNotFoundException if the user is not found.
+     */
     public void updateResumePath(int userId, String resumePath) {
         Optional<Users> user = usersRepository.findById(userId);
         if (user.isPresent()) {
@@ -120,7 +156,15 @@ public class ProfileService {
             throw new UsernameNotFoundException("User not found with ID: " + userId);
         }
     }
-
+    /**
+     * Updates the profile picture path for a user.
+     *
+     * This method updates the profile picture path for the user with the specified ID.
+     *
+     * @param userId The ID of the user.
+     * @param profilePicturePath The new profile picture path.
+     * @throws UsernameNotFoundException if the user is not found.
+     */
     public void updateProfilePicturePath(int userId, String profilePicturePath) {
         Optional<Users> user = usersRepository.findById(userId);
         if (user.isPresent()) {
@@ -131,7 +175,15 @@ public class ProfileService {
             throw new UsernameNotFoundException("User not found with ID: " + userId);
         }
     }
-
+    /**
+     * Gets the resume path for a user.
+     *
+     * This method retrieves the resume path for the user with the specified ID.
+     *
+     * @param userId The ID of the user.
+     * @return The resume path.
+     * @throws UsernameNotFoundException if the user is not found.
+     */
     public String getResumePath(int userId) {
         Optional<Users> user = usersRepository.findById(userId);
         if (user.isPresent()) {
@@ -140,7 +192,15 @@ public class ProfileService {
             throw new UsernameNotFoundException("User not found with ID: " + userId);
         }
     }
-
+    /**
+     * Gets the profile picture path for a user.
+     *
+     * This method retrieves the profile picture path for the user with the specified ID.
+     *
+     * @param userId The ID of the user.
+     * @return The profile picture path.
+     * @throws UsernameNotFoundException if the user is not found.
+     */
     public String getProfilePicturePath(int userId) {
         Optional<Users> user = usersRepository.findById(userId);
         if (user.isPresent()) {

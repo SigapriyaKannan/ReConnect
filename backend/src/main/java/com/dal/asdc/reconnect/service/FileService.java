@@ -21,6 +21,13 @@ public class FileService {
     private final String uploadImagesDirectory = "uploads/images";
     private final String uploadResumesDirectory = "uploads/resumes";
 
+    /**
+     * Uploads a resume file for a user and updates their profile with the file path.
+     *
+     * @param userId The ID of the user uploading the resume
+     * @param file The resume file to be uploaded
+     * @throws IOException If there's an error in file operations
+     */
     public void uploadResume(int userId, MultipartFile file) throws IOException {
         Path directory = Paths.get(uploadResumesDirectory);
         if (!Files.exists(directory)) {
@@ -33,7 +40,13 @@ public class FileService {
 
         profileService.updateResumePath(userId, fileNameAndPath.toString());
     }
-
+    /**
+     * Uploads a profile picture for a user and updates their profile with the file path.
+     *
+     * @param userId The ID of the user uploading the profile picture
+     * @param file The profile picture file to be uploaded
+     * @throws IOException If there's an error in file operations
+     */
     public void uploadProfilePicture(int userId, MultipartFile file) throws IOException {
         Path directory = Paths.get(uploadImagesDirectory);
         if (!Files.exists(directory)) {
@@ -46,7 +59,13 @@ public class FileService {
 
         profileService.updateProfilePicturePath(userId, fileNameAndPath.toString());
     }
-
+    /**
+     * Retrieves the resume file for a user.
+     *
+     * @param userId The ID of the user whose resume is to be retrieved
+     * @return The resume file as a byte array
+     * @throws IOException If there's an error in file operations
+     */
     public byte[] getResume(int userId) throws IOException {
         String resumePath = profileService.getResumePath(userId);
         if (resumePath != null) {
@@ -54,7 +73,13 @@ public class FileService {
         }
         return null;
     }
-
+    /**
+     * Retrieves the profile picture for a user.
+     *
+     * @param userId The ID of the user whose profile picture is to be retrieved
+     * @return The profile picture as a byte array
+     * @throws IOException If there's an error in file operations
+     */
     public byte[] getProfilePicture(int userId) throws IOException {
         String profilePicturePath = profileService.getProfilePicturePath(userId);
         if (profilePicturePath != null) {

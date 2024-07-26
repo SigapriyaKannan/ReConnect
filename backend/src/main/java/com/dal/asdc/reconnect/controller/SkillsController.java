@@ -17,28 +17,47 @@ public class SkillsController {
 
     @Autowired
     SkillsService skillsService;
-
+    /**
+     * Retrieves all skills from the system.
+     *
+     * @return ResponseEntity containing a Response object with a list of SkillsDto
+     */
     @GetMapping("/getAllSkills")
     public ResponseEntity<?> getAllSkills() {
         List<SkillsDto> listOfSkills = skillsService.getSkills();
         Response<List<SkillsDto>> response = new Response<>(HttpStatus.OK.value(), "Fetched all skills", listOfSkills);
         return ResponseEntity.ok(response);
     }
-
+   /**
+     * Adds a new skill to the system.
+     *
+     * @param skill SkillsDto object containing the skill details
+     * @return ResponseEntity containing a Response object with a success message
+     */
     @PostMapping("/addSkill")
     public ResponseEntity<?> addSkill(@RequestBody SkillsDto skill) {
         skillsService.addSkill(skill);
         Response<String> response = new Response<>(HttpStatus.OK.value(), "Skill added successfully", null);
         return ResponseEntity.ok(response);
     }
-
+    /**
+     * Edits an existing skill in the system.
+     *
+     * @param skill SkillsDto object containing the skill details
+     * @return ResponseEntity containing a Response object with a success message
+     */
     @PutMapping("/editSkill")
     public ResponseEntity<?> editSkill(@RequestBody SkillsDto skill) {
         skillsService.editSkill(skill);
         Response<String> response = new Response<>(HttpStatus.OK.value(), "Skill edited successfully", null);
         return ResponseEntity.ok(response);
     }
-
+    /**
+     * Deletes an existing skill from the system.
+     *
+     * @param id Integer containing the skill id
+     * @return ResponseEntity containing a Response object with a success message
+     */
     @DeleteMapping("/deleteSkill/{id}")
     public ResponseEntity<?> deleteSkill(@PathVariable("id") Integer id) {
         skillsService.deleteSkill(id);

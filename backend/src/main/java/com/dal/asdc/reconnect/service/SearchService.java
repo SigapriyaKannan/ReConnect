@@ -16,6 +16,12 @@ public class SearchService {
 
     private final UsersRepository usersRepository;
 
+    /**
+     * This method is used to find the usernames by company name
+     * @param companyName
+     * @return List of usernames
+     */
+
     public List<SearchResult> findUsernamesByCompanyName(String companyName) {
         Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<SearchResult> users = new ArrayList<>();
@@ -29,6 +35,11 @@ public class SearchService {
         return users;
     }
 
+    /**
+     * This method is used to find all usernames by username
+     * @param username
+     * @return List of usernames
+     */
     public List<SearchResult> findAllUsernames(String username) {
         Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<SearchResult> users = new ArrayList<>();
