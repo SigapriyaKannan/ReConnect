@@ -41,9 +41,13 @@ export class HomepageComponent {
   hasSearched: boolean = false;
   user: any;
   searching: boolean = false;
+  userCategory: boolean = true;
 
   constructor(private activatedRoute: ActivatedRoute, private searchService: HomepageService, private overlayService: OverlayService, private router: Router,private toastService: ToastService) {
-    this.activatedRoute.data.subscribe(({ user }) => { this.user = user });
+    //this.activatedRoute.data.subscribe(({ user }) => { this.user = user });
+    this.activatedRoute.parent?.data.subscribe(({ user }) => {
+      this.user = user;
+    })
   }
 
   getStatusSeverity(status: string): "success" | "danger" | "info" | "warning" {
@@ -156,5 +160,10 @@ export class HomepageComponent {
         console.error('Error sending request', error);
       }
     );
+  }
+  ngOnInit(): void {
+    if (this.user.role == 2) {
+      this.userCategory = false;
+    }
   }
 }
