@@ -73,42 +73,42 @@ public class ProfileService {
         return response;
     }
 
-    @Transactional
-    public UserDetailsResponse updateUserDetails(UserDetailsRequest request) {
-        Users user = usersRepository.findById(Integer.valueOf(request.getUserId())).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        UserDetails userDetails = user.getUserDetails();
+        @Transactional
+        public UserDetailsResponse updateUserDetails(UserDetailsRequest request) {
+            Users user = usersRepository.findById(Integer.valueOf(request.getUserId())).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            UserDetails userDetails = user.getUserDetails();
 
-        userDetails.setUserName(request.getUserName());
-        userDetails.setExperience(request.getExperience());
-        Company company = companyRepository.findById(request.getCompany())
-                .orElseThrow(() -> new RuntimeException("Company not found"));
-        userDetails.setCompany(company);
+            userDetails.setUserName(request.getUserName());
+            userDetails.setExperience(request.getExperience());
+            Company company = companyRepository.findById(request.getCompany())
+                    .orElseThrow(() -> new RuntimeException("Company not found"));
+            userDetails.setCompany(company);
 
-        City city = cityRepository.findById(request.getCity())
-                .orElseThrow(() -> new RuntimeException("City not found"));
-        userDetails.setCity(city);
+            City city = cityRepository.findById(request.getCity())
+                    .orElseThrow(() -> new RuntimeException("City not found"));
+            userDetails.setCity(city);
 
-        Country country = countryRepository.findById(request.getCountry())
-                .orElseThrow(() -> new RuntimeException("Country not found"));
-        userDetails.setCountry(country);
+            Country country = countryRepository.findById(request.getCountry())
+                    .orElseThrow(() -> new RuntimeException("Country not found"));
+            userDetails.setCountry(country);
 
-        userDetails = userDetailsRepository.save(userDetails);
+            userDetails = userDetailsRepository.save(userDetails);
 
-        usersSkillsRepository.deleteByUsers(user);
+            usersSkillsRepository.deleteByUsers(user);
 
-        List<UserSkills> skills = request.getSkillIds().stream().map(skillId -> {
-            UserSkills userSkill = new UserSkills();
-            userSkill.setUsers(user);
-            Skills skill = skillsRepository.findById(skillId)
-                    .orElseThrow(() -> new RuntimeException("Skill not found with ID: " + skillId));
-            userSkill.setSkill(skill);
-            return userSkill;
-        }).collect(Collectors.toList());
+            List<UserSkills> skills = request.getSkillIds().stream().map(skillId -> {
+                UserSkills userSkill = new UserSkills();
+                userSkill.setUsers(user);
+                Skills skill = skillsRepository.findById(skillId)
+                        .orElseThrow(() -> new RuntimeException("Skill not found with ID: " + skillId));
+                userSkill.setSkill(skill);
+                return userSkill;
+            }).collect(Collectors.toList());
 
-        usersSkillsRepository.saveAll(skills);
+            usersSkillsRepository.saveAll(skills);
 
-        return getUserDetailsResponse(userDetails, skills.stream());
-    }
+            return getUserDetailsResponse(userDetails, skills.stream());
+        }
 
     public void updateResumePath(int userId, String resumePath) {
         Optional<Users> user = usersRepository.findById(userId);

@@ -1,7 +1,6 @@
 package com.dal.asdc.reconnect.controller;
 
 import com.dal.asdc.reconnect.dto.Response;
-import com.dal.asdc.reconnect.dto.Users.User;
 import com.dal.asdc.reconnect.dto.userdetails.UserDetailsRequest;
 import com.dal.asdc.reconnect.dto.userdetails.UserDetailsResponse;
 import com.dal.asdc.reconnect.model.Users;
@@ -84,6 +83,5 @@ public class ProfileController {
         {
             return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), "Request Already Sent", response));
         }
-
     }
 }

@@ -7,7 +7,6 @@ import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import com.dal.asdc.reconnect.service.AuthenticationService;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -556,253 +555,23 @@ public class AuthenticationServiceTest
         assertFalse(result, "Expected addNewUser to return false if addDetails returns null");
     }
 
+    @Test
+    public void testAddNewUser_AddDetailsReturnsNull() {
+        // Arrange
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        String fileNameAndPath = "file/path";
 
+        when(authenticationService.addDetails(request, fileNameAndPath)).thenReturn(null);
 
+        // Act
+        boolean result = authenticationService.addNewUser(request, fileNameAndPath);
 
-
+        // Assert
+        assertFalse(result);
+        verify(authenticationService, never()).addUser(any(), any());
+        verify(authenticationService, never()).addSkills(any());
+    }
 
 }
 
 
-
-//package com.dal.asdc.reconnect;
-//
-//import com.dal.asdc.reconnect.dto.LoginDto.LoginRequest;
-//import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody;
-//import com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest;
-//import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
-//import com.dal.asdc.reconnect.model.*;
-//import com.dal.asdc.reconnect.repository.*;
-//import com.dal.asdc.reconnect.service.AuthenticationService;
-//import jakarta.transaction.Transactional;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.transaction.interceptor.TransactionAspectSupport;
-//
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.regex.Matcher;
-//import java.util.regex.Pattern;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//public class AuthenticationServiceTest {
-//
-//    @Mock
-//    private UserTypeRepository userTypeRepository;
-//    @Mock
-//    private UsersSkillsRepository usersSkillsRepository;
-//    @Mock
-//    private UsersRepository usersRepository;
-//    @Mock
-//    private UserDetailsRepository userDetailsRepository;
-//    @Mock
-//    private CompanyRepository companyRepository;
-//    @Mock
-//    private CityRepository cityRepository;
-//    @Mock
-//    private CountryRepository countryRepository;
-//    @Mock
-//    private SkillsRepository skillsRepository;
-//    @Mock
-//    private PasswordEncoder passwordEncoder;
-//    @Mock
-//    private AuthenticationManager authenticationManager;
-//
-//    @InjectMocks
-//    private AuthenticationService authenticationService;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//    }
-//
-//    @Test
-//    void validateEmail_ShouldReturnTrueForValidEmail() {
-//        assertTrue(AuthenticationService.validateEmail("test@example.com"));
-//    }
-//
-//    @Test
-//    void validateEmail_ShouldReturnFalseForInvalidEmail() {
-//        assertFalse(AuthenticationService.validateEmail("invalid-email"));
-//    }
-//
-//    @Test
-//    void validateFirstPhase_ShouldReturnEmailAlreadyPresentIfEmailExists() {
-//        String email = "test@example.com";
-//        SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-//        request.setEmail(email);
-//        request.setPassword("Password1!");
-//        request.setReenteredPassword("Password1!");
-//
-//        Users existingUser = new Users();
-//        when(usersRepository.findByUserEmail(email)).thenReturn(Optional.of(existingUser));
-//
-//        SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
-//        assertTrue(response.getEmailAlreadyPresent());
-//    }
-//
-//    @Test
-//    void testAuthenticate_PasswordDoesNotMatch() {
-//        // Scenario 2: User is found but the password does not match
-//        LoginRequest request = new LoginRequest();
-//        request.setEmail("test@example.com");
-//        request.setPassword("WrongPassword1!");
-//
-//        Users user = new Users();
-//        user.setUserEmail("test@example.com");
-//        user.setPassword("encodedPassword");
-//
-//        when(usersRepository.findByUserEmail(anyString())).thenReturn(Optional.of(user));
-//        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
-//
-//        Optional<Users> result = authenticationService.authenticate(request);
-//
-//        assertFalse(result.isPresent());
-//    }
-//
-//    @Test
-//    void validateFirstPhase_ShouldReturnEmailAlreadyPresentIfEmailIsInvalid() {
-//        SignUpFirstPhaseRequest request = new SignUpFirstPhaseRequest();
-//        request.setEmail("invalid-email");
-//        request.setPassword("Password1!");
-//        request.setReenteredPassword("Password1!");
-//
-//        SignUpFirstPhaseBody response = authenticationService.validateFirstPhase(request);
-//        assertTrue(response.getEmailAlreadyPresent());
-//    }
-//
-//    @Test
-//    @Transactional
-//    void addNewUser_ShouldReturnTrueIfAllStepsSucceed() {
-//        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-//        request.setEmail("test@example.com");
-//        request.setPassword("Password1!");
-//        request.setUserName("John Doe");
-//        request.setCompany(1);
-//        request.setCity(1);
-//        request.setCountry(1);
-//        request.setSkills(List.of(1, 2));
-//
-//        Company company = new Company();
-//        City city = new City();
-//        Country country = new Country();
-//        Skills skill1 = new Skills();
-//        Skills skill2 = new Skills();
-//
-//        when(companyRepository.findById(1)).thenReturn(Optional.of(company));
-//        when(cityRepository.findById(1)).thenReturn(Optional.of(city));
-//        when(countryRepository.findById(1)).thenReturn(Optional.of(country));
-//        when(skillsRepository.findById(1)).thenReturn(Optional.of(skill1));
-//        when(skillsRepository.findById(2)).thenReturn(Optional.of(skill2));
-//        when(usersRepository.findByUserEmail("test@example.com")).thenReturn(Optional.empty());
-//        when(userDetailsRepository.save(any(UserDetails.class))).thenReturn(new UserDetails());
-//        when(usersRepository.save(any(Users.class))).thenReturn(new Users());
-//        when(usersSkillsRepository.save(any(UserSkills.class))).thenReturn(new UserSkills());
-//
-//        boolean result = authenticationService.addNewUser(request, "path/to/file");
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    @Transactional
-//    void addNewUser_ShouldReturnFalseIfAddingUserDetailsFails() {
-//        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-//        request.setEmail("test@example.com");
-//        request.setPassword("Password1!");
-//        request.setUserName("John Doe");
-//        request.setCompany(1);
-//        request.setCity(1);
-//        request.setCountry(1);
-//        request.setSkills(List.of(1, 2));
-//
-//        when(companyRepository.findById(1)).thenReturn(Optional.of(new Company()));
-//        when(cityRepository.findById(1)).thenReturn(Optional.of(new City()));
-//        when(countryRepository.findById(1)).thenReturn(Optional.of(new Country()));
-//        when(skillsRepository.findById(1)).thenReturn(Optional.of(new Skills()));
-//        when(skillsRepository.findById(2)).thenReturn(Optional.of(new Skills()));
-//        when(usersRepository.findByUserEmail("test@example.com")).thenReturn(Optional.empty());
-//        when(userDetailsRepository.save(any(UserDetails.class))).thenReturn(null);
-//
-//        boolean result = authenticationService.addNewUser(request, "path/to/file");
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    void validateSecondPhase_ShouldReturnFalseIfAnyEntityDoesNotExist() {
-//        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-//        request.setUserType(1);
-//        request.setCompany(1);
-//        request.setCity(1);
-//        request.setCountry(1);
-//        request.setSkills(List.of(1, 2));
-//
-//        when(userTypeRepository.findById(1)).thenReturn(Optional.empty());
-//        when(companyRepository.findById(1)).thenReturn(Optional.of(new Company()));
-//        when(cityRepository.findById(1)).thenReturn(Optional.of(new City()));
-//        when(countryRepository.findById(1)).thenReturn(Optional.of(new Country()));
-//
-//        boolean result = authenticationService.validateSecondPhase(request);
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    void addSkills_ShouldReturnFalseIfSkillDoesNotExist() {
-//        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-//        request.setEmail("test@example.com");
-//        request.setSkills(List.of(1));
-//
-//        when(usersRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(new Users()));
-//        when(skillsRepository.findById(1)).thenReturn(Optional.empty());
-//
-//        boolean result = authenticationService.addSkills(request);
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    void addSkills_ShouldReturnTrueIfAllSkillsAreAdded() {
-//        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
-//        request.setEmail("test@example.com");
-//        request.setSkills(List.of(1));
-//
-//        when(usersRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(new Users()));
-//        when(skillsRepository.findById(1)).thenReturn(Optional.of(new Skills()));
-//        when(usersSkillsRepository.save(any(UserSkills.class))).thenReturn(new UserSkills());
-//
-//        boolean result = authenticationService.addSkills(request);
-//        assertTrue(result);
-//    }
-//
-//    @Test
-//    void authenticate_ShouldReturnUserIfCredentialsAreValid() {
-//        LoginRequest loginRequest = new LoginRequest();
-//        loginRequest.setEmail("test@example.com");
-//        loginRequest.setPassword("Password1!");
-//
-//        Users user = new Users();
-//        when(usersRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(user));
-//        when(passwordEncoder.matches("Password1!", user.getPassword())).thenReturn(true);
-//
-//        Optional<Users> result = authenticationService.authenticate(loginRequest);
-//        assertTrue(result.isPresent());
-//    }
-//
-//    @Test
-//    void authenticate_ShouldReturnEmptyIfCredentialsAreInvalid() {
-//        LoginRequest loginRequest = new LoginRequest();
-//        loginRequest.setEmail("test@example.com");
-//        loginRequest.setPassword("Password1!");
-//
-//        when(usersRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(new Users()));
-//        when(passwordEncoder.matches("Password1!", new Users().getPassword())).thenReturn(false);
-//
-//        Optional<Users> result = authenticationService.authenticate(loginRequest);
-//        assertTrue(result.isEmpty());
-//    }
-//}

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
+import static com.mysql.cj.conf.PropertyKey.logger;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -130,5 +132,19 @@ class ForgotPasswordServiceTest {
 
         // Verify email sending attempt
         verify(mailSender).send(any(SimpleMailMessage.class));
+    }
+
+    @Test
+    public void testSendEmail_ExceptionHandling() {
+        String toEmail = "test@example.com";
+        String subject = "Test Subject";
+        String message = "Test Message";
+
+        doThrow(new MailException("Test Mail Exception") {}).when(mailSender).send(any(SimpleMailMessage.class));
+
+        EmailSendingException exception = assertThrows(EmailSendingException.class, () -> {
+            forgotPasswordService.sendEmail(toEmail, subject, message);
+        });
+        assertEquals("Failed to send password reset email", exception.getMessage());
     }
 }
