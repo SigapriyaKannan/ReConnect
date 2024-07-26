@@ -126,6 +126,7 @@ export class HomepageComponent {
       this.searchResults = response.data.map((companyUser: any) => ({
         profilePicture: companyUser.profilePicture,
         name: companyUser.userName,
+        userId:companyUser.userId,
         companyName: companyUser.companyName,
         experience: {
           years: companyUser.experience,
