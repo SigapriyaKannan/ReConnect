@@ -16,7 +16,7 @@ build_frontend:
   stage: build
   image: "node:20"
   tags:
-    - dalfcs_gitlab_docker_ci
+    - dalfcs_docker_kvm
   before_script:
     - cd ./frontend/Re-Connect
     - npm install --legacy-peer-deps --prefer-offline
