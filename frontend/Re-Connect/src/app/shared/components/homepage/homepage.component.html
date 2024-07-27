@@ -29,31 +29,56 @@
 			</ng-template>
 			<ng-template pTemplate="list" let-results>
 				<div class="row text-center">
-					<div *ngFor="let result of results" class="col-2">
-						<div class="p-2 shadow-sm border rounded">
+					<!-- <div *ngFor="let result of results" class="col-2">
+						<div class="p-2 shadow-sm border rounded" (click)="redirectToProfile(result.userId)">
 							<div style="height: 100px">
 								<img class="mh-100 rounded" [src]="result.profilePicture" />
 							</div>
 						
 							<p class="fs-6 fw-bold">{{ result.name }}</p>
-							<!-- <p class="fs-6">{{ result.experience }}</p> -->
 							<p class="fs-6">
 								Experience: {{ result.experience.years }} year(s)
 								<br>
 								<small>({{ result.experience.level }})</small>
 							  </p>
 							<p class="fs-6">{{ result.companyName }}</p>
-							<!-- <p class="fs-6">{{ result.status }}</p> -->
 							<p-tag *ngIf="result.status" 
-							[value]="result.status" 
-							[severity]="getStatusSeverity(result.status)">
-					 </p-tag>
-					 <p-tag *ngIf="!result.status" 
-							value="Send Request" 
-							severity="info">
-					 </p-tag>
+								[value]="result.status" 
+								[severity]="getStatusSeverity(result.status)">
+					 		</p-tag>
+							<button *ngIf="!result.status" 
+								class="p-tag"
+								(click)="sendRequest(result.userId); $event.stopPropagation()">
+								Send Request
+							</button>
 						</div>
-					</div>
+					</div> -->
+					<div *ngFor="let result of results" class="col-2">
+						<div class="p-2 shadow-sm border rounded" (click)="redirectToProfile(result.userId)">
+						  <div style="height: 100px">
+							<img class="mh-100 rounded" [src]="result.profilePicture" />
+						  </div>
+						
+						  <p class="fs-6 fw-bold">{{ result.name }}</p>
+						  <!-- <p class="fs-6">{{ result.experience }}</p> -->
+						  <p class="fs-6">
+							Experience: {{ result.experience.years }} year(s)
+							<br>
+							<small>({{ result.experience.level }})</small>
+						  </p>
+						  <p class="fs-6">{{ result.companyName }}</p>
+						  <!-- <p class="fs-6">{{ result.status }}</p> -->
+						  <p-tag *ngIf="result.status" 
+								 [value]="result.status" 
+								 [severity]="getStatusSeverity(result.status)">
+						  </p-tag>
+						  <div *ngIf="!result.status && userCategory" class="button-container">
+							<button class="p-tag" (click)="sendRequest(result.userId); $event.stopPropagation()">
+							  Send Request
+							</button>
+						  </div>
+						</div>
+					</div>					  
 				</div>
 			</ng-template>
 		</p-dataView>
