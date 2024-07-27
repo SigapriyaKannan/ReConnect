@@ -7,19 +7,23 @@ import com.dal.asdc.reconnect.repository.DashboardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class DashboardService {
     @Autowired
     private DashboardRepository dashboardRepository;
 
     public List<UsersPerCountryDTO> getAllUsersPerCountry() {
+        log.debug("Retrieving all users per country");
         return dashboardRepository.getAllUsersPerCountry();
     }
 
     public List<UsersPerTypeDTO> getAllUsersPerType() {
+        log.debug("Retrieving all users per type");
         return dashboardRepository.getAllUsersPerType();
     }
 
@@ -28,6 +32,7 @@ public class DashboardService {
     }
 
     public List<UsersPerCompanyDTO> getTopFiveCompanies() {
+        log.debug("Retrieving top five companies by user count");
         return dashboardRepository.getAllUsersPerCompany(PageRequest.of(0, 5));
     }
 }

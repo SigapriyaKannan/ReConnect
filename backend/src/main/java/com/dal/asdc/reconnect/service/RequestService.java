@@ -11,12 +11,14 @@ import com.dal.asdc.reconnect.repository.UsersRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class RequestService {
 
     @Autowired
@@ -31,6 +33,9 @@ public class RequestService {
 
     public List<Requests> getPendingRequestForReferent(String Sender) {
         Optional<Users> users = usersRepository.findByUserEmail(Sender);
+        if (!users.isPresent()) {
+            log.error("User not found with email");
+        }
         int userID = users.get().getUserID();
         List<Integer> pendingRequestsID = requestRepository.findReferrerIdsByReferentIdAndStatusPending(userID);
         return userDetailsRepository.findRequestsByReferrerIds(pendingRequestsID);
