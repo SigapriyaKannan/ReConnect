@@ -80,7 +80,7 @@ public class ForgotPasswordService {
      * @param subject the subject of the email.
      * @param message the body of the email.
      */
-    private void sendEmail(String toEmail, String subject, String message) {
+    public void sendEmail(String toEmail, String subject, String message) {
         try {
             SimpleMailMessage email = new SimpleMailMessage();
             email.setTo(toEmail);

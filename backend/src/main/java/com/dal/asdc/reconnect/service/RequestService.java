@@ -78,14 +78,12 @@ public class RequestService {
         {
             return false;
         }
-
         ReferralRequests referralRequest = new ReferralRequests();
         referralRequest.setReferent(referent);
         referralRequest.setReferrer(referrer);
         referralRequest.setStatus(RequestStatus.PENDING);
         referralRequest.setRequestDate(LocalDateTime.now());
         ReferralRequests savedRequest = requestRepository.save(referralRequest);
-
         return savedRequest != null;
     }
 
