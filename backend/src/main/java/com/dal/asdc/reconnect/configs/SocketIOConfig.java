@@ -12,6 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+/**
+ * Configuration class for setting up Socket.IO server.
+ * This class handles the configuration, initialization, and shutdown of the Socket.IO server.
+ */
+
 @CrossOrigin
 @Component
 @Log4j2
@@ -48,6 +53,11 @@ public class SocketIOConfig {
         });
         return server;
     }
+
+    /**
+     * Method to stop the SocketIOServer gracefully before the application shuts down.
+     * Annotated with @PreDestroy to ensure this method is called when the bean is destroyed.
+     */
 
     @PreDestroy
     public void stopSocketIOServer() {

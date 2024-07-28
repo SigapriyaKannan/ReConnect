@@ -6,12 +6,14 @@ import com.dal.asdc.reconnect.repository.RefreshTokenRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class RefreshTokenService {
 
     @Autowired

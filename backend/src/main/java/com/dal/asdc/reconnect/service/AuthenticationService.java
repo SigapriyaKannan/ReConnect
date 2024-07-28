@@ -7,12 +7,14 @@ import com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -20,6 +22,7 @@ import java.util.regex.Pattern;
 
 @Component
 @Service
+@Slf4j
 public class AuthenticationService {
     private static final String PASSWORD_PATTERN =
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
@@ -52,6 +55,8 @@ public class AuthenticationService {
      */
     public static boolean validateEmail(String email) {
         Matcher matcher = email_pattern.matcher(email);
+        boolean isValid = matcher.matches();
+        log.debug("Email validation for '{}': {}", email, isValid);
         return matcher.matches();
     }
 
@@ -65,14 +70,17 @@ public class AuthenticationService {
         Users user = getUserByEmail(signUpFirstPhaseRequest.getEmail());
 
         if (user != null) {
+            log.warn("Email '{}' is already present", signUpFirstPhaseRequest.getEmail());
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
 
         if (!matchPasswordWithConfirmPassword(signUpFirstPhaseRequest.getPassword(), signUpFirstPhaseRequest.getReenteredPassword())) {
+            log.warn("Passwords do not match for email '{}'", signUpFirstPhaseRequest.getEmail());
             signUpFirstPhaseBody.setRepeatPasswordError(true);
         }
 
         if (!validateEmail(signUpFirstPhaseRequest.getEmail())) {
+            log.warn("Invalid email format for '{}'", signUpFirstPhaseRequest.getEmail());
             signUpFirstPhaseBody.setEmailAlreadyPresent(true);
         }
 
@@ -93,6 +101,7 @@ public class AuthenticationService {
      */
     public Users getUserByEmail(String email) {
         Optional<Users> user = usersRepository.findByUserEmail(email);
+        log.debug("User retrieval by email '{}': {}", email, user.isPresent());
         return user.orElse(null);
     }
 
@@ -137,12 +146,15 @@ public class AuthenticationService {
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
         if (userType.isEmpty() || company.isEmpty() || city.isEmpty() || country.isEmpty()) {
+            log.warn("Validation failed for second phase sign-up request: missing entities");
             return false;
         }
 
         for (Integer skillId : signUpSecondPhaseRequest.getSkills()) {
             Optional<Skills> skills = skillsRepository.findById(skillId);
             if (skills.isEmpty()) {
+                log.warn("Skill ID '{}' not found during second phase sign-up validation", skillId);
+
                 return false;
             }
         }
@@ -180,6 +192,8 @@ public class AuthenticationService {
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
         if (company.isEmpty() || city.isEmpty() || country.isEmpty()) {
+            log.error("Company, City, or Country not found during user details addition");
+
             return null;
         }
 
@@ -205,6 +219,7 @@ public class AuthenticationService {
 
         if (userType.isEmpty())
         {
+            log.error("UserType ID '{}' not found during user addition", signUpSecondPhaseRequest.getUserType());
             return null;
         }
 
@@ -229,8 +244,10 @@ public class AuthenticationService {
         Optional<Users> user = usersRepository.findByUserEmail(input.getEmail());
 
         if (user.isPresent() && passwordEncoder.matches(input.getPassword(), user.get().getPassword())) {
+            log.info("User '{}' authenticated successfully", input.getEmail());
             return user;
         } else {
+            log.warn("Authentication failed for '{}'", input.getEmail());
             return Optional.empty();
         }
     }

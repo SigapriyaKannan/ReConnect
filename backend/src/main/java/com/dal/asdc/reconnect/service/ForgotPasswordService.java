@@ -13,11 +13,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class ForgotPasswordService {
 
     private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
@@ -41,6 +43,7 @@ public class ForgotPasswordService {
     public void sendResetEmail(String email) {
         Optional<Users> user = usersRepository.findByUserEmail(email);
         if (user.isEmpty()) {
+            log.warn("User with email {} not found", email);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
@@ -68,6 +71,7 @@ public class ForgotPasswordService {
             user.setPassword(passwordEncoder.encode(newPassword)); // Ideally, hash the password
             user.setResetToken(null);
             usersRepository.save(user);
+            log.info("Password reset successfully for user with reset token {}", token);
             return true;
         }
         return false;
@@ -87,6 +91,7 @@ public class ForgotPasswordService {
             email.setSubject(subject);
             email.setText(message);
             mailSender.send(email);
+            log.info("Email sent successfully to {}", toEmail);
         } catch (MailException e) {
             logger.error("Failed to send email to {}: {}", toEmail, e.getMessage());
             throw new EmailSendingException("Failed to send password reset email", HttpStatus.EXPECTATION_FAILED);

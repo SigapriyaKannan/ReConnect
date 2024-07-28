@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Slf4j
 public class ProfileService {
 
     @Autowired
@@ -48,6 +50,7 @@ public class ProfileService {
 
             return getUserDetailsResponse(userDetails, skills.stream());
         } else {
+            log.error("User not found with ID: {}", userID);
             throw new UsernameNotFoundException("User not found with ID: " + userID);
         }
     }
@@ -106,7 +109,7 @@ public class ProfileService {
             }).collect(Collectors.toList());
 
             usersSkillsRepository.saveAll(skills);
-
+            log.info("User details updated for user ID: {}", request.getUserId());
             return getUserDetailsResponse(userDetails, skills.stream());
         }
 
@@ -116,6 +119,7 @@ public class ProfileService {
             UserDetails userDetails = user.get().getUserDetails();
             userDetails.setResume(resumePath);
             userDetailsRepository.save(userDetails);
+            log.info("Resume path updated for user ID: {}", userId);
         } else {
             throw new UsernameNotFoundException("User not found with ID: " + userId);
         }
@@ -127,6 +131,7 @@ public class ProfileService {
             UserDetails userDetails = user.get().getUserDetails();
             userDetails.setProfilePicture(profilePicturePath);
             userDetailsRepository.save(userDetails);
+            log.info("Profile picture path updated for user ID: {}", userId);
         } else {
             throw new UsernameNotFoundException("User not found with ID: " + userId);
         }
@@ -137,6 +142,7 @@ public class ProfileService {
         if (user.isPresent()) {
             return user.get().getUserDetails().getResume();
         } else {
+            log.error("User not found with ID: {}", userId);
             throw new UsernameNotFoundException("User not found with ID: " + userId);
         }
     }
@@ -146,6 +152,7 @@ public class ProfileService {
         if (user.isPresent()) {
             return user.get().getUserDetails().getProfilePicture();
         } else {
+            log.error("User not found with ID: {}", userId);
             throw new UsernameNotFoundException("User not found with ID: " + userId);
         }
     }

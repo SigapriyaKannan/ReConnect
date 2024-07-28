@@ -6,12 +6,14 @@ import com.dal.asdc.reconnect.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SearchService {
 
     private final UsersRepository usersRepository;
@@ -21,10 +23,14 @@ public class SearchService {
         List<SearchResult> users = new ArrayList<>();
         if(currentUser.getUserType().getTypeID() == 1)
         {
+
             users = usersRepository.findUsersWithDetailsAndReferralStatusWithCompany(currentUser.getUserID(),2,companyName);
+            log.info("Found {} users with referral status by company name '{}'", users.size(), companyName);
         }else
         {
             users = usersRepository.findUsersWithDetailsAndReferentStatusWithCompany(currentUser.getUserID(),1,companyName);
+            log.info("Found {} users with referent status by company name '{}'", users.size(), companyName);
+
         }
         return users;
     }
@@ -35,9 +41,13 @@ public class SearchService {
         if(currentUser.getUserType().getTypeID() == 1)
         {
             users = usersRepository.findUsersWithDetailsAndReferralStatusWithUserName(currentUser.getUserID(),2,username);
+            log.info("Found {} users with referral status by username '{}'", users.size(), username);
+
         }else
         {
             users = usersRepository.findUsersWithDetailsAndReferentStatusWithUserName(currentUser.getUserID(),1,username);
+            log.info("Found {} users with referent status by username '{}'", users.size(), username);
+
         }
         return users;
     }

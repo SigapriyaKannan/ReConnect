@@ -8,6 +8,7 @@ import com.dal.asdc.reconnect.repository.MessagesRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class MessagesService {
     @Autowired
     MessagesRepository messagesRepository;
@@ -32,6 +34,7 @@ public class MessagesService {
         message.setTime(new Date());
         message.setRead(false);
         messagesRepository.save(message);
+        log.info("Message from {} to {} saved successfully", senderEmail, receiverEmail);
         return true;
     }
 
@@ -51,6 +54,7 @@ public class MessagesService {
 
             chatHistoryResponseBodyList.add(messagetItem);
         }
+        log.info("Retrieved chat history between {} and {}", senderEmail, receiverEmail);
         return chatHistoryResponseBodyList;
     }
 }
