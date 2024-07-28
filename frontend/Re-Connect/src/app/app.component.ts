@@ -7,7 +7,6 @@ import { ToastService } from './shared/services/toast.service';
 @Component({
   selector: 'rc-root',
   standalone: true,
-  providers: [MessageService, ToastService],
   imports: [RouterOutlet, ToastModule],
   template: `
     <router-outlet />

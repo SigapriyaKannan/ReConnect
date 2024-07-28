@@ -191,7 +191,7 @@ export class SignupComponent {
       const reader = new FileReader();
 
       reader.onload = (e: any) => {
-        console.log(e.target.result);
+
         this.previewImg = e.target.result;
       };
 

@@ -1,6 +1,6 @@
 <div class="container my-4">
 	<div class="row">
-		<div class="col-md-4 d-flex flex-column align-items-center mb-4">
+		<div class="d-flex flex-column align-items-center" [ngClass]="[enableEdit ? 'col-md-4' : 'col-md-12']">
 			<div class="profile-picture-container mb-3">
 				<img [src]="serverPath + userDetails.profilePicture" alt="Profile Picture" class="profile-picture img-fluid rounded" />
 			</div>
@@ -35,14 +35,14 @@
 				</tr>
 			</table>
 			<div class="d-flex align-items-center gap-3 my-3">
-				<p-button *ngIf="showEdit" severity="primary" type="button" (click)="editMode = true">Edit Profile </p-button>
+				<p-button *ngIf="enableEdit" severity="primary" type="button" (click)="showEditForm = true">Edit Profile </p-button>
 				<p-button type="button" severity="info" (click)="getResume()">Download Resume</p-button>
 			</div>
 		</div>
 
 		<!-- Edit Form Section -->
-		<div class="col-md-8">
-			<div *ngIf="showEdit && editMode" class="edit-form scrollable-container container-fluid">
+		<div class="col-md-8" *ngIf="enableEdit">
+			<div *ngIf="showEditForm" class="edit-form scrollable-container container-fluid">
 				<form [formGroup]="profileForm" (ngSubmit)="updateUserDetails()">
 					<div class="row mb-3">
 						<div class="col-12">
@@ -128,7 +128,7 @@
 						<p-fileUpload mode="basic" id="resume" name="resume" accept=".pdf" (onSelect)="onResumeSelect($event)"></p-fileUpload>
 					</div>
 					<p-button type="submit" severity="primary" class="me-2">Save</p-button>
-					<p-button type="button" severity="danger" class="me-2" (click)="editMode = false">Cancel</p-button>
+					<p-button type="button" severity="danger" class="me-2" (click)="showEditForm = false">Cancel</p-button>
 				</form>
 			</div>
 		</div>

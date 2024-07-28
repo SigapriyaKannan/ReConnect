@@ -1,17 +1,20 @@
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-6">
-			<div class="d-flex">
-				<input
-					type="text"
-					pInputText
-					[placeholder]="'Search ' + (user && user['roleId'] == 1 ? 'Referer' : 'Referent')"
-					[(ngModel)]="searchQuery"
-					class="flex-grow-1"
-				/>
-				<p-dropdown [options]="searchTypes" [(ngModel)]="selectedSearchType" optionLabel="name" [style]="{ width: '150px' }"></p-dropdown>
-				<button type="button" pButton icon="pi pi-search" class="p-button-primary" (click)="onSearch()"></button>
-			</div>
+			<form (submit)="onSearch()">
+				<div class="d-flex">
+					<input
+						type="text"
+						pInputText
+						name="search"
+						[placeholder]="'Search ' + (user && user['roleId'] == 1 ? 'Referer' : 'Referent')"
+						[(ngModel)]="searchQuery"
+						class="flex-grow-1"
+					/>
+					<p-dropdown name="type" [options]="searchTypes" [(ngModel)]="selectedSearchType" optionLabel="name" [style]="{ width: '150px' }"></p-dropdown>
+					<button type="submit" pButton icon="pi pi-search"></button>
+				</div>
+			</form>
 		</div>
 	</div>
 
@@ -25,60 +28,32 @@
 					<p *ngIf="!hasSearched && !searching" class="d-flex flex-column gap-3"><i class="pi pi-search" style="font-size: 5em"></i> Search for users</p>
 					<p *ngIf="searching" class="d-flex flex-column gap-3">Searching...</p>
 				</div>
-
 			</ng-template>
-			<ng-template pTemplate="list" let-results>
+			<ng-template pTemplate="list" let-listOfUsers>
 				<div class="row text-center">
-					<!-- <div *ngFor="let result of results" class="col-2">
-						<div class="p-2 shadow-sm border rounded" (click)="redirectToProfile(result.userId)">
+					<div *ngFor="let user of listOfUsers" class="col-2">
+						<div class="p-2 shadow-sm border rounded">
 							<div style="height: 100px">
-								<img class="mh-100 rounded" [src]="result.profilePicture" />
+								<img class="mh-100 rounded" [src]="imagePath + user.profilePicture" role="button" (click)="show(user.userId)" />
 							</div>
-						
-							<p class="fs-6 fw-bold">{{ result.name }}</p>
+
+							<p class="fs-6 fw-bold text-decoration-underline" role="button" (click)="show(user.userId)">{{ user.name }}</p>
+							<!-- <p class="fs-6">{{ result.experience }}</p> -->
 							<p class="fs-6">
-								Experience: {{ result.experience.years }} year(s)
-								<br>
-								<small>({{ result.experience.level }})</small>
-							  </p>
-							<p class="fs-6">{{ result.companyName }}</p>
-							<p-tag *ngIf="result.status" 
-								[value]="result.status" 
-								[severity]="getStatusSeverity(result.status)">
-					 		</p-tag>
-							<button *ngIf="!result.status" 
-								class="p-tag"
-								(click)="sendRequest(result.userId); $event.stopPropagation()">
-								Send Request
-							</button>
+								Experience: {{ user.experience.years }} year(s)
+								<br />
+								<small>({{ user.experience.level }})</small>
+							</p>
+							<p class="fs-6">{{ user.companyName }}</p>
+							<!-- <p class="fs-6">{{ result.status }}</p> -->
+							<!-- <p-tag *ngIf="result.status" [value]="result.status" [severity]="getStatusSeverity(result.status)"> </p-tag> -->
+							<div class="button-container">
+								<button pButton *ngIf="!user.status && userCategory" [loading]="isSendingRequest" (click)="sendRequest(user)">Send Request</button>
+								<button pButton *ngIf="user.status && user.status === 'PENDING'" [disabled]="true" icon="pi pi-clock" severity="warning">PENDING</button>
+								<button pButton *ngIf="user.status && user.status === 'ACCEPTED'" [disabled]="true" icon="pi pi-check" severity="success">ACCEPTED</button>
+							</div>
 						</div>
-					</div> -->
-					<div *ngFor="let result of results" class="col-2">
-						<div class="p-2 shadow-sm border rounded" (click)="redirectToProfile(result.userId)">
-						  <div style="height: 100px">
-							<img class="mh-100 rounded" [src]="result.profilePicture" />
-						  </div>
-						
-						  <p class="fs-6 fw-bold">{{ result.name }}</p>
-						  <!-- <p class="fs-6">{{ result.experience }}</p> -->
-						  <p class="fs-6">
-							Experience: {{ result.experience.years }} year(s)
-							<br>
-							<small>({{ result.experience.level }})</small>
-						  </p>
-						  <p class="fs-6">{{ result.companyName }}</p>
-						  <!-- <p class="fs-6">{{ result.status }}</p> -->
-						  <p-tag *ngIf="result.status" 
-								 [value]="result.status" 
-								 [severity]="getStatusSeverity(result.status)">
-						  </p-tag>
-						  <div *ngIf="!result.status && userCategory" class="button-container">
-							<button class="p-tag" (click)="sendRequest(result.userId); $event.stopPropagation()">
-							  Send Request
-							</button>
-						  </div>
-						</div>
-					</div>					  
+					</div>
 				</div>
 			</ng-template>
 		</p-dataView>

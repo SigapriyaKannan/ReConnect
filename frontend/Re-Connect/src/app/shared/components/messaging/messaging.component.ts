@@ -41,7 +41,7 @@ export class MessagingComponent implements OnInit, OnDestroy {
     });
 
     this.messageListener$ = this.messagingService.receiveMessage(this.user.email).subscribe((data: Message) => {
-      console.log('Received message:', data);
+
       if (this.selectedUser.id === data['receiverId']) {
         this.listOfMessages.push(data);
       }

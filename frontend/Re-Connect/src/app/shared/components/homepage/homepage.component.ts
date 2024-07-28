@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HomepageService } from './homepage.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,21 +7,24 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { TabViewModule } from 'primeng/tabview';
 import { DataViewModule } from 'primeng/dataview';
-import { environment } from '../../../../environments/environment';
-import { ActivatedRoute,Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { TagModule } from 'primeng/tag';
 import { OverlayService } from '../../services/overlay.service';
 import { ToastService } from '../../services/toast.service';
+import { DialogService, DynamicDialogModule, DynamicDialogRef } from "primeng/dynamicdialog";
+import { ProfileComponent } from '../profile/profile.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'rc-homepage',
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DropdownModule, InputTextModule, ButtonModule, TabViewModule, DataViewModule, TagModule],
+  imports: [CommonModule, FormsModule, DropdownModule, InputTextModule, ButtonModule, TabViewModule, DataViewModule, TagModule, DynamicDialogModule],
 })
-export class HomepageComponent {
+export class HomepageComponent implements OnInit, OnDestroy {
+  ref: DynamicDialogRef | undefined;
   searchQuery: string = '';
   selectedSearchType: any = { name: 'User', value: 'user' };
   searchTypes: any[] = [
@@ -42,12 +45,27 @@ export class HomepageComponent {
   user: any;
   searching: boolean = false;
   userCategory: boolean = true;
+  isSendingRequest: boolean = false;
+  imagePath: string = environment.SERVER;
 
-  constructor(private activatedRoute: ActivatedRoute, private searchService: HomepageService, private overlayService: OverlayService, private router: Router,private toastService: ToastService) {
+  constructor(private activatedRoute: ActivatedRoute, private searchService: HomepageService, private overlayService: OverlayService, private router: Router, private toastService: ToastService, public dialogService: DialogService) {
     //this.activatedRoute.data.subscribe(({ user }) => { this.user = user });
     this.activatedRoute.parent?.data.subscribe(({ user }) => {
       this.user = user;
     })
+  }
+
+  ngOnInit(): void {
+    if (this.user.role == 2) {
+      this.userCategory = false;
+    }
+  }
+
+  show(userId: number) {
+    this.ref = this.dialogService.open(ProfileComponent, {
+      width: '50vw',
+      contentStyle: { overflow: 'auto' }, header: 'Profile', data: { enableEdit: false, userId }
+    });
   }
 
   getStatusSeverity(status: string): "success" | "danger" | "info" | "warning" {
@@ -84,7 +102,7 @@ export class HomepageComponent {
         .pipe(finalize(() => { this.searching = false; this.overlayService.hideOverlay(); }))
         .subscribe(
           (response) => {
-            this.processUserSearchResults(response);
+            this.processSearchResults(response);
           },
           (error) => {
             this.searchResults = [];
@@ -92,7 +110,7 @@ export class HomepageComponent {
         );
     } else {
       this.searchService.searchCompanyUsers(this.searchQuery)
-      
+
         .pipe(finalize(() => { this.searching = false; this.overlayService.hideOverlay(); }))
         .subscribe(
           (response) => {
@@ -104,20 +122,18 @@ export class HomepageComponent {
         );
     }
   }
-  private processUserSearchResults(response: any) {
-    console.log('User search raw response:', response);
+  private processSearchResults(response: any) {
     if (response && response.data && Array.isArray(response.data)) {
       this.searchResults = response.data.map((user: any) => ({
         profilePicture: user.profilePicture,
         name: user.userName,
-        userId:user.userId,
+        userId: user.userId,
         companyName: user.companyName,
         experience: {
           years: user.experience,
           level: this.getExperienceLevel(user.experience)
         },
         status: user.status
-        
       }));
     } else {
       console.error('Unexpected response format', response);
@@ -125,35 +141,16 @@ export class HomepageComponent {
     }
   }
 
-  private processSearchResults(response: any) {
-    if (response && response.data && Array.isArray(response.data)) {
-      this.searchResults = response.data.map((companyUser: any) => ({
-        profilePicture: companyUser.profilePicture,
-        name: companyUser.userName,
-        userId:companyUser.userId,
-        companyName: companyUser.companyName,
-        experience: {
-          years: companyUser.experience,
-          level: this.getExperienceLevel(companyUser.experience)
-        },
-        status: companyUser.status
-
-      }));
-    } else {
-      console.error('Unexpected response format', response);
-      this.searchResults = [];
-    }
+  redirectToProfile(userId: number): void {
+    this.router.navigate(['other-profile', userId], { state: { editUser: false } });
   }
 
-  redirectToProfile(requestId: number): void {
-    this.router.navigate(['other-profile', requestId], { state: { editUser: false } });
-  }
-
-  sendRequest(userID: number): void {
-    this.searchService.sendRequest(userID).subscribe(
+  sendRequest(user: any): void {
+    this.isSendingRequest = true;
+    this.searchService.sendRequest(user.userId).pipe(finalize(() => this.isSendingRequest = false)).subscribe(
       response => {
         this.toastService.showSuccess('Request sent successfully!');
-        console.log('Request sent successfully', response);
+        user.status = "PENDING";
       },
       error => {
         this.toastService.showError('Failed to send request.');
@@ -161,9 +158,10 @@ export class HomepageComponent {
       }
     );
   }
-  ngOnInit(): void {
-    if (this.user.role == 2) {
-      this.userCategory = false;
+
+  ngOnDestroy(): void {
+    if (this.ref) {
+      this.ref.close();
     }
   }
 }

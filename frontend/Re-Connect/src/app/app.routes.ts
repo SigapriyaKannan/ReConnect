@@ -16,9 +16,13 @@ import { MessagingComponent } from './shared/components/messaging/messaging.comp
 import { ForgotPasswordComponent } from "./shared/components/forgot-password/forgot-password.component";
 import { ResetPasswordComponent } from "./shared/components/reset-password/reset-password.component";
 import { AdminSkillDomainComponent } from "./cms/components/admin-skill-domain/admin-skill-domain.component";
-import { canActivateChildPage, canActivatePage } from "./shared/guards/auth-guard.service";
+import { canActivateAdminPage, canActivateChildPage, canActivateHomePage, canActivatePage, RoleGuard } from "./shared/guards/auth-guard.service";
 import { UserResolver } from './shared/resolvers/user-resolver.service';
 import { ProfileComponent } from "./shared/components/profile/profile.component";
+import { LogoutComponent } from './shared/logout/logout.component';
+import { ContainerLayoutComponent } from './shared/container-layout/container-layout.component';
+import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 export const routes: Routes = [
     {
@@ -42,93 +46,99 @@ export const routes: Routes = [
         canActivate: [canActivatePage]
     },
     {
+        path: "logout",
+        component: LogoutComponent,
+    },
+    {
         path: "",
-        component: LayoutComponent,
-        canActivateChild: [canActivateChildPage],
+        component: ContainerLayoutComponent,
+        // canActivateChild: [RoleGuard],
         resolve: {
             user: UserResolver
         },
+        runGuardsAndResolvers: "paramsChange",
         children: [
             {
-                path: "homepage",
-                component: HomepageComponent
-
-            },
-            {
-                path: "notifications",
-                component: NotificationsComponent
-            },
-            {
-                path: "requests",
-                component: RequestsComponent
-            },
-            {
-                path: "messages",
-                component: MessagingComponent
-            },
-            {
-                path: "profile/:id",
-                component: ProfileComponent,
-                data: { showEdit: true }
-            },
-            {
-                path: "other-profile/:id",
-                component: ProfileComponent,
-                data: { showEdit: false }
-            },
-            {
                 path: "",
-                pathMatch: "full",
-                redirectTo: "homepage"
-            }
-        ]
-    },
-    {
-        path: "admin",
-        component: AdminLayoutComponent,
-        children: [
-            {
-                path: "dashboard",
-                component: AdminDashboardComponent
+                component: LayoutComponent,
+                // canActivateChild: [canActivateHomePage],
+                children: [
+                    {
+                        path: "homepage",
+                        component: HomepageComponent
+                    },
+                    {
+                        path: "notifications",
+                        component: NotificationsComponent
+                    },
+                    {
+                        path: "requests",
+                        component: RequestsComponent
+                    },
+                    {
+                        path: "messages",
+                        component: MessagingComponent
+                    },
+                    {
+                        path: "profile",
+                        component: ProfileComponent,
+                    },
+                ]
             },
             {
-                path: "users",
-                component: AdminUsersComponent
+                path: "admin",
+                component: AdminLayoutComponent,
+                // canActivateChild: [canActivateAdminPage],
+                children: [
+                    {
+                        path: "dashboard",
+                        component: AdminDashboardComponent
+                    },
+                    {
+                        path: "users",
+                        component: AdminUsersComponent
+                    },
+                    {
+                        path: "countries",
+                        component: AdminCountriesComponent
+                    },
+                    {
+                        path: "cities",
+                        component: AdminCitiesComponent
+                    },
+                    {
+                        path: "skills",
+                        component: AdminSkillsComponent
+                    },
+                    {
+                        path: "skill-domain",
+                        component: AdminSkillDomainComponent
+                    },
+                    {
+                        path: "companies",
+                        component: AdminCompaniesComponent
+                    },
+                    {
+                        path: "users",
+                        component: AdminUsersComponent
+                    },
+                    {
+                        path: "",
+                        redirectTo: "dashboard",
+                        pathMatch: "full"
+                    }
+                ]
             },
             {
-                path: "countries",
-                component: AdminCountriesComponent
+                path: "404",
+                component: PageNotFoundComponent,
             },
             {
-                path: "cities",
-                component: AdminCitiesComponent
-            },
-            {
-                path: "skills",
-                component: AdminSkillsComponent
-            },
-            {
-                path: "skill-domain",
-                component: AdminSkillDomainComponent
-            },
-            {
-                path: "companies",
-                component: AdminCompaniesComponent
-            },
-            {
-                path: "users",
-                component: AdminUsersComponent
-            },
-            {
-                path: "",
-                redirectTo: "dashboard",
+                path: "**",
+                redirectTo: '404',
                 pathMatch: "full"
             }
-        ]
+        ],
     },
-    {
-        path: "**",
-        redirectTo: "homepage",
-        pathMatch: "full"
-    }
+
 ];

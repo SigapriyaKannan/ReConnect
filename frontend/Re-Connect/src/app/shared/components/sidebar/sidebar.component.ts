@@ -30,11 +30,11 @@ export class SidebarComponent {
         icon: "pi pi-home",
         route: "/homepage",
       },
-      {
-        label: "Notifications",
-        icon: "pi pi-bell",
-        route: "/notifications"
-      },
+      // {
+      //   label: "Notifications",
+      //   icon: "pi pi-bell",
+      //   route: "/notifications"
+      // },
       {
         label: "Messages",
         icon: "pi pi-inbox",
@@ -54,9 +54,5 @@ export class SidebarComponent {
     //     route: "/homepage",
     //   })
     // }
-  }
-
-  onLogout() {
-    this.authService.logout();
   }
 }

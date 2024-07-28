@@ -61,19 +61,17 @@ public class RequestController {
 
 
     @GetMapping("/getAcceptedConnections")
-    public ResponseEntity<?> getAcceptedRequestForReferent()
-    {
-        var senderEmail =   SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity<?> getAcceptedRequestForReferent() {
+        var senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Users> user = usersRepository.findByUserEmail(senderEmail);
         int typeID = user.get().getUserType().getTypeID();
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } else {
             List<ReferralRequests> referralRequests = new ArrayList<>();
-            if(typeID == 1)
-            {
+            if (typeID == 1) {
                 referralRequests = requestService.getAcceptedRequestForReferent(user.get().getUserID());
-            }else {
+            } else {
                 referralRequests = requestService.getAcceptedRequestForReferrer(user.get().getUserID());
             }
 
@@ -83,15 +81,15 @@ public class RequestController {
                 List<Requests> requestDTO = new ArrayList<>();
                 for (ReferralRequests referralRequest : referralRequests) {
                     Requests tempRequest = new Requests();
-                    if(typeID == 1)
-                    {
+                    if (typeID == 1) {
                         tempRequest.setUserId(referralRequest.getReferrer().getUserID());
-                        tempRequest.setName(referralRequest.getReferrer().getUsername());
-                    }else {
+                        tempRequest.setName(referralRequest.getReferrer().getUserDetails().getUserName());
+                        tempRequest.setProfile(referralRequest.getReferrer().getUserDetails().getProfilePicture());
+                    } else {
                         tempRequest.setUserId(referralRequest.getReferent().getUserID());
-                        tempRequest.setName(referralRequest.getReferent().getUsername());
+                        tempRequest.setName(referralRequest.getReferent().getUserDetails().getUserName());
+                        tempRequest.setProfile(referralRequest.getReferent().getUserDetails().getProfilePicture());
                     }
-                    tempRequest.setProfile("profilePicture.png");
                     requestDTO.add(tempRequest);
                 }
                 Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);

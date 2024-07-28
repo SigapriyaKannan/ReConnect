@@ -18,6 +18,14 @@ export interface LoginResponse {
     providedIn: 'root'
 })
 export class AuthService {
+    private _user: any;
+
+    public get user(): any {
+        return this._user;
+    }
+    public set user(value: any) {
+        this._user = value;
+    }
 
     constructor(private http: HttpClient, private router: Router) { }
 
@@ -58,7 +66,7 @@ export class AuthService {
         const expiration = sessionStorage.getItem("expiresIn");
         const token = sessionStorage.getItem("token");
         if (!expiration || !token) {
-            console.log('No expiration found in sessionStorage.');
+
             return false;
         }
         const expiresAt = new Date(expiration);
@@ -70,6 +78,6 @@ export class AuthService {
     }
 
     getUserDetails(token: string) {
-        return this.http.get(environment.AUTH_API + "getUserDetails?token=" + token);
+        return this.http.get(environment.AUTH_API + "getUserDetails?token=" + token).pipe(response => this.user = response);
     }
 }
