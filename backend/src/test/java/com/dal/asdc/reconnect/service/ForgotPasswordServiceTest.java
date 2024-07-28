@@ -1,24 +1,24 @@
-package com.dal.asdc.reconnect;
+package com.dal.asdc.reconnect.service;
 
 import com.dal.asdc.reconnect.constants.TestConstants;
 import com.dal.asdc.reconnect.exception.EmailSendingException;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.UsersRepository;
-import com.dal.asdc.reconnect.service.ForgotPasswordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
-import static com.mysql.cj.conf.PropertyKey.logger;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;

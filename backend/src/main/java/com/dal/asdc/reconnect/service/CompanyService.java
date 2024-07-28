@@ -108,5 +108,4 @@ public class CompanyService {
         Optional<Company> company = companyRepository.findById(companyId);
         return company.orElse(null);
     }
-
 }

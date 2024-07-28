@@ -2,6 +2,9 @@ package com.dal.asdc.reconnect.controller;
 
 import com.dal.asdc.reconnect.dto.Response;
 import com.dal.asdc.reconnect.dto.User.UserDetails;
+import com.dal.asdc.reconnect.exception.InvalidTokenException;
+import com.dal.asdc.reconnect.exception.PasswordMismatchException;
+import com.dal.asdc.reconnect.exception.UserAlreadyExistsException;
 import com.dal.asdc.reconnect.model.RefreshToken;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.*;
@@ -56,26 +59,21 @@ public class AuthenticationController {
      */
     @PostMapping("/verify-email")
     public ResponseEntity<?> signUp(@RequestBody com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest) {
-        Map<String, Boolean> responseMap = new HashMap<>();
         Users user = authenticationService.getUserByEmail(signUpFirstPhaseRequest.getEmail());
 
         if (user != null) {
-            responseMap.put("emailAlreadyExists", true);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseMap);
+            throw new UserAlreadyExistsException("Email already exists");
         }
 
         String password = signUpFirstPhaseRequest.getPassword();
         String reEnteredPassword = signUpFirstPhaseRequest.getReenteredPassword();
 
         if (!password.equals(reEnteredPassword)) {
-            responseMap.put("mismatchPasswords", true);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseMap);
+            throw new PasswordMismatchException("Passwords do not match");
         }
 
         com.dal.asdc.reconnect.dto.Response<?> response = new com.dal.asdc.reconnect.dto.Response<>(HttpStatus.OK.value(), "Verified", null);
         return ResponseEntity.ok(response);
-
-
     }
 
 
@@ -91,28 +89,20 @@ public class AuthenticationController {
     @Transactional
     public ResponseEntity<?> signUpFinal(@ModelAttribute com.dal.asdc.reconnect.dto.SignUp.SignUpSecondPhaseRequest signUpSecondPhaseRequest, @RequestParam("profile") MultipartFile file) throws IOException {
         com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseRequest signUpFirstPhaseRequest = convertIntoFirstPhase(signUpSecondPhaseRequest);
-
         com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody signUpFirstPhaseBody = authenticationService.validateFirstPhase(signUpFirstPhaseRequest);
 
         Path directory = Paths.get(uploadImagesDirectory);
         if (!Files.exists(directory)) {
-            try {
-                Files.createDirectories(directory);
-                System.out.println("Directory created: " + directory);
-            } catch (IOException e) {
-                System.err.println("Failed to create directory: " + directory);
-                e.printStackTrace();
-            }
+            Files.createDirectories(directory);
         }
 
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         Path fileNameAndPath = Paths.get(uploadImagesDirectory, fileName);
         Files.write(fileNameAndPath, file.getBytes());
 
-        if (signUpFirstPhaseBody.areAllValuesNull() && (authenticationService.addNewUser(signUpSecondPhaseRequest, String.valueOf(fileNameAndPath)))) {
+        if (signUpFirstPhaseBody.areAllValuesNull() && authenticationService.addNewUser(signUpSecondPhaseRequest, String.valueOf(fileNameAndPath))) {
             com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.SignUp.SignUpFirstPhaseBody> response = new com.dal.asdc.reconnect.dto.Response<>(200, "Success", signUpFirstPhaseBody);
             return ResponseEntity.ok(response);
-
         }
 
         com.dal.asdc.reconnect.dto.Response<Void> response = new com.dal.asdc.reconnect.dto.Response<>(403, "UnSuccessful", null);
@@ -147,12 +137,10 @@ public class AuthenticationController {
         Optional<Users> authenticatedUser = authenticationService.authenticate(loginRequest);
 
         if (authenticatedUser.isEmpty()) {
-            com.dal.asdc.reconnect.dto.Response<Void> response = new com.dal.asdc.reconnect.dto.Response<>(401, "UnSuccessful", null);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
         }
 
         com.dal.asdc.reconnect.dto.Response<com.dal.asdc.reconnect.dto.LoginDto.LoginResponseBody> response = getLoginResponse(authenticatedUser.get());
-
         return ResponseEntity.ok(response);
     }
 
@@ -186,10 +174,17 @@ public class AuthenticationController {
      */
     @PostMapping("/refreshToken")
     public com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenResponse refreshToken(@RequestBody com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenRequest refreshTokenRequest) {
-        return refreshTokenService.findByToken(refreshTokenRequest.getToken()).map(refreshTokenService::verifyExpiration).map(RefreshToken::getUsers).map(userInfo -> {
-            String accessToken = jwtService.generateToken(userInfo);
-            return com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenResponse.builder().accessToken(accessToken).token(refreshTokenRequest.getToken()).build();
-        }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
+        return refreshTokenService.findByToken(refreshTokenRequest.getToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUsers)
+                .map(userInfo -> {
+                    String accessToken = jwtService.generateToken(userInfo);
+                    return com.dal.asdc.reconnect.dto.RefreshToken.RefreshTokenResponse.builder()
+                            .accessToken(accessToken)
+                            .token(refreshTokenRequest.getToken())
+                            .build();
+                })
+                .orElseThrow(() -> new InvalidTokenException("Refresh Token is not in DB"));
     }
 
     /**
@@ -219,7 +214,7 @@ public class AuthenticationController {
         if (result) {
             return ResponseEntity.ok("Password reset successful.");
         } else {
-            return ResponseEntity.badRequest().body("Invalid token.");
+            throw new InvalidTokenException("Invalid token");
         }
     }
 
@@ -234,7 +229,7 @@ public class AuthenticationController {
         userDetails.setUsername(jwtService.extractUsername(token));
         userDetails.setEmail(jwtService.extractEmail(token));
         userDetails.setRole(jwtService.extractUserType(token));
-        userDetails.setProfile(jwtService.extrachProfilePicture(token));
+        userDetails.setProfile(jwtService.extractProfilePicture(token));
 
         return ResponseEntity.status(HttpStatus.OK).body(userDetails);
     }
