@@ -17,20 +17,33 @@ public class DashboardService {
     @Autowired
     private DashboardRepository dashboardRepository;
 
+    /**
+     * Get all users per country
+     * @return List of UsersPerCountryDTO
+     */
     public List<UsersPerCountryDTO> getAllUsersPerCountry() {
         log.debug("Retrieving all users per country");
         return dashboardRepository.getAllUsersPerCountry();
     }
-
+    /**
+     * Get all users per type
+     * @return List of UsersPerTypeDTO
+     */
     public List<UsersPerTypeDTO> getAllUsersPerType() {
         log.debug("Retrieving all users per type");
         return dashboardRepository.getAllUsersPerType();
     }
-
+    /**
+     * Get all users per company
+     * @return List of UsersPerCompanyDTO
+     */
     public List<UsersPerCompanyDTO> getAllUsersPerCompany() {
         return dashboardRepository.getAllUsersPerCompany(PageRequest.of(0, Integer.MAX_VALUE));
     }
-
+    /**
+     * Get top five companies
+     * @return List of UsersPerCompanyDTO
+     */
     public List<UsersPerCompanyDTO> getTopFiveCompanies() {
         log.debug("Retrieving top five companies by user count");
         return dashboardRepository.getAllUsersPerCompany(PageRequest.of(0, 5));

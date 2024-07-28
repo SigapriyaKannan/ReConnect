@@ -22,6 +22,13 @@ public class SearchController {
 
     private final SearchService searchService;
 
+    /**
+     * Retrieves usernames associated with a given company name.
+     *
+     * @param companyName The name of the company to search for
+     * @return ResponseEntity containing a Response object with a list of SearchResult objects if users are found,
+     *         or an appropriate error response if no users are found or an exception occurs
+     */
     @GetMapping("/companies/users")
     public ResponseEntity<?> getUsernamesByCompany(@RequestParam String companyName)
     {
@@ -42,7 +49,13 @@ public class SearchController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
+    /**
+     * Retrieves usernames associated with a given username.
+     *
+     * @param username The name of the username to search for
+     * @return ResponseEntity containing a Response object with a list of SearchResult objects if users are found,
+     *         or an appropriate error response if no users are found or an exception occurs
+     */
     @GetMapping("/users")
     public ResponseEntity<?> searchUsernames(@RequestParam(required = false) String username) {
 

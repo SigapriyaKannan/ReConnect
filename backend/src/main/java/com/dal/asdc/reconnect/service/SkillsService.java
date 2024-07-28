@@ -45,6 +45,13 @@ public class SkillsService {
         return listOfSkills;
     }
 
+    /**
+     * Adds a new skill to the database.
+     *
+     * @param skillDTO The SkillsDto object containing the skill information to be added.
+     * It must include the skill name and the domain ID.
+     * @throws RuntimeException if the specified skill domain is not found.
+     */
     public void addSkill(SkillsDto skillDTO) {
         log.info("Adding new skill: {}", skillDTO);
         Skills skill = new Skills();
@@ -55,6 +62,13 @@ public class SkillsService {
         skillsRepository.save(skill);
     }
 
+    /**
+     * Edits an existing skill in the database.
+     *
+     * @param skillDTO The SkillsDto object containing the skill information to be edited.
+     * It must include the skill ID, the new skill name, and the new domain ID.
+     * @throws RuntimeException if the specified skill is not found.
+     */
     public void editSkill(SkillsDto skillDTO) {
         log.info("Editing skill with ID: {}", skillDTO.getSkillId());
         Skills skill = skillsRepository.findById(skillDTO.getSkillId())
@@ -65,7 +79,11 @@ public class SkillsService {
         skill.setSkillDomain(domain);
         skillsRepository.save(skill);
     }
-
+    /**
+     * Deletes a skill from the database.
+     *
+     * @param id The ID of the skill to be deleted.
+     */
     public void deleteSkill(Integer id) {
         skillsRepository.deleteById(id);
     }

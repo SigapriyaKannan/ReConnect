@@ -21,7 +21,15 @@ public class RefreshTokenService {
 
     @Autowired
     UsersRepository userRepository;
-
+    /**
+     * Creates or updates a refresh token for a given user.
+     *
+     * This method generates a new refresh token for the user identified by the provided email.
+     * If a refresh token already exists for the user, it is deleted before creating a new one.
+     *
+     * @param email The email address of the user for whom to create the refresh token.
+     * @return The newly created RefreshToken object.
+     */
     public RefreshToken createRefreshToken(String email){
         Optional<Users> user = userRepository.findByUserEmail(email);
 
@@ -37,11 +45,25 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-
+    /**
+     * Retrieves a RefreshToken by its token value.
+     *
+     * @param token The string value of the refresh token to search for.
+     * @return An Optional containing the RefreshToken if found, or an empty Optional if not found.
+     */
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
-
+    /**
+     * Verifies if a given RefreshToken has expired.
+     *
+     * This method checks the expiration date of the provided RefreshToken against the current time.
+     * If the token has expired, it is deleted from the repository and an exception is thrown.
+     *
+     * @param token The RefreshToken to verify.
+     * @return The same RefreshToken if it hasn't expired.
+     * @throws RuntimeException if the token has expired, with a message indicating that a new login is required.
+     */
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);

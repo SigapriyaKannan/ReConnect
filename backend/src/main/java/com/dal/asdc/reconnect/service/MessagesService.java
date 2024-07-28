@@ -24,6 +24,14 @@ public class MessagesService {
     @Autowired
     UsersRepository usersRepository;
 
+    /**
+     * Saves a message to the database.
+     *
+     * @param senderEmail The email address of the message sender
+     * @param receiverEmail The email address of the message receiver
+     * @param messageContent The content of the message
+     * @return true if the message was successfully saved, false otherwise
+     */
     public boolean saveMessage(String senderEmail, String receiverEmail, String messageContent) {
         Optional<Users> sender = usersRepository.findByUserEmail(senderEmail);
         Optional<Users> receiver = usersRepository.findByUserEmail(receiverEmail);
@@ -37,7 +45,13 @@ public class MessagesService {
         log.info("Message from {} to {} saved successfully", senderEmail, receiverEmail);
         return true;
     }
-
+    /**
+     * Retrieves the chat history between two users.
+     *
+     * @param senderEmail The email address of the message sender
+     * @param receiverEmail The email address of the message receiver
+     * @return A list of messages between the two users
+     */
     public List<Message> getChatHistory(String senderEmail, String receiverEmail) {
         List<Messages> messages = messagesRepository.findChatHistory(senderEmail, receiverEmail);
 

@@ -33,6 +33,12 @@ public class RequestController {
     @Autowired
     UserService userService;
 
+    /**
+     * Retrieves pending requests for the authenticated user.
+     *
+     * @return ResponseEntity containing a Response object with a list of Requests if found,
+     *         or a NOT_FOUND response if no requests are found
+     */
     @GetMapping("/getPendingRequest")
     public ResponseEntity<?> getPendingRequest() {
         Users users = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -59,7 +65,12 @@ public class RequestController {
 
     }
 
-
+    /**
+     * Retrieves accepted requests for the authenticated user.
+     *
+     * @return ResponseEntity containing a Response object with a list of Requests if found,
+     *         or a NOT_FOUND response if no requests are found
+     */
     @GetMapping("/getAcceptedConnections")
     public ResponseEntity<?> getAcceptedRequestForReferent()
     {
@@ -100,7 +111,12 @@ public class RequestController {
         }
     }
 
-
+    /**
+     * Updates the status of a request.
+     *
+     * @param updateRequest the request to update
+     * @return ResponseEntity containing a Response object with a success message
+     */
     @PostMapping("/updateRequestStatus")
     public ResponseEntity<?> updateRequestStatus(@RequestBody UpdateRequest updateRequest) {
         var senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();

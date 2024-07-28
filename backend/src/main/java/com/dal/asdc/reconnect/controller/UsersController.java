@@ -19,7 +19,13 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
-
+    /**
+     * Retrieves a list of users by their user type ID.
+     *
+     * @param typeId The ID of the user type to filter by
+     * @return ResponseEntity containing a list of UserNameTypeIdDTO objects if users are found,
+     * or an empty list with CONFLICT status if no users are found
+     */
     @GetMapping("/getAllUsersByTypeId")
     public ResponseEntity<List<UserNameTypeIdDTO>> getUserNamesAndTypeIdsByUserType(@RequestParam int typeId) {
         List<Users> users = userService.getUsersByTypeId(typeId);
@@ -33,7 +39,13 @@ public class UsersController {
         }
         return ResponseEntity.ok(listOfUsers);
     }
-
+    /**
+     * Deletes a user by their user ID.
+     *
+     * @param userId The ID of the user to delete
+     * @return ResponseEntity with NO_CONTENT status if the user is deleted successfully,
+     * or INTERNAL_SERVER_ERROR status if an exception occurs
+     */
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<Void> deleteUser(@PathVariable int userId) {
