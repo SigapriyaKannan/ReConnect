@@ -100,12 +100,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.userID = this.dialogConfig.data.userId;
             this.enableEdit = this.dialogConfig.data.enableEdit;
         } else {
-
+            this.activatedRoute$ = this.activatedRoute.parent?.data.subscribe(({ user }) => {
+                this.userID = user['userId'];
+            });
         }
-
-        this.activatedRoute$ = this.activatedRoute.parent?.data.subscribe(({ user }) => {
-            this.userID = user['userId'];
-        });
 
         this.profileForm = new FormGroup({
             userName: new FormControl(this.userDetails.userName, [Validators.required]),

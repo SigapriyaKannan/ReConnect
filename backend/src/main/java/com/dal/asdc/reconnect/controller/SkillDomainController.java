@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/skillDomains")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "${cors.allowed.origins}")
 public class SkillDomainController {
     @Autowired
     SkillDomainService skillDomainService;
