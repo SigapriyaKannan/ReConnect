@@ -1,7 +1,6 @@
 package com.dal.asdc.reconnect.configs;
 
 import com.dal.asdc.reconnect.properties.CorsProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -34,7 +33,7 @@ public class SecurityConfiguration {
      * Constructor for SecurityConfiguration.
      *
      * @param jwtAuthenticationFilter the JWT authentication filter.
-     * @param authenticationProvider the authentication provider for Spring Security.
+     * @param authenticationProvider  the authentication provider for Spring Security.
      */
     public SecurityConfiguration(
             JwtAuthenticationFilter jwtAuthenticationFilter,

@@ -8,7 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,8 +24,8 @@ import java.util.Optional;
  * Service class for handling JWT (JSON Web Token) operations.
  * This class provides methods to generate, validate, and extract information from JWT tokens.
  */
-
 @Service
+@RequiredArgsConstructor
 public class JWTService {
     @Value("${security.jwt.secret-key}")
     public String secretKey;
@@ -33,11 +33,9 @@ public class JWTService {
     @Value("${security.jwt.expiration-time}")
     public long jwtExpiration;
 
-    @Autowired
-    UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
 
-    @Autowired
-    UserDetailsRepository userDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
 
     /**
      * Extracts the username from the given JWT token.
@@ -52,9 +50,9 @@ public class JWTService {
     /**
      * Extracts a specific claim from the JWT token using a provided claims resolver function.
      *
-     * @param token the JWT token
+     * @param token          the JWT token
      * @param claimsResolver the function to resolve the claim
-     * @param <T> the type of the claim
+     * @param <T>            the type of the claim
      * @return the extracted claim
      */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -79,8 +77,7 @@ public class JWTService {
      * @param userDetails the UserDetails for which the token is to be generated
      * @return the generated JWT token
      */
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails)
-    {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         Optional<Users> user = usersRepository.findByUserEmail(userDetails.getUsername());
         if (user.isEmpty()) {
             throw new RuntimeException("User not found");
@@ -114,7 +111,7 @@ public class JWTService {
      *
      * @param extraClaims additional claims to be included in the token
      * @param userDetails the UserDetails for which the token is to be generated
-     * @param expiration the expiration time for the token in milliseconds
+     * @param expiration  the expiration time for the token in milliseconds
      * @return the generated JWT token
      */
     public String buildToken(
@@ -135,7 +132,7 @@ public class JWTService {
     /**
      * Checks if the provided JWT token is valid for the given UserDetails.
      *
-     * @param token the JWT token
+     * @param token       the JWT token
      * @param userDetails the UserDetails to validate against
      * @return true if the token is valid, false otherwise
      */

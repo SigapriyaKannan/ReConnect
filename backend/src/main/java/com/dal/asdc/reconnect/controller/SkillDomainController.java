@@ -16,6 +16,7 @@ import java.util.List;
 public class SkillDomainController {
     @Autowired
     SkillDomainService skillDomainService;
+
     /**
      * Retrieves all skill domains from the system.
      *
@@ -27,6 +28,7 @@ public class SkillDomainController {
         Response<List<SkillDomainDTO>> response = new Response<>(HttpStatus.OK.value(), "Fetched all skill domains", listOfSkillDomains);
         return ResponseEntity.ok(response);
     }
+
     /**
      * Adds a new skill domain to the system.
      *
@@ -38,6 +40,7 @@ public class SkillDomainController {
         skillDomainService.addSkillDomain(skillDomainDTO);
         return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), "Skill domain added successfully", null));
     }
+
     /**
      * Edits an existing skill domain in the system.
      *
@@ -49,6 +52,7 @@ public class SkillDomainController {
         skillDomainService.editSkillDomain(skillDomainDTO);
         return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), "Skill domain updated successfully", null));
     }
+
     /**
      * Deletes an existing skill domain from the system.
      *

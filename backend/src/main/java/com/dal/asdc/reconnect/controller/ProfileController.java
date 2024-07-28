@@ -5,9 +5,9 @@ import com.dal.asdc.reconnect.dto.userdetails.UserDetailsRequest;
 import com.dal.asdc.reconnect.dto.userdetails.UserDetailsResponse;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.service.FileService;
-import com.dal.asdc.reconnect.service.ProfileService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.dal.asdc.reconnect.service.ProfileServiceImpl;
 import com.dal.asdc.reconnect.service.RequestService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +23,17 @@ import java.io.IOException;
 public class ProfileController {
 
     @Autowired
-    private ProfileService profileService;
+    private ProfileServiceImpl profileService;
 
     @Autowired
     private FileService fileService;
 
     @Autowired
     private RequestService requestService;
+
     /**
      * Get user details by user ID
+     *
      * @param userId The user ID as a string query parameter.
      * @return ResponseEntity containing UserDetailsResponse if successful.
      */
@@ -40,8 +42,10 @@ public class ProfileController {
         UserDetailsResponse userDetails = profileService.getUserDetailsByUserID(Integer.parseInt(userId));
         return ResponseEntity.ok(userDetails);
     }
+
     /**
      * Update user details
+     *
      * @param userDetailsJson
      * @param profilePicture
      * @param resume
@@ -69,8 +73,10 @@ public class ProfileController {
 
         return ResponseEntity.ok(updatedUserDetails);
     }
+
     /**
      * Get resume by user ID
+     *
      * @param userId
      * @return byte array of resume
      * @throws IOException
@@ -80,8 +86,10 @@ public class ProfileController {
         byte[] resume = fileService.getResume(Integer.parseInt(userId));
         return ResponseEntity.ok(resume);
     }
+
     /**
      * Get profile picture by user ID
+     *
      * @param userId
      * @return byte array of profile picture
      * @throws IOException
@@ -91,8 +99,10 @@ public class ProfileController {
         byte[] profilePicture = fileService.getProfilePicture(Integer.parseInt(userId));
         return ResponseEntity.ok(profilePicture);
     }
+
     /**
      * Send request to user
+     *
      * @param userID
      * @return ResponseEntity object with response message
      */
@@ -100,12 +110,10 @@ public class ProfileController {
     public ResponseEntity<?> sendRequest(@RequestParam Integer userID) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users sender = (Users) authentication.getPrincipal();
-        boolean response =  requestService.sendRequest(sender.getUserID(), userID);
-        if(response)
-        {
+        boolean response = requestService.sendRequest(sender.getUserID(), userID);
+        if (response) {
             return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), "Request Sent Successfully", response));
-        }else
-        {
+        } else {
             return ResponseEntity.ok(new Response<>(HttpStatus.OK.value(), "Request Already Sent", response));
         }
     }

@@ -3,20 +3,19 @@ package com.dal.asdc.reconnect.service;
 import com.dal.asdc.reconnect.dto.Company.CompanyDTO;
 import com.dal.asdc.reconnect.model.Company;
 import com.dal.asdc.reconnect.repository.CompanyRepository;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class CompanyService {
-    @Autowired
-    CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
 
     /**
      * Retrieves the list of all companies.

@@ -1,14 +1,13 @@
 package com.dal.asdc.reconnect.service;
 
-
 import com.dal.asdc.reconnect.dto.Chat.Message;
 import com.dal.asdc.reconnect.model.Messages;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.MessagesRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,19 +15,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class MessagesService {
-    @Autowired
-    MessagesRepository messagesRepository;
+    private final MessagesRepository messagesRepository;
 
-    @Autowired
-    UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
 
     /**
      * Saves a message to the database.
      *
-     * @param senderEmail The email address of the message sender
-     * @param receiverEmail The email address of the message receiver
+     * @param senderEmail    The email address of the message sender
+     * @param receiverEmail  The email address of the message receiver
      * @param messageContent The content of the message
      * @return true if the message was successfully saved, false otherwise
      */
@@ -45,10 +43,11 @@ public class MessagesService {
         log.info("Message from {} to {} saved successfully", senderEmail, receiverEmail);
         return true;
     }
+
     /**
      * Retrieves the chat history between two users.
      *
-     * @param senderEmail The email address of the message sender
+     * @param senderEmail   The email address of the message sender
      * @param receiverEmail The email address of the message receiver
      * @return A list of messages between the two users
      */

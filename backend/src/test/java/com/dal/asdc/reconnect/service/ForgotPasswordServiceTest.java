@@ -43,7 +43,7 @@ class ForgotPasswordServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        forgotPasswordService = new ForgotPasswordService(usersRepository, mailSender, passwordEncoder);
+        forgotPasswordService = new ForgotPasswordService(passwordEncoder, usersRepository, mailSender);
     }
 
     @Test

@@ -4,33 +4,33 @@ import com.dal.asdc.reconnect.model.RefreshToken;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.RefreshTokenRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class RefreshTokenService {
 
-    @Autowired
-    RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    @Autowired
-    UsersRepository userRepository;
+    private final UsersRepository userRepository;
+
     /**
      * Creates or updates a refresh token for a given user.
-     *
+     * <p>
      * This method generates a new refresh token for the user identified by the provided email.
      * If a refresh token already exists for the user, it is deleted before creating a new one.
      *
      * @param email The email address of the user for whom to create the refresh token.
      * @return The newly created RefreshToken object.
      */
-    public RefreshToken createRefreshToken(String email){
+    public RefreshToken createRefreshToken(String email) {
         Optional<Users> user = userRepository.findByUserEmail(email);
 
         RefreshToken refreshToken = RefreshToken.builder()
@@ -54,9 +54,10 @@ public class RefreshTokenService {
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
+
     /**
      * Verifies if a given RefreshToken has expired.
-     *
+     * <p>
      * This method checks the expiration date of the provided RefreshToken against the current time.
      * If the token has expired, it is deleted from the repository and an exception is thrown.
      *

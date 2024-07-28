@@ -39,6 +39,7 @@ public class UsersController {
         }
         return ResponseEntity.ok(listOfUsers);
     }
+
     /**
      * Deletes a user by their user ID.
      *

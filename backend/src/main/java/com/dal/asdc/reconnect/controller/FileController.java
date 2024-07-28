@@ -23,13 +23,14 @@ public class FileController {
     public FileController() {
 
     }
+
     /**
      * Handles HTTP GET requests to retrieve an image file from the server.
      *
      * @param fileName the name of the file to be retrieved, including its extension.
      * @return a ResponseEntity containing the file as a Resource if it exists and is readable,
-     *         or a 404 Not Found status if the file does not exist or is not readable,
-     *         or a 500 Internal Server Error status if an exception occurs during processing.
+     * or a 404 Not Found status if the file does not exist or is not readable,
+     * or a 500 Internal Server Error status if an exception occurs during processing.
      */
     @GetMapping("/uploads/images/{fileName:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) {

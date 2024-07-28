@@ -27,16 +27,13 @@ public class SearchController {
      *
      * @param companyName The name of the company to search for
      * @return ResponseEntity containing a Response object with a list of SearchResult objects if users are found,
-     *         or an appropriate error response if no users are found or an exception occurs
+     * or an appropriate error response if no users are found or an exception occurs
      */
     @GetMapping("/companies/users")
-    public ResponseEntity<?> getUsernamesByCompany(@RequestParam String companyName)
-    {
-        try
-        {
+    public ResponseEntity<?> getUsernamesByCompany(@RequestParam String companyName) {
+        try {
             List<SearchResult> users = searchService.findUsernamesByCompanyName(companyName);
-            if (users.isEmpty())
-            {
+            if (users.isEmpty()) {
                 Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "No users found for the given company", null);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             } else {
@@ -49,21 +46,20 @@ public class SearchController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     /**
      * Retrieves usernames associated with a given username.
      *
      * @param username The name of the username to search for
      * @return ResponseEntity containing a Response object with a list of SearchResult objects if users are found,
-     *         or an appropriate error response if no users are found or an exception occurs
+     * or an appropriate error response if no users are found or an exception occurs
      */
     @GetMapping("/users")
     public ResponseEntity<?> searchUsernames(@RequestParam(required = false) String username) {
 
-        try
-        {
+        try {
             List<SearchResult> users = searchService.findAllUsernames(username);
-            if (users.isEmpty())
-            {
+            if (users.isEmpty()) {
                 Response<?> response = new Response<>(HttpStatus.NOT_FOUND.value(), "No users found for the given company", null);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             } else {
