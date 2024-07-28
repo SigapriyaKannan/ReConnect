@@ -14,6 +14,7 @@ public class UserService {
 
     /**
      * This method is used to get all the users
+     * @param typeId
      * @return List of users
      */
 
