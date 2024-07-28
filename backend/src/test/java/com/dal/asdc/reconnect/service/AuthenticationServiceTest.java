@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
@@ -34,6 +35,10 @@ class AuthenticationServiceTest {
 
     @Mock
     UsersSkillsRepository usersSkillsRepository;
+
+
+    @Mock
+    private UserDetailsService userDetailsService;
 
     @Mock
     UsersRepository usersRepository;
@@ -432,11 +437,13 @@ class AuthenticationServiceTest {
 
     @Test
     void addUser_ShouldReturnUserIfUserTypeExists() {
+        // Create a sample request
         SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
         request.setEmail("test@example.com");
         request.setPassword("Password1!");
         request.setUserType(1);
 
+        // Create mock objects
         UserDetails userDetails = new UserDetails();
         UserType userType = new UserType();
         userType.setTypeID(1);
@@ -447,16 +454,226 @@ class AuthenticationServiceTest {
         expectedUser.setUserType(userType);
         expectedUser.setUserDetails(userDetails);
 
+        // Set up mocks
         when(userTypeRepository.findById(request.getUserType())).thenReturn(Optional.of(userType));
         when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
         when(usersRepository.save(any(Users.class))).thenReturn(expectedUser);
 
+        // Call the method
         Users result = authenticationService.addUser(request, userDetails);
 
+        // Verify results
         assertNotNull(result);
         assertEquals(expectedUser.getUserEmail(), result.getUserEmail());
         assertEquals(expectedUser.getPassword(), result.getPassword());
         assertEquals(expectedUser.getUserType(), result.getUserType());
         assertEquals(expectedUser.getUserDetails(), result.getUserDetails());
+
+        // Verify that the mocks were called as expected
+        verify(userTypeRepository, times(1)).findById(request.getUserType());
+        verify(passwordEncoder, times(1)).encode(request.getPassword());
+        verify(usersRepository, times(1)).save(any(Users.class));
     }
+
+
+    @Test
+    public void testAddDetails_Success() {
+        // Create mock entities with necessary properties
+        Company company = new Company(); // Set properties if needed
+        City city = new City(); // Set properties if needed
+        Country country = new Country(); // Set properties if needed
+
+        // Create request with necessary values
+        SignUpSecondPhaseRequest signUpSecondPhaseRequest = new SignUpSecondPhaseRequest();
+        signUpSecondPhaseRequest.setCompany(1);
+        signUpSecondPhaseRequest.setCity(1);
+        signUpSecondPhaseRequest.setCountry(1);
+        signUpSecondPhaseRequest.setUserName("TestUser");
+        signUpSecondPhaseRequest.setExperience(5);
+        signUpSecondPhaseRequest.setResume("resume.pdf");
+
+        String fileNameAndPath = "path/to/profile/picture.jpg";
+
+        // Mock repository behavior
+        when(companyRepository.findById(1)).thenReturn(Optional.of(company));
+        when(cityRepository.findById(1)).thenReturn(Optional.of(city));
+        when(countryRepository.findById(1)).thenReturn(Optional.of(country));
+
+        UserDetails mockUserDetails = new UserDetails();
+        // Set properties of mockUserDetails if needed
+
+        when(userDetailsRepository.save(any(UserDetails.class))).thenReturn(mockUserDetails);
+
+        // Execute the method
+        UserDetails result = authenticationService.addDetails(signUpSecondPhaseRequest, fileNameAndPath);
+
+        // Verify results
+        assertNotNull(result);
+    }
+
+
+    @Test
+    public void testValidateSecondPhase_Success() {
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        request.setUserType(1);
+        request.setCompany(1);
+        request.setCity(1);
+        request.setCountry(1);
+        request.setSkills(List.of(1, 2, 3));
+
+        UserType userType = new UserType();
+        Company company = new Company();
+        City city = new City();
+        Country country = new Country();
+        Skills skill1 = new Skills();
+        Skills skill2 = new Skills();
+        Skills skill3 = new Skills();
+
+        when(userTypeRepository.findById(1)).thenReturn(Optional.of(userType));
+        when(companyRepository.findById(1)).thenReturn(Optional.of(company));
+        when(cityRepository.findById(1)).thenReturn(Optional.of(city));
+        when(countryRepository.findById(1)).thenReturn(Optional.of(country));
+        when(skillsRepository.findById(1)).thenReturn(Optional.of(skill1));
+        when(skillsRepository.findById(2)).thenReturn(Optional.of(skill2));
+        when(skillsRepository.findById(3)).thenReturn(Optional.of(skill3));
+
+        boolean result = authenticationService.validateSecondPhase(request);
+
+        assertTrue(result);
+        verify(userTypeRepository, times(1)).findById(1);
+        verify(companyRepository, times(1)).findById(1);
+        verify(cityRepository, times(1)).findById(1);
+        verify(countryRepository, times(1)).findById(1);
+        verify(skillsRepository, times(1)).findById(1);
+        verify(skillsRepository, times(1)).findById(2);
+        verify(skillsRepository, times(1)).findById(3);
+    }
+
+    @Test
+    public void testValidateSecondPhase_UserTypeNotFound() {
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        request.setUserType(1);
+        request.setCompany(1);
+        request.setCity(1);
+        request.setCountry(1);
+        request.setSkills(List.of(1));
+
+        when(userTypeRepository.findById(1)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(EntityNotFoundException.class, () ->
+                authenticationService.validateSecondPhase(request)
+        );
+
+        assertEquals("Required entity not found during validation", exception.getMessage());
+    }
+
+    @Test
+    public void testValidateSecondPhase_CompanyNotFound() {
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        request.setUserType(1);
+        request.setCompany(1);
+        request.setCity(1);
+        request.setCountry(1);
+        request.setSkills(List.of(1));
+
+        when(userTypeRepository.findById(1)).thenReturn(Optional.of(new UserType()));
+        when(companyRepository.findById(1)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(EntityNotFoundException.class, () ->
+                authenticationService.validateSecondPhase(request)
+        );
+
+        assertEquals("Required entity not found during validation", exception.getMessage());
+    }
+
+    @Test
+    public void testValidateSecondPhase_CityNotFound() {
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        request.setUserType(1);
+        request.setCompany(1);
+        request.setCity(1);
+        request.setCountry(1);
+        request.setSkills(List.of(1));
+
+        when(userTypeRepository.findById(1)).thenReturn(Optional.of(new UserType()));
+        when(companyRepository.findById(1)).thenReturn(Optional.of(new Company()));
+        when(cityRepository.findById(1)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(EntityNotFoundException.class, () ->
+                authenticationService.validateSecondPhase(request)
+        );
+
+        assertEquals("Required entity not found during validation", exception.getMessage());
+
+    }
+
+    @Test
+    public void testValidateSecondPhase_CountryNotFound() {
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        request.setUserType(1);
+        request.setCompany(1);
+        request.setCity(1);
+        request.setCountry(1);
+        request.setSkills(List.of(1));
+
+        when(userTypeRepository.findById(1)).thenReturn(Optional.of(new UserType()));
+        when(companyRepository.findById(1)).thenReturn(Optional.of(new Company()));
+        when(cityRepository.findById(1)).thenReturn(Optional.of(new City()));
+        when(countryRepository.findById(1)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(EntityNotFoundException.class, () ->
+                authenticationService.validateSecondPhase(request)
+        );
+
+        assertEquals("Required entity not found during validation", exception.getMessage());
+        verify(userTypeRepository, times(1)).findById(1);
+        verify(companyRepository, times(1)).findById(1);
+        verify(cityRepository, times(1)).findById(1);
+        verify(countryRepository, times(1)).findById(1);
+        verifyNoInteractions(skillsRepository);
+    }
+
+    @Test
+    public void testValidateSecondPhase_SkillNotFound() {
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        request.setUserType(1);
+        request.setCompany(1);
+        request.setCity(1);
+        request.setCountry(1);
+        request.setSkills(List.of(1, 2, 3));
+
+        when(userTypeRepository.findById(1)).thenReturn(Optional.of(new UserType()));
+        when(companyRepository.findById(1)).thenReturn(Optional.of(new Company()));
+        when(cityRepository.findById(1)).thenReturn(Optional.of(new City()));
+        when(countryRepository.findById(1)).thenReturn(Optional.of(new Country()));
+        when(skillsRepository.findById(1)).thenReturn(Optional.of(new Skills()));
+        when(skillsRepository.findById(2)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(SkillNotFoundException.class, () ->
+                authenticationService.validateSecondPhase(request)
+        );
+
+        assertEquals("Skill ID not found during validation", exception.getMessage());
+        verify(userTypeRepository, times(1)).findById(1);
+        verify(companyRepository, times(1)).findById(1);
+        verify(cityRepository, times(1)).findById(1);
+        verify(countryRepository, times(1)).findById(1);
+        verify(skillsRepository, times(1)).findById(1);
+        verify(skillsRepository, times(1)).findById(2);
+    }
+
+    @Test
+    void testAddNewUser_AddDetailsReturnsNull() {
+        SignUpSecondPhaseRequest request = new SignUpSecondPhaseRequest();
+        request.setEmail("test@example.com");
+        request.setPassword("Password1!");
+        String fileNameAndPath = "file/path";
+
+        when(userDetailsRepository.save(any())).thenReturn(null);
+
+        boolean result = authenticationService.addNewUser(request, fileNameAndPath);
+
+        assertFalse(result);
+    }
+
 }

@@ -1,10 +1,16 @@
 # Re.Connect
-## Deployed URLS
-### Production
-- *Webpage*: http://csci5308-vm4.research.cs.dal.ca:8080/#/
-- *Swagger*:  http://csci5308-vm4.research.cs.dal.ca:8080/swagger-ui/index.html
+## Deployed URLs
 
-# Reconnect
+## Deployed URLs
+
+### Production
+- **Webpage**: [http://csci5308-vm4.research.cs.dal.ca:8080/#/](http://csci5308-vm4.research.cs.dal.ca:8080/#/)
+- **Swagger**: [http://csci5308-vm4.research.cs.dal.ca:8080/swagger-ui/index.html](http://csci5308-vm4.research.cs.dal.ca:8080/swagger-ui/index.html)
+
+### Test
+- **Deployed frontend application**: [https://csci-5308-re-connect.netlify.app](https://csci-5308-re-connect.netlify.app)
+- **Deployed backend application**: [https://reconnect-dal-asdc-reconnect.onrender.com](https://reconnect-dal-asdc-reconnect.onrender.com)
+
 
 ## Overview
 Reconnect is an application designed to streamline the process of obtaining referrals. The platform caters to two types of users: Referents and Referrers.
@@ -149,122 +155,127 @@ Finally, the application frontend will start running locally.
 
 #### Spring Boot Application Deployment
 
-Use a base image like Ubuntu or Alpine
-* FROM ubuntu:latest
+Use a base image like Ubuntu or Alpine:
+* `FROM ubuntu:latest`
 
-Install Java
-* RUN apt-get update && apt-get install -y default-jdk
+Install Java:
+* `RUN apt-get update && apt-get install -y default-jdk`
 
-Install Nginx
-* RUN apt-get install -y nginx
+Install Nginx:
+* `RUN apt-get install -y nginx`
 
-Copy your Nginx configuration files, Java applications, etc.
-* COPY frontend/Re-Connect/dist/re-connect /usr/share/nginx/html
-* COPY backend/target/reconnect-0.0.1-SNAPSHOT.jar reconnect.jar
+Copy your Nginx configuration files and Java applications:
+* `COPY frontend/Re-Connect/dist/re-connect /usr/share/nginx/html`
+* `COPY backend/target/reconnect-0.0.1-SNAPSHOT.jar reconnect.jar`
 
-Expose ports for Nginx and your Java application
-* EXPOSE 80
-* EXPOSE 8080
+Expose ports for Nginx and your Java application:
+* `EXPOSE 80`
+* `EXPOSE 8080`
 
 #### Start Nginx and your Java application
-CMD service nginx start && java -jar /reconnect.jar
+* `CMD service nginx start && java -jar /reconnect.jar`
 
 To build and run the container:
 
-* docker build -t reconnect .
+* `docker build -t reconnect .`
 
-* docker run -p 8080:8080 reconnect
+* `docker run -p 8080:8080 reconnect`
+
 ----------
 ## Building The Frontend Application
+
 #### Node.js Application Deployment
-Use an official Nginx image as the base image
-* FROM nginx:latest
 
-Set the working directory inside the container
-* WORKDIR /usr/share/nginx/html
+Use an official Nginx image as the base image:
+* `FROM nginx:latest`
 
-Copy the built Angular application files into the container
-* COPY dist/re-connect .
+Set the working directory inside the container:
+* `WORKDIR /usr/share/nginx/html`
 
-Expose port 80 to allow external access
-* EXPOSE 80
+Remove default Nginx static assets:
+* `RUN rm -rf ./*`
+
+Copy the built Angular application files into the container:
+* `COPY dist/re-connect .`
+
+Expose port 80 to allow external access:
+* `EXPOSE 80`
 
 #### Start Nginx when the container starts
-* CMD ["nginx", "-g", "daemon off;"]
+* `CMD ["nginx", "-g", "daemon off;"]`
 
 ------------
-
 # GitLab CI/CD Pipeline Configuration
 
-This gitlab-ci.yml file defines a GitLab CI/CD pipeline with four stages: build, test, push, and deploy.
+This `.gitlab-ci.yml` file defines a GitLab CI/CD pipeline with four stages: build, test, push, and deploy.
 
 ### Build Stage
 
 #### build_frontend
-- *Image Used:* node:20
-- *Script Actions:*
-    - Change directory to ./frontend/Re-Connect.
-    - Install npm dependencies with npm install --legacy-peer-deps --prefer-offline.
-    - Run either npm run build:production for the main branch or npm run build:development for other branches.
-- *Execution Condition:* Runs on merge requests and branches, triggered by changes in the frontend directory or .gitlab-ci.yml.
+- **Image Used:** `node:20`
+- **Script Actions:**
+  - Change directory to `./frontend/Re-Connect`.
+  - Install npm dependencies with `npm install --legacy-peer-deps --prefer-offline`.
+  - Run either `npm run build:production` for the main branch or `npm run build:development` for other branches.
+- **Execution Condition:** Runs on merge requests and branches, triggered by changes in the frontend directory or `.gitlab-ci.yml`.
 
 #### build_backend
-- *Image Used:* maven:3.8.5-openjdk-17
-- *Script Actions:*
-    - Change directory to ./backend.
-    - Clean and package the backend application with mvn clean package -DskipTests=true.
-- *Execution Condition:* Runs on merge requests and branches, triggered by changes in the backend directory or .gitlab-ci.yml.
+- **Image Used:** `maven:3.8.5-openjdk-17`
+- **Script Actions:**
+  - Change directory to `./backend`.
+  - Clean and package the backend application with `mvn clean package -DskipTests=true`.
+- **Execution Condition:** Runs on merge requests and branches, triggered by changes in the backend directory or `.gitlab-ci.yml`.
 
 ### Test Stage
 
 #### test_backend
-- *Image Used:* maven:3.8.5-openjdk-17
-- *Script Actions:*
-    - Change directory to ./backend.
-    - Run the unit tests with mvn test.
-- *Execution Condition:* Runs on merge requests and branches, triggered by changes in the backend directory or .gitlab-ci.yml.
+- **Image Used:** `maven:3.8.5-openjdk-17`
+- **Script Actions:**
+  - Change directory to `./backend`.
+  - Run the unit tests with `mvn test`.
+- **Execution Condition:** Runs on merge requests and branches, triggered by changes in the backend directory or `.gitlab-ci.yml`.
 
 ### Push Stage
 
 #### push_frontend
-- *Image Used:* docker:20
-- *Script Actions:*
-    - Change directory to ./frontend/Re-Connect.
-    - Build and push the frontend Docker image.
-- *Execution Condition:* Runs on the main and dev branches, triggered by changes in the frontend directory or .gitlab-ci.yml.
+- **Image Used:** `docker:20`
+- **Script Actions:**
+  - Change directory to `./frontend/Re-Connect`.
+  - Build and push the frontend Docker image.
+- **Execution Condition:** Runs on the main and dev branches, triggered by changes in the frontend directory or `.gitlab-ci.yml`.
 
 #### push_backend
-- *Image Used:* docker:20
-- *Script Actions:*
-    - Change directory to ./backend.
-    - Build and push the backend Docker image.
-- *Execution Condition:* Runs on the main and dev branches, triggered by changes in the backend directory or .gitlab-ci.yml.
+- **Image Used:** `docker:20`
+- **Script Actions:**
+  - Change directory to `./backend`.
+  - Build and push the backend Docker image.
+- **Execution Condition:** Runs on the main and dev branches, triggered by changes in the backend directory or `.gitlab-ci.yml`.
 
 ### Deploy Stage
 
 #### deploy_local_frontend
-- *Image Used:* docker:20
-- *Script Actions:*
-    - Deploy the frontend Docker image to a local Docker environment.
-- *Execution Condition:* Runs on the dev branch with the SPRING_PROFILES_ACTIVE variable set to "dev".
+- **Image Used:** `docker:20`
+- **Script Actions:**
+  - Deploy the frontend Docker image to a local Docker environment.
+- **Execution Condition:** Runs on the dev branch with the `SPRING_PROFILES_ACTIVE` variable set to "dev".
 
 #### deploy_local_backend
-- *Image Used:* docker:20
-- *Script Actions:*
-    - Deploy the backend Docker image to a local Docker environment.
-- *Execution Condition:* Runs on the dev branch with the SPRING_PROFILES_ACTIVE variable set to "dev".
+- **Image Used:** `docker:20`
+- **Script Actions:**
+  - Deploy the backend Docker image to a local Docker environment.
+- **Execution Condition:** Runs on the dev branch with the `SPRING_PROFILES_ACTIVE` variable set to "dev".
 
 #### deploy_prod_frontend
-- *Image Used:* alpine:latest
-- *Script Actions:*
-    - Deploy the frontend Docker image to a VM environment.
-- *Execution Condition:* Runs on the main branch.
+- **Image Used:** `alpine:latest`
+- **Script Actions:**
+  - Deploy the frontend Docker image to a VM environment.
+- **Execution Condition:** Runs on the main branch.
 
 #### deploy_prod_backend
-- *Image Used:* alpine:latest
-- *Script Actions:*
-    - Deploy the backend Docker image to a VM environment.
-- *Execution Condition:* Runs on the main branch with the SPRING_PROFILES_ACTIVE variable set to "prod".
+- **Image Used:** `alpine:latest`
+- **Script Actions:**
+  - Deploy the backend Docker image to a VM environment.
+- **Execution Condition:** Runs on the main branch with the `SPRING_PROFILES_ACTIVE` variable set to "prod".
 
 This pipeline ensures that the code is built, tested, pushed to a Docker registry, and then deployed to the appropriate environments in an automated manner.
 
@@ -273,10 +284,11 @@ This pipeline ensures that the code is built, tested, pushed to a Docker registr
 
 In this project, we are heavily focused on test cases, ensuring that almost every part of our services is covered. The coverage percentages for different areas are provided below.
 
-- *Class percentage:*
-    - 100
-- *Method percentage:*
-    - 100
-- *Line percentage:*
-    - 100
+- **Class percentage:**
+  - 100
+- **Method percentage:**
+  - 100
+- **Line percentage:**
+  - 100
+
 
