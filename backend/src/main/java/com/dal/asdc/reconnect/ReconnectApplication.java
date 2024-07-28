@@ -4,7 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-
+/**
+ * The main method is the standard entry point for Java applications and is responsible for launching the Spring Boot application.
+ */
 @SpringBootApplication
 public class ReconnectApplication {
 

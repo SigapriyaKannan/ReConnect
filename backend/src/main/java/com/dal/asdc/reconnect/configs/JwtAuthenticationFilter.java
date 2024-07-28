@@ -18,6 +18,11 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
+/**
+ * Filter for JWT authentication. This filter checks each incoming request for a JWT token,
+ * validates it, and sets the security context if the token is valid.
+ */
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -25,12 +30,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JWTService jwtService;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Constructor for JwtAuthenticationFilter.
+     *
+     * @param jwtService the service to handle JWT operations.
+     * @param userDetailsService the service to load user details.
+     * @param handlerExceptionResolver the handler for resolving exceptions.
+     */
     public JwtAuthenticationFilter(JWTService jwtService, UserDetailsService userDetailsService, HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
+    /**
+     * Filters the incoming request to check for JWT in the Authorization header.
+     * Validates the JWT and sets the security context if the token is valid.
+     *
+     * @param request the HTTP request.
+     * @param response the HTTP response.
+     * @param filterChain the filter chain to proceed with the request.
+     * @throws ServletException if an error occurs during the filtering process.
+     * @throws IOException if an I/O error occurs during the filtering process.
+     */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
