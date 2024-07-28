@@ -289,6 +289,6 @@ In this project, we are heavily focused on test cases, ensuring that almost ever
 - **Method percentage:**
   - 100
 - **Line percentage:**
-  - 100
+  - 97
 
 
