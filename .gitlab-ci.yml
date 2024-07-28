@@ -39,12 +39,8 @@ build_frontend:
     paths:
       - ./frontend/Re-Connect/dist
   only:
-    changes:
-      - frontend/**/*
-      - .gitlab-ci.yml
-    refs:
-      - merge_requests
-      - branches
+    - merge_requests
+    - branches
     
 
 build_backend:
@@ -60,12 +56,8 @@ build_backend:
     paths:
       - ./backend/target/reconnect-0.0.1-SNAPSHOT.jar
   only:
-    changes:
-      - backend/**/*
-      - .gitlab-ci.yml
-    refs:
-      - merge_requests
-      - branches
+    - merge_requests
+    - branches
 
 # Test stage
 test_backend:
@@ -80,12 +72,8 @@ test_backend:
   script:
     - mvn test
   only:
-    changes:
-      - backend/**/*
-      - .gitlab-ci.yml
-    refs:
-      - merge_requests
-      - branches
+    - merge_requests
+    - branches
 
 # push frontend
 push_frontend:
@@ -111,12 +99,8 @@ push_frontend:
     - docker tag $APP_NAME_FRONTEND:$CI_COMMIT_REF_NAME docker.io/$APP_NAME_FRONTEND:$CI_COMMIT_REF_NAME
     - docker push docker.io/$APP_NAME_FRONTEND:$CI_COMMIT_REF_NAME
   only:
-    changes:
-      - frontend/**/*
-      - .gitlab-ci.yml
-    refs:
-      - main
-      - dev
+    - main
+    - dev
 
 # push stage
 push_backend:
@@ -142,12 +126,8 @@ push_backend:
     - docker tag $APP_NAME:$CI_COMMIT_REF_NAME docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
     - docker push docker.io/$APP_NAME:$CI_COMMIT_REF_NAME
   only:
-    changes:
-      - backend/**/*
-      - .gitlab-ci.yml
-    refs:
-      - main
-      - dev
+    - main
+    - dev
 
 deploy_local_frontend:
   stage: deploy
