@@ -8,14 +8,17 @@ import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CityRepository;
 import com.dal.asdc.reconnect.repository.CountryRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CityService {
 
     @Autowired
@@ -32,12 +35,14 @@ public class CityService {
      * @return a list of CityDTO objects containing for the specified country.
      */
     public List<CityDTO> getAllCitiesByCountry(Country country) {
+        log.debug("Retrieving all cities for country ID '{}'", country.getCountryId());
         List<CityDTO> listOfCities = new ArrayList<>();
         List<City> listOfCitiesFromDatabase = cityRepository.findCitiesByCountryCountryId(country.getCountryId());
         for (City city : listOfCitiesFromDatabase) {
             CityDTO cityDTO = new CityDTO(city.getCityId(), city.getCityName(), country);
             listOfCities.add(cityDTO);
         }
+        log.info("Retrieved {} cities for country ID '{}'", listOfCities.size(), country.getCountryId());
         return listOfCities;
     }
 
@@ -47,12 +52,14 @@ public class CityService {
      * @return List of CityDTO objects containing city information.
      */
     public List<CityDTO> getAllCities() {
+        log.debug("Retrieving all cities");
         List<CityDTO> listOfCities = new ArrayList<>();
         List<City> listOfCitiesFromDatabase = cityRepository.findAll();
         for (City city : listOfCitiesFromDatabase) {
             CityDTO cityDTO = new CityDTO(city.getCityId(), city.getCityName(), city.getCountry());
             listOfCities.add(cityDTO);
         }
+        log.info("Retrieved {} cities", listOfCities.size());
         return listOfCities;
     }
 
@@ -63,6 +70,7 @@ public class CityService {
      * @return City object if found, otherwise null.
      */
     public City getCityById(int cityId) {
+        log.debug("Retrieving city with ID '{}'", cityId);
         return cityRepository.findById(cityId)
                 .orElseThrow(() -> new CityNotFoundException("City not found with ID: " + cityId));
     }
@@ -75,6 +83,7 @@ public class CityService {
      * @return City object if found, otherwise null.
      */
     public City getCityByCityNameAndCountryId(String cityName, int countryId) {
+        log.debug("Retrieving city with name '{}' and country ID '{}'", cityName, countryId);
         return cityRepository.findCityByCityNameAndCountryCountryId(cityName, countryId);
     }
 
@@ -86,6 +95,7 @@ public class CityService {
      * @return The newly added City object.
      */
     public City addCity(String cityName, Country country) {
+        log.debug("Adding new city '{}' for country ID '{}'", cityName, country.getCountryId());
         City newCity = new City();
         newCity.setCityName(cityName);
         newCity.setCountry(country);
@@ -99,6 +109,7 @@ public class CityService {
      * @param cityDTO The CityRequestDTO object containing the updated city information.
      */
     public void modifyCity(CityRequestDTO cityDTO) {
+        log.debug("Modifying city with ID '{}'", cityDTO.getCityId());
         City existingCity = getCityById(cityDTO.getCityId());
         existingCity.setCityName(cityDTO.getCityName());
 
@@ -116,6 +127,7 @@ public class CityService {
      * @return True if the city is successfully deleted, false otherwise.
      */
     public boolean deleteCity(int cityId) {
+        log.debug("Deleting city with ID '{}'", cityId);
         Optional<City> cityFromDatabase = cityRepository.findById(cityId);
         if (cityFromDatabase.isPresent()) {
             cityRepository.deleteById(cityId);

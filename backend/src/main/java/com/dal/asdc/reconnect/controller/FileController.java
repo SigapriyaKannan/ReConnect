@@ -23,7 +23,14 @@ public class FileController {
     public FileController() {
 
     }
-
+    /**
+     * Handles HTTP GET requests to retrieve an image file from the server.
+     *
+     * @param fileName the name of the file to be retrieved, including its extension.
+     * @return a ResponseEntity containing the file as a Resource if it exists and is readable,
+     *         or a 404 Not Found status if the file does not exist or is not readable,
+     *         or a 500 Internal Server Error status if an exception occurs during processing.
+     */
     @GetMapping("/uploads/images/{fileName:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) {
         try {
@@ -60,7 +67,13 @@ public class FileController {
         }
     }
 
-    // Method to determine media type based on file extension
+
+    /**
+     * Determines the MediaType based on the file extension of the given file name.
+     *
+     * @param fileName the name of the file, including its extension.
+     * @return the MediaType corresponding to the file extension, or APPLICATION_OCTET_STREAM if the extension is not recognized.
+     */
     private MediaType getMediaTypeForFileName(String fileName) {
         String[] parts = fileName.split("\\.");
         if (parts.length > 0) {

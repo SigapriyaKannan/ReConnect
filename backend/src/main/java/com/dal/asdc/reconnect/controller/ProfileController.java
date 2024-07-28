@@ -30,13 +30,24 @@ public class ProfileController {
 
     @Autowired
     private RequestService requestService;
-
+    /**
+     * Get user details by user ID
+     * @param userId The user ID as a string query parameter.
+     * @return ResponseEntity containing UserDetailsResponse if successful.
+     */
     @GetMapping
     public ResponseEntity<UserDetailsResponse> getUserDetails(@RequestParam String userId) {
         UserDetailsResponse userDetails = profileService.getUserDetailsByUserID(Integer.parseInt(userId));
         return ResponseEntity.ok(userDetails);
     }
-
+    /**
+     * Update user details
+     * @param userDetailsJson
+     * @param profilePicture
+     * @param resume
+     * @return UserDetailsResponse object with updated user details
+     * @throws IOException
+     */
     @PostMapping("/updateUserDetails")
     public ResponseEntity<UserDetailsResponse> updateUserDetails(
             @RequestPart("userDetails") String userDetailsJson,
@@ -58,19 +69,33 @@ public class ProfileController {
 
         return ResponseEntity.ok(updatedUserDetails);
     }
-
+    /**
+     * Get resume by user ID
+     * @param userId
+     * @return byte array of resume
+     * @throws IOException
+     */
     @GetMapping("/resume")
     public ResponseEntity<byte[]> getResume(@RequestParam String userId) throws IOException {
         byte[] resume = fileService.getResume(Integer.parseInt(userId));
         return ResponseEntity.ok(resume);
     }
-
+    /**
+     * Get profile picture by user ID
+     * @param userId
+     * @return byte array of profile picture
+     * @throws IOException
+     */
     @GetMapping("/profilePicture")
     public ResponseEntity<byte[]> getProfilePicture(@RequestParam String userId) throws IOException {
         byte[] profilePicture = fileService.getProfilePicture(Integer.parseInt(userId));
         return ResponseEntity.ok(profilePicture);
     }
-
+    /**
+     * Send request to user
+     * @param userID
+     * @return ResponseEntity object with response message
+     */
     @GetMapping("/sendRequest")
     public ResponseEntity<?> sendRequest(@RequestParam Integer userID) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

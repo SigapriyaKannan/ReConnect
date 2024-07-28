@@ -80,7 +80,11 @@ public class ChatController {
         this.socketServer.addEventListener("messageSendToUser", Message.class, onSendMessage);
 
     }
-
+    /**
+     * Get chat history between two users
+     * @param receiverEmail
+     * @return ResponseEntity with list of messages
+     */
     @GetMapping("/getChatHistory")
     public ResponseEntity<?> getChatHistory(@RequestParam("email") String receiverEmail) {
         var senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();
