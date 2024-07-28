@@ -32,8 +32,8 @@ public class ProfileController {
     private RequestService requestService;
     /**
      * Get user details by user ID
-     * @param userId
-     * @return
+     * @param userId The user ID as a string query parameter.
+     * @return ResponseEntity containing UserDetailsResponse if successful.
      */
     @GetMapping
     public ResponseEntity<UserDetailsResponse> getUserDetails(@RequestParam String userId) {
