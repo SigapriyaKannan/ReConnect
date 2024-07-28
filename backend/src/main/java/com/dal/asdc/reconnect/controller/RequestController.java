@@ -37,7 +37,7 @@ public class RequestController {
      * Retrieves pending requests for the authenticated user.
      *
      * @return ResponseEntity containing a Response object with a list of Requests if found,
-     *         or a NOT_FOUND response if no requests are found
+     * or a NOT_FOUND response if no requests are found
      */
     @GetMapping("/getPendingRequest")
     public ResponseEntity<?> getPendingRequest() {
@@ -69,7 +69,7 @@ public class RequestController {
      * Retrieves accepted requests for the authenticated user.
      *
      * @return ResponseEntity containing a Response object with a list of Requests if found,
-     *         or a NOT_FOUND response if no requests are found
+     * or a NOT_FOUND response if no requests are found
      */
     @GetMapping("/getAcceptedConnections")
     public ResponseEntity<?> getAcceptedRequestForReferent() {

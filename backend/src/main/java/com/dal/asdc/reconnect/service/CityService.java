@@ -8,25 +8,22 @@ import com.dal.asdc.reconnect.model.City;
 import com.dal.asdc.reconnect.model.Country;
 import com.dal.asdc.reconnect.repository.CityRepository;
 import com.dal.asdc.reconnect.repository.CountryRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class CityService {
 
-    @Autowired
-    private CityRepository cityRepository;
+    private final CityRepository cityRepository;
 
-    @Autowired
-    private CountryRepository countryRepository;
-
+    private final CountryRepository countryRepository;
 
     /**
      * Retrieves the cities associated with a given country ID.

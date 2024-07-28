@@ -3,8 +3,8 @@ package com.dal.asdc.reconnect.service;
 import com.dal.asdc.reconnect.exception.EmailSendingException;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.UsersRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
@@ -13,27 +13,21 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class ForgotPasswordService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
-    final PasswordEncoder passwordEncoder;
-    private final UsersRepository usersRepository;
-    private final JavaMailSender mailSender;
     @Value("${reset.password.url}")
     private String resetPasswordUrl;
 
-    public ForgotPasswordService(UsersRepository usersRepository, JavaMailSender mailSender, PasswordEncoder passwordEncoder) {
-        this.usersRepository = usersRepository;
-        this.mailSender = mailSender;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final PasswordEncoder passwordEncoder;
+    private final UsersRepository usersRepository;
+    private final JavaMailSender mailSender;
 
     /**
      * Sends a password reset email to the user with the specified email address.
@@ -93,7 +87,7 @@ public class ForgotPasswordService {
             mailSender.send(email);
             log.info("Email sent successfully to {}", toEmail);
         } catch (MailException e) {
-            logger.error("Failed to send email to {}: {}", toEmail, e.getMessage());
+            log.error("Failed to send email to {}: {}", toEmail, e.getMessage());
             throw new EmailSendingException("Failed to send password reset email", HttpStatus.EXPECTATION_FAILED);
         }
     }

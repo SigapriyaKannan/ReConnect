@@ -8,46 +8,46 @@ import com.dal.asdc.reconnect.exception.*;
 import com.dal.asdc.reconnect.model.*;
 import com.dal.asdc.reconnect.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Service class for handling user authentication and registration.
+ * Provides methods for validating user input during registration,
+ * adding new users, handling user authentication, and managing user skills.
+ */
 @Component
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class AuthenticationService {
+
     private static final String EMAIL_PATTERN = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
     private static final Pattern email_pattern = Pattern.compile(EMAIL_PATTERN);
 
-    @Autowired
-    UserTypeRepository userTypeRepository;
-    @Autowired
-    UsersSkillsRepository usersSkillsRepository;
-    @Autowired
-    UsersRepository usersRepository;
-    @Autowired
-    UserDetailsRepository userDetailsRepository;
-    @Autowired
-    CompanyRepository companyRepository;
-    @Autowired
-    CityRepository cityRepository;
-    @Autowired
-    CountryRepository countryRepository;
-    @Autowired
-    SkillsRepository skillsRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final UserTypeRepository userTypeRepository;
+    private final UsersSkillsRepository usersSkillsRepository;
+    private final UsersRepository usersRepository;
+    private final UserDetailsRepository userDetailsRepository;
+    private final CompanyRepository companyRepository;
+    private final CityRepository cityRepository;
+    private final CountryRepository countryRepository;
+    private final SkillsRepository skillsRepository;
+    private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Validates the email format.
+     *
+     * @param email the email to validate
+     * @return true if the email is valid, false otherwise
+     */
     public static boolean validateEmail(String email) {
         Matcher matcher = email_pattern.matcher(email);
         boolean isValid = matcher.matches();
@@ -55,6 +55,15 @@ public class AuthenticationService {
         return isValid;
     }
 
+    /**
+     * Validates the first phase of the user sign-up process.
+     *
+     * @param signUpFirstPhaseRequest the request containing user details for the first phase
+     * @return a {@link SignUpFirstPhaseBody} object containing validation results
+     * @throws UserAlreadyExistsException if the email is already registered
+     * @throws PasswordMismatchException  if the passwords do not match
+     * @throws InvalidEmailException      if the email format is invalid
+     */
     public SignUpFirstPhaseBody validateFirstPhase(SignUpFirstPhaseRequest signUpFirstPhaseRequest) {
         SignUpFirstPhaseBody signUpFirstPhaseBody = new SignUpFirstPhaseBody();
         Users user = getUserByEmail(signUpFirstPhaseRequest.getEmail());
@@ -77,16 +86,36 @@ public class AuthenticationService {
         return signUpFirstPhaseBody;
     }
 
+    /**
+     * Compares the provided password with the confirmed password.
+     *
+     * @param password        the password to check
+     * @param confirmPassword the password confirmation to compare
+     * @return true if both passwords match, false otherwise
+     */
     private boolean matchPasswordWithConfirmPassword(String password, String confirmPassword) {
         return password.equals(confirmPassword);
     }
 
+    /**
+     * Retrieves a user by email.
+     *
+     * @param email the email of the user to retrieve
+     * @return the {@link Users} object if found, null otherwise
+     */
     public Users getUserByEmail(String email) {
         Optional<Users> user = usersRepository.findByUserEmail(email);
         log.debug("User retrieval by email '{}': {}", email, user.isPresent());
         return user.orElse(null);
     }
 
+    /**
+     * Adds a new user to the system.
+     *
+     * @param signUpSecondPhaseRequest the request containing user details for the second phase
+     * @param fileNameAndPath          the file path for the profile picture
+     * @return true if the user was added successfully, false otherwise
+     */
     @Transactional
     public boolean addNewUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
         try {
@@ -114,13 +143,18 @@ public class AuthenticationService {
         return true;
     }
 
+    /**
+     * Validates the second phase of the user sign-up process.
+     *
+     * @param signUpSecondPhaseRequest the request containing user details for the second phase
+     * @return true if validation is successful
+     * @throws EntityNotFoundException if any required entities are not found
+     * @throws SkillNotFoundException  if any skill IDs are not found
+     */
     public boolean validateSecondPhase(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
-
         Optional<Company> company = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
-
         Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
-
         Optional<Country> country = countryRepository.findById(signUpSecondPhaseRequest.getCountry());
 
         if (userType.isEmpty() || company.isEmpty() || city.isEmpty() || country.isEmpty()) {
@@ -138,6 +172,14 @@ public class AuthenticationService {
         return true;
     }
 
+    /**
+     * Adds skills to a user.
+     *
+     * @param signUpSecondPhaseRequest the request containing user details for the second phase
+     * @return true if skills were added successfully
+     * @throws EntityNotFoundException if the user is not found
+     * @throws SkillNotFoundException  if any skills are not found
+     */
     public boolean addSkills(SignUpSecondPhaseRequest signUpSecondPhaseRequest) {
         Optional<Users> users = usersRepository.findByUserEmail(signUpSecondPhaseRequest.getEmail());
         if (users.isEmpty()) {
@@ -156,6 +198,14 @@ public class AuthenticationService {
         return true;
     }
 
+    /**
+     * Adds user details to the system.
+     *
+     * @param signUpSecondPhaseRequest the request containing user details for the second phase
+     * @param fileNameAndPath          the file path for the profile picture
+     * @return the {@link UserDetails} object if saved successfully
+     * @throws EntityNotFoundException if any required entities are not found
+     */
     public UserDetails addDetails(SignUpSecondPhaseRequest signUpSecondPhaseRequest, String fileNameAndPath) {
         Optional<Company> company = companyRepository.findById(signUpSecondPhaseRequest.getCompany());
         Optional<City> city = cityRepository.findById(signUpSecondPhaseRequest.getCity());
@@ -174,11 +224,18 @@ public class AuthenticationService {
         userDetails.setProfilePicture(fileNameAndPath);
         userDetails.setCity(city.get());
         userDetails.setCountry(country.get());
-        userDetails.setProfilePicture(fileNameAndPath);
 
         return userDetailsRepository.save(userDetails);
     }
 
+    /**
+     * Adds a new user to the system.
+     *
+     * @param signUpSecondPhaseRequest the request containing user details for the second phase
+     * @param userDetails              the {@link UserDetails} object for the user
+     * @return the {@link Users} object if saved successfully
+     * @throws EntityNotFoundException if the user type is not found
+     */
     public Users addUser(SignUpSecondPhaseRequest signUpSecondPhaseRequest, UserDetails userDetails) {
         Optional<UserType> userType = userTypeRepository.findById(signUpSecondPhaseRequest.getUserType());
 
@@ -196,6 +253,12 @@ public class AuthenticationService {
         return usersRepository.save(user);
     }
 
+    /**
+     * Authenticates a user based on email and password.
+     *
+     * @param input the login request containing email and password
+     * @return an {@link Optional} containing the {@link Users} object if authentication is successful, empty otherwise
+     */
     public Optional<Users> authenticate(LoginRequest input) {
         Optional<Users> user = usersRepository.findByUserEmail(input.getEmail());
 
