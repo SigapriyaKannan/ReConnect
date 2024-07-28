@@ -21,7 +21,7 @@ public class SearchService {
     /**
      * This method is used to find the usernames by company name
      * @param companyName
-     * @return List of usernames
+     * @return List of usernames with details
      */
 
     public List<SearchResult> findUsernamesByCompanyName(String companyName) {
@@ -44,7 +44,7 @@ public class SearchService {
     /**
      * This method is used to find all usernames by username
      * @param username
-     * @return List of usernames
+     * @return List of usernames with details
      */
     public List<SearchResult> findAllUsernames(String username) {
         Users currentUser = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
