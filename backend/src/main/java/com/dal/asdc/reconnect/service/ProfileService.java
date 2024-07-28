@@ -41,9 +41,11 @@ public class ProfileService {
     @Autowired
     private CompanyRepository companyRepository;
     /**
-     * Get user details by ID
-     * @param userID
-     * @return UserDetailsResponse
+     * Retrieves user details and skills for a given user ID.
+     *
+     * @param userID The unique identifier of the user to retrieve details for.
+     * @return UserDetailsResponse containing user details and skills.
+     * @throws UsernameNotFoundException if no user is found with the given ID.
      */
     public UserDetailsResponse getUserDetailsByUserID(int userID) {
         Optional<Users> userOptional = usersRepository.findByUserID(userID);
