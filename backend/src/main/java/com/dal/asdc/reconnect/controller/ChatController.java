@@ -80,8 +80,10 @@ public class ChatController {
         this.socketServer.addEventListener("messageSendToUser", Message.class, onSendMessage);
 
     }
+
     /**
      * Get chat history between two users
+     *
      * @param receiverEmail
      * @return ResponseEntity with list of messages
      */
@@ -96,8 +98,5 @@ public class ChatController {
             Response<?> response = new Response<>(HttpStatus.CONFLICT.value(), "Messages Not Found", new ArrayList<>());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-
-
     }
-
 }

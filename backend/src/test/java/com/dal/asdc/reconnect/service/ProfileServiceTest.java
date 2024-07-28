@@ -3,7 +3,6 @@ package com.dal.asdc.reconnect.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.dal.asdc.reconnect.dto.Skill.SkillsDto;
 import com.dal.asdc.reconnect.dto.userdetails.UserDetailsRequest;
 import com.dal.asdc.reconnect.dto.userdetails.UserDetailsResponse;
 import com.dal.asdc.reconnect.model.*;
@@ -43,7 +42,7 @@ class ProfileServiceTest {
     private CompanyRepository companyRepository;
 
     @InjectMocks
-    private ProfileService profileService;
+    private ProfileServiceImpl profileService;
 
     private Users user;
     private UserDetails userDetails;

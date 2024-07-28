@@ -1,26 +1,24 @@
 package com.dal.asdc.reconnect.service;
 
-
 import com.dal.asdc.reconnect.dto.Skill.SkillsDto;
 import com.dal.asdc.reconnect.model.SkillDomain;
 import com.dal.asdc.reconnect.model.Skills;
 import com.dal.asdc.reconnect.repository.SkillDomainRepository;
 import com.dal.asdc.reconnect.repository.SkillsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class SkillsService {
-    @Autowired
-    SkillsRepository skillsRepository;
+    private final SkillsRepository skillsRepository;
 
-    @Autowired
-    SkillDomainRepository skillDomainRepository;
+    private final SkillDomainRepository skillDomainRepository;
 
     /**
      * Retrieves the list of all skills.
@@ -49,7 +47,7 @@ public class SkillsService {
      * Adds a new skill to the database.
      *
      * @param skillDTO The SkillsDto object containing the skill information to be added.
-     * It must include the skill name and the domain ID.
+     *                 It must include the skill name and the domain ID.
      * @throws RuntimeException if the specified skill domain is not found.
      */
     public void addSkill(SkillsDto skillDTO) {
@@ -66,7 +64,7 @@ public class SkillsService {
      * Edits an existing skill in the database.
      *
      * @param skillDTO The SkillsDto object containing the skill information to be edited.
-     * It must include the skill ID, the new skill name, and the new domain ID.
+     *                 It must include the skill ID, the new skill name, and the new domain ID.
      * @throws RuntimeException if the specified skill is not found.
      */
     public void editSkill(SkillsDto skillDTO) {
@@ -79,6 +77,7 @@ public class SkillsService {
         skill.setSkillDomain(domain);
         skillsRepository.save(skill);
     }
+
     /**
      * Deletes a skill from the database.
      *

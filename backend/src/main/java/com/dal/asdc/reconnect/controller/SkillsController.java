@@ -17,6 +17,7 @@ public class SkillsController {
 
     @Autowired
     SkillsService skillsService;
+
     /**
      * Retrieves all skills from the system.
      *
@@ -28,7 +29,8 @@ public class SkillsController {
         Response<List<SkillsDto>> response = new Response<>(HttpStatus.OK.value(), "Fetched all skills", listOfSkills);
         return ResponseEntity.ok(response);
     }
-   /**
+
+    /**
      * Adds a new skill to the system.
      *
      * @param skill SkillsDto object containing the skill details
@@ -40,6 +42,7 @@ public class SkillsController {
         Response<String> response = new Response<>(HttpStatus.OK.value(), "Skill added successfully", null);
         return ResponseEntity.ok(response);
     }
+
     /**
      * Edits an existing skill in the system.
      *
@@ -52,6 +55,7 @@ public class SkillsController {
         Response<String> response = new Response<>(HttpStatus.OK.value(), "Skill edited successfully", null);
         return ResponseEntity.ok(response);
     }
+
     /**
      * Deletes an existing skill from the system.
      *

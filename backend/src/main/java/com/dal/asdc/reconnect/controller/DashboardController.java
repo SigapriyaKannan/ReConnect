@@ -25,9 +25,11 @@ public class DashboardController {
 
     @Autowired
     DashboardService dashboardService;
+
     /**
      * This method is used to get all the users per country
-     * @return ResponseEntity<Response<List<UsersPerCountryDTO>>>
+     *
+     * @return ResponseEntity<Response < List < UsersPerCountryDTO>>>
      */
     @GetMapping("/getAllUsersPerCountry")
     public ResponseEntity<Response<List<UsersPerCountryDTO>>> getAllUsersPerCountry() {
@@ -35,9 +37,11 @@ public class DashboardController {
         Response<List<UsersPerCountryDTO>> usersPerCountryDTOResponse = new Response<>(HttpStatus.OK.value(), "Fetched Users", usersPerCountryDTOS);
         return ResponseEntity.ok(usersPerCountryDTOResponse);
     }
+
     /**
      * This method is used to get all the users per type
-     * @return ResponseEntity<Response<List<UsersPerTypeDTO>>>
+     *
+     * @return ResponseEntity<Response < List < UsersPerTypeDTO>>>
      */
     @GetMapping("/getAllUsersPerType")
     public ResponseEntity<Response<List<UsersPerTypeDTO>>> getAllUsersPerType() {
@@ -45,9 +49,11 @@ public class DashboardController {
         Response<List<UsersPerTypeDTO>> usersPerTypeDTOResponse = new Response<>(HttpStatus.OK.value(), "Fetched Users", usersPerCountryDTOS);
         return ResponseEntity.ok(usersPerTypeDTOResponse);
     }
+
     /**
      * This method is used to get all the users per company
-     * @return ResponseEntity<Response<List<UsersPerCompanyDTO>>>
+     *
+     * @return ResponseEntity<Response < List < UsersPerCompanyDTO>>>
      */
     @GetMapping("/getAllUsersPerCompany")
     public ResponseEntity<Response<List<UsersPerCompanyDTO>>> getAllUsersPerSkill() {
@@ -55,9 +61,11 @@ public class DashboardController {
         Response<List<UsersPerCompanyDTO>> usersPerCompanyDTOResponse = new Response<>(HttpStatus.OK.value(), "Fetched Users", usersPerCountryDTOS);
         return ResponseEntity.ok(usersPerCompanyDTOResponse);
     }
+
     /**
      * This method is used to get top five countries
-     * @return ResponseEntity<Response<List<UsersPerCountryDTO>>>
+     *
+     * @return ResponseEntity<Response < List < UsersPerCountryDTO>>>
      */
     @GetMapping("/getTopFiveCompanies")
     public ResponseEntity<Response<List<UsersPerCompanyDTO>>> getTopFiveCompanies() {

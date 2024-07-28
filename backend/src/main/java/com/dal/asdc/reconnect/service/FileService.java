@@ -1,11 +1,9 @@
 package com.dal.asdc.reconnect.service;
 
-import com.dal.asdc.reconnect.repository.UserDetailsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,11 +12,11 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class FileService {
 
-    @Autowired
-    private ProfileService profileService;
+    private final ProfileServiceImpl profileService;
 
     private final String uploadImagesDirectory = "uploads/images";
     private final String uploadResumesDirectory = "uploads/resumes";
@@ -27,7 +25,7 @@ public class FileService {
      * Uploads a resume file for a user and updates their profile with the file path.
      *
      * @param userId The ID of the user uploading the resume
-     * @param file The resume file to be uploaded
+     * @param file   The resume file to be uploaded
      * @throws IOException If there's an error in file operations
      */
     public void uploadResume(int userId, MultipartFile file) throws IOException {
@@ -44,11 +42,12 @@ public class FileService {
         profileService.updateResumePath(userId, fileNameAndPath.toString());
         log.info("Resume uploaded successfully for userId: {}", userId);
     }
+
     /**
      * Uploads a profile picture for a user and updates their profile with the file path.
      *
      * @param userId The ID of the user uploading the profile picture
-     * @param file The profile picture file to be uploaded
+     * @param file   The profile picture file to be uploaded
      * @throws IOException If there's an error in file operations
      */
     public void uploadProfilePicture(int userId, MultipartFile file) throws IOException {
@@ -64,6 +63,7 @@ public class FileService {
 
         profileService.updateProfilePicturePath(userId, fileNameAndPath.toString());
     }
+
     /**
      * Retrieves the resume file for a user.
      *
@@ -78,6 +78,7 @@ public class FileService {
         }
         return null;
     }
+
     /**
      * Retrieves the profile picture for a user.
      *

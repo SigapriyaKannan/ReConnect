@@ -1,6 +1,5 @@
 package com.dal.asdc.reconnect.service;
 
-
 import com.dal.asdc.reconnect.dto.Request.Requests;
 import com.dal.asdc.reconnect.enums.RequestStatus;
 import com.dal.asdc.reconnect.model.ReferralRequests;
@@ -9,29 +8,28 @@ import com.dal.asdc.reconnect.repository.RequestRepository;
 import com.dal.asdc.reconnect.repository.UserDetailsRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class RequestService {
 
-    @Autowired
-    RequestRepository requestRepository;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    UserDetailsRepository userDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
 
-    @Autowired
-    UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
 
     /**
      * Get all pending requests for a referent
+     *
      * @param Sender
      * @return List of Requests
      */
@@ -48,6 +46,7 @@ public class RequestService {
 
     /**
      * Get all accepted requests for a referent
+     *
      * @param userId
      * @return List of ReferralRequests
      */
@@ -57,6 +56,7 @@ public class RequestService {
 
     /**
      * Get all pending requests for a referrer
+     *
      * @param Sender
      * @return List of Requests
      */
@@ -71,11 +71,11 @@ public class RequestService {
 
     /**
      * Accepts a request.
-     *
+     * <p>
      * This method updates the status of a request to ACCEPTED and sets the response date
      * to the current date and time. It operates within a transaction to ensure data consistency.
      *
-     * @param Sender The email address of the user who sent the request.
+     * @param Sender     The email address of the user who sent the request.
      * @param referentID The ID of the referent (the user accepting the request).
      * @throws RuntimeException if the database update operation fails.
      */
@@ -85,13 +85,14 @@ public class RequestService {
         int refereeID = users.get().getUserID();
         requestRepository.updateStatusAndResponseDate(RequestStatus.ACCEPTED, LocalDateTime.now(), referentID, refereeID);
     }
+
     /**
      * Rejects a request.
-     *
+     * <p>
      * This method updates the status of a request to REJECTED and sets the response date
      * to the current date and time. It operates within a transaction to ensure data consistency.
      *
-     * @param Sender The email address of the user who sent the request.
+     * @param Sender     The email address of the user who sent the request.
      * @param referentID The ID of the referent (the user rejecting the request).
      * @throws RuntimeException if the database update operation fails.
      */
@@ -101,9 +102,10 @@ public class RequestService {
         int refereeID = users.get().getUserID();
         requestRepository.updateStatusAndResponseDate(RequestStatus.REJECTED, LocalDateTime.now(), referentID, refereeID);
     }
+
     /**
      * Sends a request.
-     *
+     * <p>
      * This method creates a new request with the specified referent and referrer,
      * sets the status to PENDING, and sets the request date to the current date and time.
      * It operates within a transaction to ensure data consistency.
@@ -114,14 +116,12 @@ public class RequestService {
      * @throws IllegalArgumentException if the referent or referrer ID is invalid.
      */
     @Transactional
-    public boolean sendRequest(Integer referentId, Integer referrerId)
-    {
+    public boolean sendRequest(Integer referentId, Integer referrerId) {
         Users referent = usersRepository.findById(referentId).orElseThrow(() -> new IllegalArgumentException("Invalid referent ID"));
         Users referrer = usersRepository.findById(referrerId).orElseThrow(() -> new IllegalArgumentException("Invalid referrer ID"));
 
         Optional<ReferralRequests> existingRequest = requestRepository.findByReferrerAndReferent(referrer, referent);
-        if (existingRequest.isPresent())
-        {
+        if (existingRequest.isPresent()) {
             return false;
         }
         ReferralRequests referralRequest = new ReferralRequests();
@@ -132,8 +132,10 @@ public class RequestService {
         ReferralRequests savedRequest = requestRepository.save(referralRequest);
         return savedRequest != null;
     }
+
     /**
      * Get all accepted requests for a referrer
+     *
      * @param userID
      * @return List of ReferralRequests
      */
