@@ -1,10 +1,9 @@
-package com.dal.asdc.reconnect;
+package com.dal.asdc.reconnect.service;
 
 import com.dal.asdc.reconnect.model.UserType;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.UserDetailsRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
-import com.dal.asdc.reconnect.service.JWTService;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class JWTServiceTest {
 

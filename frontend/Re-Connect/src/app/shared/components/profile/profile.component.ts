@@ -100,11 +100,6 @@ export class ProfileComponent implements OnInit {
             this.userID = id;
         });
 
-        this.activatedRoute.params.subscribe(({ id }) => {
-            this.userID = id;
-            console.log(this.userID);
-        });
-
         this.profileForm = new FormGroup({
             userName: new FormControl(this.userDetails.userName, [Validators.required]),
             company: new FormControl(null, [Validators.required]),

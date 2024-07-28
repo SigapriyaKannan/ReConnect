@@ -228,7 +228,7 @@ public class JWTService {
      * @param token the JWT token
      * @return the profile picture URL extracted from the token
      */
-    public String extrachProfilePicture(String token) {
+    public String extractProfilePicture(String token) {
         Claims claims = extractAllClaims(token);
         return (String) claims.get("profile");
     }
