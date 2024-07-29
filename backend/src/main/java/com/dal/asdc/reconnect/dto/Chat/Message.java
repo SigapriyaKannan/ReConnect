@@ -6,9 +6,28 @@ public class Message {
     private String message;
     private int senderId;
     private String senderName;
+    private String senderEmail;
     private String senderProfilePicture;
     private int receiverId;
     private String receiverName;
+
+    public String getSenderEmail() {
+        return senderEmail;
+    }
+
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
+    public String getReceiverEmail() {
+        return receiverEmail;
+    }
+
+    public void setReceiverEmail(String receiverEmail) {
+        this.receiverEmail = receiverEmail;
+    }
+
+    private String receiverEmail;
     private String receiverProfilePicture;
 
     public boolean isRead() {
