@@ -37,7 +37,28 @@
 			</div>
 			<div class="row h-100 overflow-auto messages-row">
 				<div class="col messages-wrapper rounded">
-					@if(listOfMessages.length === 0) {
+					@if(fetchingMessages) { @for (item of [1,2,3]; track $index) {
+					<div class="row m-4 me-0 justify-content-end sender">
+						<div class="d-flex flex-column w-auto">
+							<!-- <span class="fw-bold">{{ message.senderName }}</span> -->
+							<div class="d-flex align-items-end gap-2 flex-row-reverse">
+								<p-skeleton shape="circle" size="2rem"></p-skeleton>
+								<p-skeleton width="20rem" height="4rem"></p-skeleton>
+							</div>
+							<p-skeleton width="3rem" height="1rem" styleClass="mt-1"></p-skeleton>
+						</div>
+					</div>
+					<div class="row m-4 ms-0 justify-content-start receiver">
+						<div class="d-flex flex-column w-auto">
+							<!-- <span class="fw-bold">{{ message.senderName }}</span> -->
+							<div class="d-flex align-items-end gap-2">
+								<p-skeleton shape="circle" size="2rem"></p-skeleton>
+								<p-skeleton width="20rem" height="4rem"></p-skeleton>
+							</div>
+							<p-skeleton width="3rem" height="1rem" styleClass="text-end mt-1"></p-skeleton>
+						</div>
+					</div>
+					} } @else { @if(listOfMessages.length === 0) {
 					<div class="row w-100 h-100">
 						<div class="col h-100 text-center position-relative">
 							<span class="position-absolute top-50 start-50 translate-middle">No Messages</span>
@@ -69,7 +90,7 @@
 							<small class="fst-italic" [ngClass]="{ 'text-end': message.receiverId === user.userId }">{{ message.timestamp | date : "short" }}</small>
 						</div>
 					</div>
-					}
+					} }
 				</div>
 			</div>
 			<div class="row textbox-row d-flex align-items-center">

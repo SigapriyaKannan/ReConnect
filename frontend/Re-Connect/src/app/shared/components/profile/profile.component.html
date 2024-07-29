@@ -3,7 +3,7 @@
 		<div class="d-flex flex-column justify-content-center align-items-center" [ngClass]="[enableEdit ? 'col-md-4' : 'col-md-12']">
 			<div class="profile-picture-container mb-3">
 				@if(isFetchingUserDetails){
-				<p-skeleton styleClass="mb-2" size="10rem" />
+				<p-skeleton styleClass="mb-2" size="7rem" />
 				} @else {
 				<img [src]="serverPath + userDetails.profilePicture" alt="Profile Picture" class="profile-picture img-fluid rounded" />
 				}

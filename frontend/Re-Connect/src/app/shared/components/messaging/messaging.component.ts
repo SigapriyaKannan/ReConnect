@@ -5,17 +5,18 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { ListboxModule } from "primeng/listbox";
 import { Message, MessagingService } from './messaging.service';
-import { Subscription, tap } from 'rxjs';
+import { finalize, Subscription, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { OverlayService } from '../../services/overlay.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ProfileComponent } from '../profile/profile.component';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'rc-messaging',
   standalone: true,
-  imports: [InputTextareaModule, FormsModule, ButtonModule, DatePipe, NgClass, ListboxModule, RouterLink],
+  imports: [InputTextareaModule, FormsModule, ButtonModule, DatePipe, NgClass, ListboxModule, SkeletonModule],
   templateUrl: './messaging.component.html',
   styleUrl: './messaging.component.scss',
   providers: [MessagingService]
@@ -76,7 +77,7 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
       const messageBody: Message = {
         senderName: this.user.email, senderId: this.user.userId, receiverName: this.selectedUser.name, receiverId: this.selectedUser.id, message: this.message, timestamp: new Date()
       }
-      // this.messagingService.sendMessage(messageBody);
+      this.messagingService.sendMessage(messageBody);
       this.listOfMessages.push(messageBody);
       this.message = "";
     }
@@ -84,7 +85,7 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   fetchMessages() {
     this.fetchingMessages = true;
-    this.messagingService.getChatHistory(this.selectedUser.email).pipe(tap(() => this.fetchingMessages = false)).subscribe({
+    this.messagingService.getChatHistory(this.selectedUser.email).pipe(finalize(() => this.fetchingMessages = false)).subscribe({
       next: response => {
         this.listOfMessages = response['body'];
       },
