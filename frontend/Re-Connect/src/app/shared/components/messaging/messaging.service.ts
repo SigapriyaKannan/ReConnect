@@ -9,8 +9,10 @@ export interface Message {
     senderId: number;
     senderName: string;
     senderProfilePicture?: string;
+    senderEmail: string;
     receiverId: number;
     receiverName: string;
+    receiverEmail: string;
     receiverProfilePicture?: string;
     timestamp: Date;
     read?: boolean;
@@ -46,6 +48,7 @@ export class MessagingService {
     receiveMessage(userEmail: string): Observable<Message> {
         return new Observable(observer => {
             this.socket?.on(userEmail, (data: any) => {
+                console.log(data);
                 observer.next(data);
             });
             return () => { this.socket.disconnect(); };

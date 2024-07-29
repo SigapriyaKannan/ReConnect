@@ -72,7 +72,7 @@
 						class="row m-4"
 						[ngClass]="{
 							'me-0 justify-content-end sender': message.senderId === user.userId,
-							'ms-0 justify-content-start receiver': message.receiverId === user.userId
+							'ms-0 justify-content-start receiver': message.senderId === selectedUser.userId
 						}"
 					>
 						<div class="d-flex flex-column w-auto">
