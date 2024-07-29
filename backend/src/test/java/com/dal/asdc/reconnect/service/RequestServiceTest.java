@@ -3,6 +3,9 @@ package com.dal.asdc.reconnect.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.dal.asdc.reconnect.dto.Request.Requests;
 import com.dal.asdc.reconnect.enums.RequestStatus;
 import com.dal.asdc.reconnect.model.ReferralRequests;
@@ -12,14 +15,18 @@ import com.dal.asdc.reconnect.repository.UserDetailsRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RequestServiceTest {
 
@@ -242,6 +249,31 @@ public class RequestServiceTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testGetPendingRequestForReferent_UserFound() {
+        // Arrange
+        String senderEmail = "test@example.com";
+        Users user = new Users();
+        user.setUserID(1);
+
+        Requests request1 = new Requests();
+        Requests request2 = new Requests();
+
+        when(usersRepository.findByUserEmail(senderEmail)).thenReturn(Optional.of(user));
+        when(requestRepository.findReferrerIdsByReferentIdAndStatusPending(1)).thenReturn(Arrays.asList(101, 102));
+        when(userDetailsRepository.findRequestsByReferrerIds(Arrays.asList(101, 102)))
+                .thenReturn(Arrays.asList(request1, request2));
+
+        // Act
+        List<Requests> requests = requestService.getPendingRequestForReferent(senderEmail);
+
+        // Assert
+        assertNotNull(requests);
+        assertEquals(2, requests.size());
+        assertTrue(requests.contains(request1));
+        assertTrue(requests.contains(request2));
     }
 
 }
