@@ -32,12 +32,108 @@ Reconnect simplifies the referral process, making it easier for users to connect
 - netlify
 - onrender
 
-# Backend Setup
+---------
+# Executing the Project
+
+### 1. Clone the repository
+
+```bash
+git clone https://git.cs.dal.ca/courses/2024-summer/csci-5308/group04
+```
+
+
+## Executing the Backend
+Steps to run the project locally:
 
 ## Prerequisite
 - **Java**
 - **Spring Boot**
 - **Maven**
+
+### 1. Navigate to backend folder
+
+```bash
+Navigate to group04/backend
+```
+
+### 2. Build the project
+
+```bash
+mvn clean install
+```
+
+### 3. Run the application
+
+```bash
+mvn spring-boot:run
+```
+
+## Executing The Frontend
+Steps to run the project locally:
+
+## Prerequisite
+- **NodeJS**
+- **npm**
+
+### 1. Navigate to frontend folder
+
+```bash
+Navigate to group04/frontend/Re-Connect
+```
+### 2. Install the dependencies
+
+```bash
+npm install
+```
+
+### 3. Run the application
+
+```bash
+npm start
+```
+Finally, the application frontend will start running locally.
+
+
+## Application Running Locally
+
+The application is now running locally! 🎉
+
+You can view the application by visiting the following link:
+
+[http://localhost:4200/#/login](http://localhost:4200/#/login)
+
+Enjoy exploring the features!
+
+
+--------------
+
+# Testing
+
+In this project, we are heavily focused on test cases, ensuring that almost every part of our services is covered. The coverage percentages for different areas are provided below.
+
+- **Class percentage:**
+  - 100
+- **Method percentage:**
+  - 100
+- **Line percentage:**
+  - 97
+
+Steps to Test locally:
+
+### 1. Navigate to backend folder
+
+```bash
+Navigate to group04/backend
+```
+
+### 2. Execute the Command
+
+```bash
+mvn test 
+```
+
+------
+# Backend Configuration
 
 ## Dependencies
 
@@ -68,40 +164,7 @@ Reconnect simplifies the referral process, making it easier for users to connect
 
 
 
-
-## Execution
-Steps to run the project locally:
-
-### 1. Clone the repository
-
-```bash
-git clone https://git.cs.dal.ca/courses/2024-summer/csci-5308/group04
-```
-
-### 2. Navigate to backend folder
-
-```bash
-Navigate to group04/backend
-```
-
-### 3. Build the project
-
-```bash
-mvn clean install
-```
-
-### 3. Run the application
-
-```bash
-mvn spring-boot:run
-```
-Finally, the application backend will start running locally.
-
-# Frontend Setup
-
-## Prerequisite
-- **NodeJS**
-- **npm**
+# Frontend Configuration
 
 ## Dependencies
 
@@ -128,30 +191,8 @@ Finally, the application backend will start running locally.
 | zone.js                | Execution context library to manage async operations in Angular.                                        | ~0.14.3    |
 
 
-## Execution
-Steps to run the project locally:
-
-### 1. Clone the repository
-
-```bash
-git clone https://git.cs.dal.ca/courses/2024-summer/csci-5308/group04
-```
-
-### 2. Navigate to backend folder
-
-```bash
-Navigate to group04/frontend
-```
-
-### 3. Run the application
-
-```bash
-npm start
-```
-Finally, the application frontend will start running locally.
-
-
-## Building The Backend Application
+-----
+## Docker Configuration for Backend Application
 
 #### Spring Boot Application Deployment
 
@@ -182,7 +223,7 @@ To build and run the container:
 * `docker run -p 8080:8080 reconnect`
 
 ----------
-## Building The Frontend Application
+## Docker Configuration for  Frontend Application
 
 #### Node.js Application Deployment
 
@@ -279,16 +320,44 @@ This `.gitlab-ci.yml` file defines a GitLab CI/CD pipeline with four stages: bui
 
 This pipeline ensures that the code is built, tested, pushed to a Docker registry, and then deployed to the appropriate environments in an automated manner.
 
+---------------------
+## Usage Scenarios
 
-# Testing
+### 1. **Referent User Flow**
 
-In this project, we are heavily focused on test cases, ensuring that almost every part of our services is covered. The coverage percentages for different areas are provided below.
+#### Registration and Login
+- **Register as a Referent**: Users can sign up as referents by providing the required registration information.
+- **Login**: After registration, referents can log in to the application using their credentials.
 
-- **Class percentage:**
-  - 100
-- **Method percentage:**
-  - 100
-- **Line percentage:**
-  - 97
+#### Landing Page
+- **User Profile**: Upon logging in, referents are directed to the landing page, where they can see their username on the right side. They can click on the username to edit their profile information, except for the username itself. Editable fields include:
+  - Skills
+  - Company (as users may change companies over time)
 
+- **Search**: Referents can search for referrers by their name or company name.
 
+#### Sending Requests
+- **Request Sending**: Referents can send requests to referrers. If a referrer accepts the request, the interaction will appear in the messaging section of the application, allowing both parties to communicate.
+
+#### Request Management
+- **Request Options**: On the left side of the screen, referents can access the requests section, which shows pending requests and notifications for accepted requests.
+
+### 2. **Referrer User Flow**
+
+#### Registration and Login
+- **Register as a Referrer**: Users can sign up as referrers by providing the required registration information.
+- **Login**: After registration, referrers can log in to the application using their credentials.
+
+#### Landing Page
+- **User Profile**: Upon logging in, referrers are directed to the landing page, where they have the same options as referents to search for users by name or company.
+
+#### Request Management
+- **Request Handling**: Referrers can view the number of pending requests and choose to accept them. Once a request is accepted, it will be reflected in both the referrer and referent's messaging pages, enabling communication.
+
+### Dashboard Page
+- **Overview**: The dashboard provides an overview of the application's user base and other statistics, including:
+  - **Users by Country**: A graph showing the distribution of users from different countries.
+  - **Users by Type**: A pie chart displaying the proportion of referents and referrers.
+  - **Top 5 Companies**: A list showing the top 5 companies with the most users.
+
+- **Admin Options**: The dashboard also includes options for administrators to add or modify countries, companies, and skills.

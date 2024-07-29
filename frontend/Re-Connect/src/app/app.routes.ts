@@ -88,6 +88,9 @@ export const routes: Routes = [
             {
                 path: "admin",
                 component: AdminLayoutComponent,
+                resolve: {
+                    user: UserResolver
+                },
                 // canActivateChild: [canActivateAdminPage],
                 children: [
                     {
