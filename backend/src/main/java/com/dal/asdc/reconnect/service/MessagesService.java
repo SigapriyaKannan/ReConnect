@@ -66,6 +66,7 @@ public class MessagesService {
             messagetItem.setReceiverProfilePicture(message.getReceiver().getUserDetails().getProfilePicture());
             messagetItem.setReceiverId(message.getReceiver().getUserID());
             messagetItem.setTimestamp(message.getTime());
+            messagetItem.setRead(message.isRead());
 
             chatHistoryResponseBodyList.add(messagetItem);
         }

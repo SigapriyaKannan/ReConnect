@@ -15,6 +15,9 @@
 				<ng-template pTemplate="item" let-user>
 					<img [src]="imagePath + user.profile" [alt]="user.name" height="40" width="40" class="me-2 rounded" />
 					<span class="text-truncate">{{ user.name }}</span>
+					@if(user.newMessage){
+					<i class="pi p-text-secondary ms-auto" pBadge style="font-size: 1rem" severity="info"></i>
+					}
 				</ng-template>
 			</p-listbox>
 		</div>

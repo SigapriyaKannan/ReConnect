@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 import { DataViewModule } from 'primeng/dataview';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { environment } from '../../../../environments/environment';
 import { Request, RequestService } from '../requests/request.service';
@@ -10,11 +10,14 @@ import { ToastService } from '../../services/toast.service';
 import { ToastModule } from "primeng/toast";
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ProfileComponent } from '../profile/profile.component';
+import { finalize } from 'rxjs';
+import { SkeletonModule } from 'primeng/skeleton';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   selector: 'rc-requests',
   standalone: true,
-  imports: [CommonModule, ButtonModule, TabViewModule, DataViewModule, ToastModule, RouterLink],
+  imports: [CommonModule, ButtonModule, TabViewModule, DataViewModule, ToastModule, SkeletonModule, BadgeModule],
   templateUrl: './requests.component.html',
   styleUrl: './requests.component.scss'
 })
@@ -25,6 +28,8 @@ export class RequestsComponent implements OnInit, OnDestroy {
   listOfPending: any[] = [];
   initialTabIndex!: number | 0;
   imagePath: string = environment.SERVER;
+  fetchingAcceptedRequests: boolean = false;
+  fetchingPendingRequests: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute, private requestService: RequestService, private toastService: ToastService, private router: Router, private dialogService: DialogService) {
     this.activatedRoute.parent?.data.subscribe(({ user }) => {
@@ -41,14 +46,16 @@ export class RequestsComponent implements OnInit, OnDestroy {
   }
 
   acceptedRequest() {
-    this.requestService.getAcceptedRequest().subscribe(
+    this.fetchingAcceptedRequests = true;
+    this.requestService.getAcceptedRequest().pipe(finalize(() => this.fetchingAcceptedRequests = false)).subscribe(
       (response: Request[]) => {
         this.listOfAccepted = response['body'];
       });
   }
 
   pendingRequest() {
-    this.requestService.getPendingRequest().subscribe(
+    this.fetchingPendingRequests = true;
+    this.requestService.getPendingRequest().pipe(finalize(() => this.fetchingPendingRequests = false)).subscribe(
       (response: Request[]) => {
         this.listOfPending = response['body'];
       });
