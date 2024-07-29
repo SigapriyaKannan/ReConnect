@@ -51,14 +51,16 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
         });
 
     this.messageListener$ = this.messagingService.receiveMessage(this.user.email).subscribe((data: Message) => {
-      if (this.selectedUser.id === data['receiverId']) {
+      console.log(data);
+      if (this.selectedUser.userId === data['senderId']) {
         this.listOfMessages.push(data);
+        this.scrollToBottom();
+      } else {
         this.listOfUsers.forEach(user => {
           if (user.userId === this.listOfMessages[0].senderId) {
             user.newMessage = true;
           }
         })
-        this.scrollToBottom();
       }
     });
   }
@@ -76,7 +78,6 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   scrollToBottom(): void {
     try {
-      console.log("scroll");
       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
     } catch (err) { }
   }
@@ -84,7 +85,7 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
   sendMessage() {
     if (this.message) {
       const messageBody: Message = {
-        senderName: this.user.email, senderId: this.user.userId, receiverName: this.selectedUser.name, receiverId: this.selectedUser.id, message: this.message, timestamp: new Date()
+        senderName: this.user.username, senderId: this.user.userId, senderEmail: this.user.email, receiverName: this.selectedUser.name, receiverEmail: this.selectedUser.email, receiverId: this.selectedUser.id, message: this.message, timestamp: new Date(), senderProfilePicture: this.user.profile
       }
       this.messagingService.sendMessage(messageBody);
       this.listOfMessages.push(messageBody);
