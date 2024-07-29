@@ -13,6 +13,7 @@ export interface Message {
     receiverName: string;
     receiverProfilePicture?: string;
     timestamp: Date;
+    read?: boolean;
 }
 
 @Injectable()

@@ -23,11 +23,26 @@
 		<h2 class="text-center" *ngIf="hasSearched">Results</h2>
 		<p-dataView [value]="searchResults">
 			<ng-template pTemplate="empty">
+				@if(searching) {
+				<div class="row">
+					@for(number of [1,2,3,4,5,6]; track $index) {
+					<div class="col-2">
+						<div class="p-2 shadow-sm border rounded d-flex flex-column align-items-center">
+							<p-skeleton size="8rem"></p-skeleton>
+							<p-skeleton width="6rem" styleClass="my-2"></p-skeleton>
+							<p-skeleton width="8rem" styleClass="my-2"></p-skeleton>
+							<p-skeleton width="4rem" styleClass="mt-2 mb-4"></p-skeleton>
+							<p-skeleton width="5rem" height="3rem" styleClass="my-2"></p-skeleton>
+						</div>
+					</div>
+					}
+				</div>
+				} @else {
 				<div class="text-center p-4">
 					<p *ngIf="hasSearched">No results found</p>
-					<p *ngIf="!hasSearched && !searching" class="d-flex flex-column gap-3"><i class="pi pi-search" style="font-size: 5em"></i> Search for users</p>
-					<p *ngIf="searching" class="d-flex flex-column gap-3">Searching...</p>
+					<p *ngIf="!hasSearched" class="d-flex flex-column gap-3 pt-5"><i class="pi pi-search" style="font-size: 5em"></i> Search for users</p>
 				</div>
+				}
 			</ng-template>
 			<ng-template pTemplate="list" let-listOfUsers>
 				<div class="row text-center">

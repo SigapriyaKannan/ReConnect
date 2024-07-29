@@ -5,18 +5,19 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { ListboxModule } from "primeng/listbox";
 import { Message, MessagingService } from './messaging.service';
-import { finalize, Subscription, tap } from 'rxjs';
+import { finalize, map, Subscription, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { OverlayService } from '../../services/overlay.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ProfileComponent } from '../profile/profile.component';
 import { SkeletonModule } from 'primeng/skeleton';
+import { BadgeModule } from "primeng/badge";
 
 @Component({
   selector: 'rc-messaging',
   standalone: true,
-  imports: [InputTextareaModule, FormsModule, ButtonModule, DatePipe, NgClass, ListboxModule, SkeletonModule],
+  imports: [InputTextareaModule, FormsModule, ButtonModule, DatePipe, NgClass, ListboxModule, SkeletonModule, BadgeModule],
   templateUrl: './messaging.component.html',
   styleUrl: './messaging.component.scss',
   providers: [MessagingService]
@@ -42,13 +43,21 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   ngOnInit(): void {
     this.overlaySerivce.showOverlay("Fetching Users");
-    this.messagingService.getAcceptedConnections().pipe(tap(() => this.overlaySerivce.hideOverlay())).subscribe((response) => {
-      this.listOfUsers = response["body"];
-    });
+    this.messagingService.getAcceptedConnections()
+      .pipe(
+        finalize(() => this.overlaySerivce.hideOverlay()),
+        map(response => { return { ...response, body: response['body'].map((user) => { return { ...user, newMessage: false } }) } })).subscribe((response) => {
+          this.listOfUsers = response["body"];
+        });
 
     this.messageListener$ = this.messagingService.receiveMessage(this.user.email).subscribe((data: Message) => {
       if (this.selectedUser.id === data['receiverId']) {
         this.listOfMessages.push(data);
+        this.listOfUsers.forEach(user => {
+          if (user.userId === this.listOfMessages[0].senderId) {
+            user.newMessage = true;
+          }
+        })
         this.scrollToBottom();
       }
     });
@@ -84,6 +93,7 @@ export class MessagingComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   fetchMessages() {
+    this.selectedUser.newMessage = false;
     this.fetchingMessages = true;
     this.messagingService.getChatHistory(this.selectedUser.email).pipe(finalize(() => this.fetchingMessages = false)).subscribe({
       next: response => {

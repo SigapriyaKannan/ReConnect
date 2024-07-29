@@ -11,6 +11,16 @@ public class Message {
     private String receiverName;
     private String receiverProfilePicture;
 
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    private boolean isRead;
+
     public String getSenderProfilePicture() {
         return senderProfilePicture;
     }

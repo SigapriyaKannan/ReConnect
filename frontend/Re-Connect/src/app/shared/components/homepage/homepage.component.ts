@@ -15,13 +15,14 @@ import { ToastService } from '../../services/toast.service';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from "primeng/dynamicdialog";
 import { ProfileComponent } from '../profile/profile.component';
 import { environment } from '../../../../environments/environment';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'rc-homepage',
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, DropdownModule, InputTextModule, ButtonModule, TabViewModule, DataViewModule, TagModule, DynamicDialogModule],
+  imports: [CommonModule, FormsModule, DropdownModule, InputTextModule, ButtonModule, TabViewModule, DataViewModule, TagModule, DynamicDialogModule, SkeletonModule],
 })
 export class HomepageComponent implements OnInit, OnDestroy {
   ref: DynamicDialogRef | undefined;
