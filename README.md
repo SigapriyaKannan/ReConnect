@@ -4,11 +4,11 @@
 ## Deployed URLs
 
 ### Production
-- **Webpage**: [http://csci5308-vm4.research.cs.dal.ca:8080/#/](http://csci5308-vm4.research.cs.dal.ca:8080/#/)
+- **Webpage**: [http://csci5308-vm4.research.cs.dal.ca/#/login](http://csci5308-vm4.research.cs.dal.ca:8080/#/)
 - **Swagger**: [http://csci5308-vm4.research.cs.dal.ca:8080/swagger-ui/index.html](http://csci5308-vm4.research.cs.dal.ca:8080/swagger-ui/index.html)
 
 ### Test
-- **Deployed frontend application**: [https://csci-5308-re-connect.netlify.app](https://csci-5308-re-connect.netlify.app)
+- **Deployed frontend application**: [https://csci-5308-re-connect.netlify.app/#/login](https://csci-5308-re-connect.netlify.app)
 - **Deployed backend application**: [https://reconnect-dal-asdc-reconnect.onrender.com](https://reconnect-dal-asdc-reconnect.onrender.com)
 
 
@@ -35,7 +35,7 @@ Reconnect simplifies the referral process, making it easier for users to connect
 ---------
 # Executing the Project
 
-### 1. Clone the repository
+## Clone the repository
 
 ```bash
 git clone https://git.cs.dal.ca/courses/2024-summer/csci-5308/group04
