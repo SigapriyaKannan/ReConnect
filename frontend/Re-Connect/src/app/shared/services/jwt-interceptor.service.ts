@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from "@angular/common/http";
-import { inject } from "@angular/core";
+import { inject, Injector } from "@angular/core";
 import { catchError, of, throwError } from "rxjs";
 import { ToastService } from "./toast.service";
 import { AuthService } from "./auth.service";
@@ -7,6 +7,7 @@ import { OverlayService } from "./overlay.service";
 
 export const JWTInterceptor: HttpInterceptorFn = (req, next) => {
     let handled: boolean = false;
+    const injector: Injector = inject(Injector);
     return next(req).pipe(catchError((returnedError) => {
         let errorMessage: any = null;
 
@@ -14,7 +15,7 @@ export const JWTInterceptor: HttpInterceptorFn = (req, next) => {
             errorMessage = `Error: ${returnedError.error.message}`;
         } else if (returnedError instanceof HttpErrorResponse) {
             errorMessage = `Error Status ${returnedError.status}: ${returnedError.error.error} - ${returnedError.error.message}`;
-            handled = handleServerSideError(returnedError);
+            handled = handleServerSideError(returnedError, injector);
         }
 
         console.error(errorMessage ? errorMessage : returnedError);
@@ -31,11 +32,11 @@ export const JWTInterceptor: HttpInterceptorFn = (req, next) => {
     }));
 }
 
-function handleServerSideError(error: HttpErrorResponse): boolean {
+function handleServerSideError(error: HttpErrorResponse, injector: Injector): boolean {
     let handled: boolean = false;
-    const toastService = inject(ToastService);
-    const authService = inject(AuthService);
-    const overlayService = inject(OverlayService);
+    const toastService = injector.get(ToastService);
+    const authService = injector.get(AuthService);
+    const overlayService = injector.get(OverlayService);
     switch (error.status) {
         case 401:
             toastService.showError("Please login again");
@@ -43,7 +44,7 @@ function handleServerSideError(error: HttpErrorResponse): boolean {
             handled = true;
             break;
         case 403:
-            toastService.showError("Please login again");
+            toastService.showError(error.error.message ?? "Login again");
             authService.logout();
             handled = true;
             break;

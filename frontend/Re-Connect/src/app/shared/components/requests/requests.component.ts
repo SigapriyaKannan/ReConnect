@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TabViewChangeEvent, TabViewModule } from 'primeng/tabview';
 import { DataViewModule } from 'primeng/dataview';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,8 @@ import { environment } from '../../../../environments/environment';
 import { Request, RequestService } from '../requests/request.service';
 import { ToastService } from '../../services/toast.service';
 import { ToastModule } from "primeng/toast";
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ProfileComponent } from '../profile/profile.component';
 
 @Component({
   selector: 'rc-requests',
@@ -16,18 +18,26 @@ import { ToastModule } from "primeng/toast";
   templateUrl: './requests.component.html',
   styleUrl: './requests.component.scss'
 })
-export class RequestsComponent {
+export class RequestsComponent implements OnInit, OnDestroy {
+  ref: DynamicDialogRef | undefined;
   user: any;
   listOfAccepted: any[] = [];
   listOfPending: any[] = [];
   initialTabIndex!: number | 0;
   imagePath: string = environment.SERVER;
 
-  constructor(private activatedRoute: ActivatedRoute, private requestService: RequestService, private toastService: ToastService, private router: Router) {
+  constructor(private activatedRoute: ActivatedRoute, private requestService: RequestService, private toastService: ToastService, private router: Router, private dialogService: DialogService) {
     this.activatedRoute.parent?.data.subscribe(({ user }) => {
       this.user = user;
-
     })
+  }
+
+  show(userId: number) {
+    this.ref = this.dialogService.open(ProfileComponent, {
+      width: '50vw',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000, header: 'Profile', data: { enableEdit: false, userId }
+    });
   }
 
   acceptedRequest() {
@@ -73,5 +83,11 @@ export class RequestsComponent {
       this.acceptedRequest();
     }
     this.pendingRequest();
+  }
+
+  ngOnDestroy(): void {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }

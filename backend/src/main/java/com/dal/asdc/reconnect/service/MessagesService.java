@@ -59,9 +59,11 @@ public class MessagesService {
         for (Messages message : messages) {
             Message messagetItem = new Message();
             messagetItem.setMessage(message.getMessageContent());
-            messagetItem.setSenderEmail(message.getSender().getUserEmail());
+            messagetItem.setSenderName(message.getSender().getUsername());
+            messagetItem.setSenderProfilePicture(message.getSender().getUserDetails().getProfilePicture());
             messagetItem.setSenderId(message.getSender().getUserID());
-            messagetItem.setReceiverEmail(message.getReceiver().getUserEmail());
+            messagetItem.setReceiverName(message.getReceiver().getUsername());
+            messagetItem.setReceiverProfilePicture(message.getReceiver().getUserDetails().getProfilePicture());
             messagetItem.setReceiverId(message.getReceiver().getUserID());
             messagetItem.setTimestamp(message.getTime());
 

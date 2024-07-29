@@ -1,48 +1,86 @@
 <div class="container my-4">
 	<div class="row">
-		<div class="col-md-4 d-flex flex-column align-items-center mb-4">
+		<div class="d-flex flex-column justify-content-center align-items-center" [ngClass]="[enableEdit ? 'col-md-4' : 'col-md-12']">
 			<div class="profile-picture-container mb-3">
+				@if(isFetchingUserDetails){
+				<p-skeleton styleClass="mb-2" size="7rem" />
+				} @else {
 				<img [src]="serverPath + userDetails.profilePicture" alt="Profile Picture" class="profile-picture img-fluid rounded" />
+				}
 			</div>
-			<h2>{{ userDetails.userName }}</h2>
+			@if(isFetchingUserDetails){
+			<p-skeleton styleClass="mb-2" width="10rem" />
+			} @else {
+			<h2>
+				{{ userDetails.userName }}
+			</h2>
+			}
 			<table class="user-details-table">
 				<tr>
 					<td class="label"><strong>Experience</strong></td>
-					<td>{{ userDetails.experience }} years</td>
+					<td>
+						@if(isFetchingUserDetails){
+						<p-skeleton width="6rem" />
+						} @else {
+						{{ userDetails.experience }} years }
+					</td>
 				</tr>
 				<tr>
 					<td class="label"><strong>Current Company</strong></td>
-					<td>{{ userDetails.companyName || "N/A" }}</td>
+					<td>
+						@if(isFetchingUserDetails){
+						<p-skeleton width="6rem" />
+						} @else {
+						{{ userDetails.companyName }}
+						}
+					</td>
 				</tr>
+
 				<tr>
 					<td class="label"><strong>City</strong></td>
-					<td>{{ userDetails.cityName || "N/A" }}</td>
+					<td>
+						@if(isFetchingUserDetails){
+						<p-skeleton width="6rem" />
+						} @else {
+						{{ userDetails.cityName }}
+						}
+					</td>
 				</tr>
 				<tr>
 					<td class="label"><strong>Country</strong></td>
-					<td>{{ userDetails.countryName || "N/A" }}</td>
+					<td>
+						@if(isFetchingUserDetails){
+						<p-skeleton width="6rem" />
+						} @else {
+						{{ userDetails.countryName }}
+						}
+					</td>
 				</tr>
 				<tr>
 					<td class="label"><strong>Skills</strong></td>
 					<td>
+						@if(isFetchingUserDetails){ @for (item of [1,2,3,4,5]; track $index) {
+						<p-skeleton width="3rem" borderRadius="16px" />
+						} } @else {
 						<ng-container *ngIf="userDetails.skills && userDetails.skills.length; else noSkills">
 							<p-chip *ngFor="let skill of userDetails.skills" [label]="skill.skillName"></p-chip>
 						</ng-container>
 						<ng-template #noSkills>
 							<span>N/A</span>
 						</ng-template>
+						}
 					</td>
 				</tr>
 			</table>
 			<div class="d-flex align-items-center gap-3 my-3">
-				<p-button *ngIf="showEdit" severity="primary" type="button" (click)="editMode = true">Edit Profile </p-button>
+				<p-button *ngIf="enableEdit" severity="primary" type="button" (click)="showEditForm = true">Edit Profile </p-button>
 				<p-button type="button" severity="info" (click)="getResume()">Download Resume</p-button>
 			</div>
 		</div>
 
 		<!-- Edit Form Section -->
-		<div class="col-md-8">
-			<div *ngIf="showEdit && editMode" class="edit-form scrollable-container container-fluid">
+		<div class="col-md-8" *ngIf="enableEdit">
+			<div *ngIf="showEditForm" class="edit-form scrollable-container container-fluid">
 				<form [formGroup]="profileForm" (ngSubmit)="updateUserDetails()">
 					<div class="row mb-3">
 						<div class="col-12">
@@ -128,7 +166,7 @@
 						<p-fileUpload mode="basic" id="resume" name="resume" accept=".pdf" (onSelect)="onResumeSelect($event)"></p-fileUpload>
 					</div>
 					<p-button type="submit" severity="primary" class="me-2">Save</p-button>
-					<p-button type="button" severity="danger" class="me-2" (click)="editMode = false">Cancel</p-button>
+					<p-button type="button" severity="danger" class="me-2" (click)="showEditForm = false">Cancel</p-button>
 				</form>
 			</div>
 		</div>

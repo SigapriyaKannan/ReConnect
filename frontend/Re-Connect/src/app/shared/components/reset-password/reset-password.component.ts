@@ -81,7 +81,7 @@ export class ResetPasswordComponent {
                     this.toastService.showSuccess('Password reset successfully');
                     this.router.navigate(['/login'])
                         .then(() => {
-                            console.log('Navigation to login page successful');
+
                         })
                         .catch(err => {
                             console.error('Navigation to login page failed:', err);

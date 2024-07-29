@@ -16,12 +16,11 @@ export class AdminSidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
   user: any;
 
-  constructor(private authService: AuthService,private router: Router, private route: ActivatedRoute, private activatedRoute: ActivatedRoute) 
-  {
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private activatedRoute: ActivatedRoute) {
     this.activatedRoute.data.subscribe(({ user }) => {
       this.user = user;
     })
-   }
+  }
 
   ngOnInit() {
     this.items = [
@@ -56,9 +55,5 @@ export class AdminSidebarComponent implements OnInit {
         route: "/admin/companies",
       }
     ]
-  }
-
-  onLogout() {
-    this.authService.logout();
   }
 }

@@ -10,7 +10,7 @@
 							<div style="height: 100px">
 								<img class="mh-100 rounded" [src]="imagePath + request.profile" />
 							</div>
-							<p class="fs-5 fw-bold text-decoration-underline text-truncate" role="button" (click)="redirectToProfile(request.userId)">{{ request.name }}</p>
+							<p class="fs-5 fw-bold text-decoration-underline text-truncate" role="button" (click)="show(request.userId)">{{ request.name }}</p>
 							<div class="d-flex justify-content-center gap-2">
 								<p-button *ngIf="user.role !== 1" severity="success" label="Accept" icon="pi pi-check" size="small"></p-button>
 								<p-button *ngIf="user.role !== 1" severity="danger" label="Decline" icon="pi pi-times" size="small"></p-button>
@@ -28,12 +28,12 @@
 			<ng-template pTemplate="list" let-requests>
 				<div class="row text-center">
 					@for(request of requests; track request.requestId) {
-					<div class="col-2" (click)="redirectToProfile(request.userId)">
+					<div class="col-2">
 						<div class="p-2 shadow-sm border rounded">
 							<div style="height: 100px">
 								<img class="mh-100 rounded" [src]="imagePath + request.profile" />
 							</div>
-							<p class="fs-5 fw-bold">{{ request.name }}</p>
+							<p class="fs-5 fw-bold text-decoration-underline text-truncate" role="button" (click)="show(request.userId)">{{ request.name }}</p>
 							<div class="d-flex justify-content-center gap-2">
 								<p-button
 									*ngIf="user.role !== 1"

@@ -93,13 +93,16 @@ public class RequestController {
                 for (ReferralRequests referralRequest : referralRequests) {
                     Requests tempRequest = new Requests();
                     if (typeID == 1) {
+                        tempRequest.setEmail(referralRequest.getReferrer().getUserEmail());
                         tempRequest.setUserId(referralRequest.getReferrer().getUserID());
-                        tempRequest.setName(referralRequest.getReferrer().getUsername());
+                        tempRequest.setName(referralRequest.getReferrer().getUserDetails().getUserName());
+                        tempRequest.setProfile(referralRequest.getReferrer().getUserDetails().getProfilePicture());
                     } else {
+                        tempRequest.setEmail(referralRequest.getReferent().getUserEmail());
                         tempRequest.setUserId(referralRequest.getReferent().getUserID());
-                        tempRequest.setName(referralRequest.getReferent().getUsername());
+                        tempRequest.setName(referralRequest.getReferent().getUserDetails().getUserName());
+                        tempRequest.setProfile(referralRequest.getReferent().getUserDetails().getProfilePicture());
                     }
-                    tempRequest.setProfile("profilePicture.png");
                     requestDTO.add(tempRequest);
                 }
                 Response<List<Requests>> response = new Response<>(HttpStatus.OK.value(), "Fetched Requests", requestDTO);

@@ -9,18 +9,20 @@ import { CityService } from "../../services/city.service";
 import { Experience } from "../../services/experience.service";
 import { Button } from "primeng/button";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { NgForOf, NgIf } from "@angular/common";
+import { NgClass, NgForOf, NgIf } from "@angular/common";
 import { CardModule } from "primeng/card";
 import { FileUploadModule } from "primeng/fileupload";
 import { DropdownModule } from "primeng/dropdown";
 import { MultiSelectModule } from "primeng/multiselect";
-import { Component, OnInit } from "@angular/core";
-import { finalize, forkJoin, Observable } from "rxjs";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { finalize, forkJoin, Observable, Subscription } from "rxjs";
 import { ChipsModule } from "primeng/chips";
 import { ChipModule } from "primeng/chip";
 import { InputTextModule } from "primeng/inputtext";
 import { OverlayService } from "../../services/overlay.service";
 import { environment } from "../../../../environments/environment";
+import { DynamicDialogConfig } from "primeng/dynamicdialog";
+import { SkeletonModule } from "primeng/skeleton";
 
 @Component({
     selector: 'app-profile',
@@ -39,11 +41,13 @@ import { environment } from "../../../../environments/environment";
         MultiSelectModule,
         ChipsModule,
         ChipModule,
-        InputTextModule
+        InputTextModule,
+        NgClass,
+        SkeletonModule
     ],
-    providers: [MessageService]
+    providers: []
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
     profileForm!: FormGroup;
     userDetails: UserDetails = {
         detailId: 0,
@@ -62,11 +66,12 @@ export class ProfileComponent implements OnInit {
 
     serverPath: String = environment.SERVER;
     resumeUrl: any;
-    editMode: boolean = false;
-    showEdit: boolean = false;
+    showEditForm: boolean = false;
+    enableEdit: boolean = true;
     userID: string = "0";
     profilePictureFile: File | null = null;
     resumeFile: File | null = null;
+    activatedRoute$?: Subscription = new Subscription();
 
     listOfExperiences: Experience[] = [
         { "experienceId": 1, "experienceName": "Entry Level" },
@@ -78,6 +83,7 @@ export class ProfileComponent implements OnInit {
     listOfCountries: Country[] = [];
     listOfCities: City[] = [];
     listOfSkills: Skill[] = [];
+    isFetchingUserDetails: boolean = false;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -87,18 +93,20 @@ export class ProfileComponent implements OnInit {
         private skillsService: SkillsService,
         private countryService: CountryService,
         private cityService: CityService,
-        private overlayService: OverlayService
+        private overlayService: OverlayService,
+        public dialogConfig: DynamicDialogConfig
     ) {
     }
 
     ngOnInit(): void {
-        this.activatedRoute.data.subscribe(({ showEdit }) => {
-            this.showEdit = showEdit;
-        });
-
-        this.activatedRoute.params.subscribe(({ id }) => {
-            this.userID = id;
-        });
+        if (this.dialogConfig.data) {
+            this.userID = this.dialogConfig.data.userId;
+            this.enableEdit = this.dialogConfig.data.enableEdit;
+        } else {
+            this.activatedRoute$ = this.activatedRoute.parent?.data.subscribe(({ user }) => {
+                this.userID = user['userId'];
+            });
+        }
 
         this.profileForm = new FormGroup({
             userName: new FormControl(this.userDetails.userName, [Validators.required]),
@@ -125,13 +133,14 @@ export class ProfileComponent implements OnInit {
 
     fetchDropdownOptionsAndUserDetails() {
         this.overlayService.showOverlay("Fetching user details");
+        this.isFetchingUserDetails = true;
         forkJoin({
             companies: this.companyService.getAllCompanies(),
             countries: this.countryService.getAllCountries(),
             skills: this.skillsService.getAllSkills(),
             cities: this.cityService.getAllCities(),
             userDetails: this.profileService.getUserDetails(this.userID)
-        }).pipe(finalize(() => this.overlayService.hideOverlay())).subscribe(({ companies, countries, skills, cities, userDetails }) => {
+        }).pipe(finalize(() => { this.overlayService.hideOverlay(); this.isFetchingUserDetails = false; })).subscribe(({ companies, countries, skills, cities, userDetails }) => {
             this.listOfCompanies = companies['body'];
             this.listOfCountries = countries['body'];
             this.listOfSkills = skills['body'];
@@ -208,7 +217,7 @@ export class ProfileComponent implements OnInit {
             this.userDetails.companyName = company ? company.companyName : "";
             this.userDetails.countryName = country ? country.countryName : "";
             this.userDetails.cityName = city ? city.cityName : "";
-            this.editMode = false;
+            this.showEditForm = false;
             this.messageService.add({
                 severity: 'success',
                 summary: 'Success',
@@ -226,6 +235,10 @@ export class ProfileComponent implements OnInit {
             a.click();
             window.URL.revokeObjectURL(url);
         });
+    }
+
+    ngOnDestroy(): void {
+        this.activatedRoute$?.unsubscribe();
     }
 
 }

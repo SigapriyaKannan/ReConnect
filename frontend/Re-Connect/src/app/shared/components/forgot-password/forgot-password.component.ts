@@ -52,7 +52,7 @@ export class ForgotPasswordComponent {
 
       this.authService.forgotPassword(email).subscribe(
         (response: any) => {
-          console.log('Reset email sent:', response);
+
           this.toastService.showSuccess('Password reset email sent successfully');
         },
         (error: any) => {
