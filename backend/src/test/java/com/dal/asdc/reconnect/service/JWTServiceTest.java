@@ -169,6 +169,19 @@ public class JWTServiceTest {
         assertEquals(1, userID);
     }
 
+
+    @Test
+    public void testExtractProfilePicture() {
+        // Arrange
+        String token = createToken("testUser");
+
+        // Act
+        String extractedProfilePicture = jwtService.extractProfilePicture(token);
+
+        // Assert
+        assertNull(extractedProfilePicture);
+    }
+
     private String createToken(String username) {
         // Mock UserDetails
         UserDetails userDetails = mock(UserDetails.class);
