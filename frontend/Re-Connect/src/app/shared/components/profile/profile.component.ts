@@ -22,6 +22,7 @@ import { InputTextModule } from "primeng/inputtext";
 import { OverlayService } from "../../services/overlay.service";
 import { environment } from "../../../../environments/environment";
 import { DynamicDialogConfig } from "primeng/dynamicdialog";
+import { SkeletonModule } from "primeng/skeleton";
 
 @Component({
     selector: 'app-profile',
@@ -41,7 +42,8 @@ import { DynamicDialogConfig } from "primeng/dynamicdialog";
         ChipsModule,
         ChipModule,
         InputTextModule,
-        NgClass
+        NgClass,
+        SkeletonModule
     ],
     providers: []
 })
@@ -81,6 +83,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     listOfCountries: Country[] = [];
     listOfCities: City[] = [];
     listOfSkills: Skill[] = [];
+    isFetchingUserDetails: boolean = false;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -130,13 +133,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     fetchDropdownOptionsAndUserDetails() {
         this.overlayService.showOverlay("Fetching user details");
+        this.isFetchingUserDetails = true;
         forkJoin({
             companies: this.companyService.getAllCompanies(),
             countries: this.countryService.getAllCountries(),
             skills: this.skillsService.getAllSkills(),
             cities: this.cityService.getAllCities(),
             userDetails: this.profileService.getUserDetails(this.userID)
-        }).pipe(finalize(() => this.overlayService.hideOverlay())).subscribe(({ companies, countries, skills, cities, userDetails }) => {
+        }).pipe(finalize(() => { this.overlayService.hideOverlay(); this.isFetchingUserDetails = false; })).subscribe(({ companies, countries, skills, cities, userDetails }) => {
             this.listOfCompanies = companies['body'];
             this.listOfCountries = countries['body'];
             this.listOfSkills = skills['body'];

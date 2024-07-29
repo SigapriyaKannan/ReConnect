@@ -54,9 +54,9 @@ public class ChatController {
              * Sending message to target user
              * Send the same payload to user
              */
-            messagesService.saveMessage(message.getSenderEmail(), message.getReceiverEmail(), message.getMessage());
-            log.info(message.getSenderEmail() + " user send message to user " + message.getReceiverEmail() + " and message is " + message.getMessage());
-            socketServer.getBroadcastOperations().sendEvent(message.getReceiverEmail(), client, message);
+            messagesService.saveMessage(message.getSenderName(), message.getReceiverName(), message.getMessage());
+            log.info(message.getSenderName() + " user send message to user " + message.getReceiverName() + " and message is " + message.getMessage());
+            socketServer.getBroadcastOperations().sendEvent(message.getReceiverName(), client, message);
 
 
             /**

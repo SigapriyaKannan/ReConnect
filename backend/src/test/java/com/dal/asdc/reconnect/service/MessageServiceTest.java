@@ -2,6 +2,7 @@ package com.dal.asdc.reconnect.service;
 
 import com.dal.asdc.reconnect.dto.Chat.Message;
 import com.dal.asdc.reconnect.model.Messages;
+import com.dal.asdc.reconnect.model.UserDetails;
 import com.dal.asdc.reconnect.model.Users;
 import com.dal.asdc.reconnect.repository.MessagesRepository;
 import com.dal.asdc.reconnect.repository.UsersRepository;
@@ -60,10 +61,15 @@ public class MessageServiceTest
         String receiverEmail = "receiver@example.com";
 
         Users sender = new Users();
+        UserDetails userDetails = new UserDetails();
+        userDetails.setProfilePicture("profile.png");
         sender.setUserEmail(senderEmail);
+        sender.setUserDetails(userDetails);
 
         Users receiver = new Users();
         receiver.setUserEmail(receiverEmail);
+        receiver.setUserDetails(userDetails);
+
 
         Messages message1 = new Messages();
         message1.setSender(sender);
@@ -83,7 +89,7 @@ public class MessageServiceTest
         // Assert
         assertEquals(1, chatHistory.size());
         Message response = chatHistory.get(0);
-        assertTrue(Objects.equals(response.getSenderEmail(), sender.getUserEmail()));
+        assertTrue(Objects.equals(response.getSenderName(), sender.getUserEmail()));
         assertEquals("Hello", response.getMessage());
         assertNotNull(response.getTimestamp());
     }

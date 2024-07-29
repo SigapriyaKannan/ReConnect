@@ -44,7 +44,7 @@ function handleServerSideError(error: HttpErrorResponse, injector: Injector): bo
             handled = true;
             break;
         case 403:
-            toastService.showError("Please login again");
+            toastService.showError(error.error.message ?? "Login again");
             authService.logout();
             handled = true;
             break;

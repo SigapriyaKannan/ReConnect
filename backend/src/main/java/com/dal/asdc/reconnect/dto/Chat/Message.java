@@ -5,25 +5,44 @@ import java.util.Date;
 public class Message {
     private String message;
     private int senderId;
-    private String senderEmail;
+    private String senderName;
+    private String senderProfilePicture;
     private int receiverId;
-    private String receiverEmail;
+    private String receiverName;
+    private String receiverProfilePicture;
+
+    public String getSenderProfilePicture() {
+        return senderProfilePicture;
+    }
+
+    public void setSenderProfilePicture(String senderProfilePicture) {
+        this.senderProfilePicture = senderProfilePicture;
+    }
+
+    public String getReceiverProfilePicture() {
+        return receiverProfilePicture;
+    }
+
+    public void setReceiverProfilePicture(String receiverProfilePicture) {
+        this.receiverProfilePicture = receiverProfilePicture;
+    }
+
     private Date timestamp;
 
-    public String getSenderEmail() {
-        return senderEmail;
+    public String getSenderName() {
+        return senderName;
     }
 
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 
-    public String getReceiverEmail() {
-        return receiverEmail;
+    public String getReceiverName() {
+        return receiverName;
     }
 
-    public void setReceiverEmail(String receiverEmail) {
-        this.receiverEmail = receiverEmail;
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 
     public String getMessage() {

@@ -10,13 +10,13 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 })
 export class ContainerLayoutComponent {
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.data.subscribe(({ user }) => {
+    // this.activatedRoute.data.subscribe(({ user }) => {
 
-      if (user['role'] == 0) {
-        this.router.navigate(["/", "admin"]);
-      } else {
-        this.router.navigate(["/", "homepage"]);
-      }
-    })
+    //   if (user['role'] == 0) {
+    //     this.router.navigate(["/", "admin"]);
+    //   } else {
+    //     this.router.navigate(["/", "homepage"]);
+    //   }
+    // })
   }
 }

@@ -7,9 +7,11 @@ import { Observable } from "rxjs";
 export interface Message {
     message: string;
     senderId: number;
-    senderEmail: string;
+    senderName: string;
+    senderProfilePicture?: string;
     receiverId: number;
-    receiverEmail: string;
+    receiverName: string;
+    receiverProfilePicture?: string;
     timestamp: Date;
 }
 

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Requests {
+    String email;
     String name;
     String profile;
     Integer userId;

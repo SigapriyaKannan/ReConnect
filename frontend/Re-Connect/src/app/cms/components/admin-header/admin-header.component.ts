@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { AvatarModule } from "primeng/avatar";
+import { environment } from '../../../../environments/environment';
+import { ActivatedRoute } from '@angular/router';
+import { ROLES } from '../../../shared/components/constants/roles';
 
 @Component({
   selector: 'rc-admin-header',
@@ -11,12 +14,16 @@ import { AvatarModule } from "primeng/avatar";
   styleUrl: './admin-header.component.scss'
 })
 export class AdminHeaderComponent implements OnInit {
-  items: MenuItem[] | undefined;
-  constructor() { }
+  items: MenuItem[] | undefined = [];
+  loggedUser: any;
+  profilePictureUrl: any;
+  roles = ROLES;
+  serverPath: string = environment.SERVER;
+  constructor(private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.items = [
-
-    ]
+    this.activatedRoute.data.subscribe(({ user }) => {
+      this.loggedUser = user;
+    })
   }
 }
