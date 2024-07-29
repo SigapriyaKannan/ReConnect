@@ -35,7 +35,9 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
-		"build": "ng build",
+		"build:development": "ng build  --extract-licenses=false --verbose=true --configuration=development --base-href=",
+		"build:staging": "ng build  --extract-licenses=false --verbose=true --configuration=staging",
+		"build:production": "ng build  --extract-licenses=false --verbose=true --configuration=production",
 		"watch": "ng build --watch --configuration development"
 	},
 	"private": true,
@@ -49,10 +51,13 @@
 		"@angular/platform-browser-dynamic": "^17.3.0",
 		"@angular/router": "^17.3.0",
 		"bootstrap": "^5.3.3",
+		"chart.js": "^4.4.3",
+		"date-fns": "^3.6.0",
 		"primeflex": "^3.3.1",
 		"primeicons": "^7.0.0",
 		"primeng": "^17.17.0",
 		"rxjs": "~7.8.0",
+		"socket.io-client": "^4.7.5",
 		"tslib": "^2.3.0",
 		"zone.js": "~0.14.3"
 	},
