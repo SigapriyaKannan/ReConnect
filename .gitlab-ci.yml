@@ -51,7 +51,7 @@ build_backend:
   before_script:
     - cd ./backend
   script:
-    - mvn clean package -e SPRING_PROFILES_ACTIVE="$SPRING_PROFILES_ACTIVE" -DskipTests=true
+    - mvn clean package -Dspring.profiles.active="$SPRING_PROFILES_ACTIVE" -DskipTests=true
   artifacts:
     paths:
       - ./backend/target/reconnect-0.0.1-SNAPSHOT.jar
